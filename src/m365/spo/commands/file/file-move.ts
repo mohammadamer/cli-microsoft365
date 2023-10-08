@@ -118,7 +118,7 @@ class SpoFileMoveCommand extends SpoCommand {
       const sourcePath = await this.getSourcePath(logger, args.options);
 
       if (this.verbose) {
-        await logger.logToStderr(`Moving file ${sourcePath} to ${args.options.targetUrl}...`);
+        logger.logToStderr(`Moving file ${sourcePath} to ${args.options.targetUrl}...`);
       }
 
       const absoluteSourcePath = this.getAbsoluteUrl(args.options.webUrl, sourcePath);
@@ -167,7 +167,7 @@ class SpoFileMoveCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving server-relative path for file with ID '${options.sourceId}'...`);
+      logger.logToStderr(`Retrieving server-relative path for file with ID '${options.sourceId}'...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -187,4 +187,4 @@ class SpoFileMoveCommand extends SpoCommand {
   }
 }
 
-export default new SpoFileMoveCommand();
+module.exports = new SpoFileMoveCommand();

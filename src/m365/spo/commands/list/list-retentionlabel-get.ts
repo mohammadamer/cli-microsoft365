@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ListInstance } from './ListInstance.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ListInstance } from './ListInstance';
 
 interface CommandArgs {
   options: Options;
@@ -90,14 +90,14 @@ class SpoListRetentionLabelGetCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       if (this.verbose) {
-        await logger.logToStderr(`Getting label set on the list ${args.options.listId || args.options.listTitle || args.options.listUrl} in site at ${args.options.webUrl}...`);
+        logger.logToStderr(`Getting label set on the list ${args.options.listId || args.options.listTitle || args.options.listUrl} in site at ${args.options.webUrl}...`);
       }
 
       let listServerRelativeUrl: string = '';
 
       if (args.options.listUrl) {
         if (this.debug) {
-          await logger.logToStderr(`Retrieving List from URL '${args.options.listUrl}'...`);
+          logger.logToStderr(`Retrieving List from URL '${args.options.listUrl}'...`);
         }
 
         listServerRelativeUrl = urlUtil.getServerRelativePath(args.options.webUrl, args.options.listUrl);
@@ -107,14 +107,14 @@ class SpoListRetentionLabelGetCommand extends SpoCommand {
 
         if (args.options.listId) {
           if (this.debug) {
-            await logger.logToStderr(`Retrieving List from Id '${args.options.listId}'...`);
+            logger.logToStderr(`Retrieving List from Id '${args.options.listId}'...`);
           }
 
           requestUrl += `lists(guid'${formatting.encodeQueryParameter(args.options.listId)}')?$expand=RootFolder&$select=RootFolder`;
         }
         else if (args.options.listTitle) {
           if (this.debug) {
-            await logger.logToStderr(`Retrieving List from Title '${args.options.listTitle}'...`);
+            logger.logToStderr(`Retrieving List from Title '${args.options.listTitle}'...`);
           }
 
           requestUrl += `lists/GetByTitle('${formatting.encodeQueryParameter(args.options.listTitle as string)}')?$expand=RootFolder&$select=RootFolder`;
@@ -147,7 +147,7 @@ class SpoListRetentionLabelGetCommand extends SpoCommand {
 
       const res = await request.post<any>(reqOptions);
       if (res['odata.null'] !== true) {
-        await logger.log(res);
+        logger.log(res);
       }
     }
     catch (err: any) {
@@ -156,4 +156,4 @@ class SpoListRetentionLabelGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoListRetentionLabelGetCommand();
+module.exports = new SpoListRetentionLabelGetCommand();

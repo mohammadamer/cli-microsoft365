@@ -1,10 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { aadUser } from '../../../../utils/aadUser.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { aadUser } from '../../../../utils/aadUser';
 
 interface CommandArgs {
   options: Options;
@@ -86,7 +87,7 @@ class PlannerRosterMemberAddCommand extends GraphCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Adding a user to a Microsoft Planner Roster');
+      logger.logToStderr('Adding a user to a Microsoft Planner Roster');
     }
 
     try {
@@ -104,7 +105,7 @@ class PlannerRosterMemberAddCommand extends GraphCommand {
       };
 
       const response = await request.post(requestOptions);
-      await logger.log(response);
+      logger.log(response);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -113,7 +114,7 @@ class PlannerRosterMemberAddCommand extends GraphCommand {
 
   private async getUserId(logger: Logger, args: CommandArgs): Promise<string> {
     if (this.verbose) {
-      await logger.logToStderr("Getting the user ID");
+      logger.logToStderr("Getting the user ID");
     }
 
     if (args.options.userId) {
@@ -126,4 +127,4 @@ class PlannerRosterMemberAddCommand extends GraphCommand {
   }
 }
 
-export default new PlannerRosterMemberAddCommand();
+module.exports = new PlannerRosterMemberAddCommand();

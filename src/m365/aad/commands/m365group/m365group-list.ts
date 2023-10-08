@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import { GroupExtended } from './GroupExtended.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { GroupExtended } from './GroupExtended';
 
 interface CommandArgs {
   options: Options;
@@ -103,7 +103,7 @@ class AadM365GroupListCommand extends GraphCommand {
         });
       }
 
-      await logger.log(groups);
+      logger.log(groups);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -127,4 +127,4 @@ class AadM365GroupListCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupListCommand();
+module.exports = new AadM365GroupListCommand();

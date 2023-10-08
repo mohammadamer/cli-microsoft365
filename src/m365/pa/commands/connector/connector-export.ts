@@ -1,13 +1,13 @@
-import fs from 'fs';
-import path from 'path';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import PowerAppsCommand from '../../../base/PowerAppsCommand.js';
-import flowCommands from '../../../flow/commands.js';
-import commands from '../../commands.js';
-import { Connector } from './Connector.js';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import PowerAppsCommand from '../../../base/PowerAppsCommand';
+import flowCommands from '../../../flow/commands';
+import commands from '../../commands';
+import { Connector } from './Connector';
 
 interface CommandArgs {
   options: Options;
@@ -94,7 +94,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
     let connector: Connector;
 
     if (this.verbose) {
-      await logger.logToStderr('Downloading connector...');
+      logger.logToStderr('Downloading connector...');
     }
 
     try {
@@ -105,7 +105,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Creating output folder ${outputFolder}...`);
+        logger.logToStderr(`Creating output folder ${outputFolder}...`);
       }
       fs.mkdirSync(outputFolder);
 
@@ -119,7 +119,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
         powerAppsUrl: "https://api.powerapps.com"
       };
       if (this.verbose) {
-        await logger.logToStderr('Exporting settings...');
+        logger.logToStderr('Exporting settings...');
       }
       fs.writeFileSync(path.join(outputFolder, 'settings.json'), JSON.stringify(settings, null, 2), 'utf8');
 
@@ -139,7 +139,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
         }
       });
       if (this.verbose) {
-        await logger.logToStderr('Exporting API properties...');
+        logger.logToStderr('Exporting API properties...');
       }
       fs.writeFileSync(path.join(outputFolder, 'apiProperties.json'), JSON.stringify(apiProperties, null, 2), 'utf8');
 
@@ -147,7 +147,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
       if (connector.properties.apiDefinitions &&
         connector.properties.apiDefinitions.originalSwaggerUrl) {
         if (this.verbose) {
-          await logger.logToStderr(`Downloading swagger from ${connector.properties.apiDefinitions.originalSwaggerUrl}...`);
+          logger.logToStderr(`Downloading swagger from ${connector.properties.apiDefinitions.originalSwaggerUrl}...`);
         }
         swagger = await request
           .get({
@@ -159,17 +159,17 @@ class PaConnectorExportCommand extends PowerAppsCommand {
       }
       else {
         if (this.debug) {
-          await logger.logToStderr('originalSwaggerUrl not set. Skipping');
+          logger.logToStderr('originalSwaggerUrl not set. Skipping');
         }
       }
 
       if (swagger && swagger.length > 0) {
         if (this.debug) {
-          await logger.logToStderr('Downloaded swagger');
-          await logger.logToStderr(swagger);
+          logger.logToStderr('Downloaded swagger');
+          logger.logToStderr(swagger);
         }
         if (this.verbose) {
-          await logger.logToStderr('Exporting swagger...');
+          logger.logToStderr('Exporting swagger...');
         }
         fs.writeFileSync(path.join(outputFolder, 'apiDefinition.swagger.json'), swagger, 'utf8');
       }
@@ -177,7 +177,7 @@ class PaConnectorExportCommand extends PowerAppsCommand {
       let icon = '';
       if (connector.properties.iconUri) {
         if (this.verbose) {
-          await logger.logToStderr(`Downloading icon from ${connector.properties.iconUri}...`);
+          logger.logToStderr(`Downloading icon from ${connector.properties.iconUri}...`);
         }
         icon = await request
           .get({
@@ -190,20 +190,20 @@ class PaConnectorExportCommand extends PowerAppsCommand {
       }
       else {
         if (this.debug) {
-          await logger.logToStderr('iconUri not set. Skipping');
+          logger.logToStderr('iconUri not set. Skipping');
         }
       }
 
       if (icon) {
         if (this.verbose) {
-          await logger.logToStderr('Exporting icon...');
+          logger.logToStderr('Exporting icon...');
         }
         const iconBuffer: Buffer = Buffer.from(icon, 'utf8');
         fs.writeFileSync(path.join(outputFolder, 'icon.png'), iconBuffer);
       }
       else {
         if (this.debug) {
-          await logger.logToStderr('No icon retrieved');
+          logger.logToStderr('No icon retrieved');
         }
       }
     }
@@ -213,4 +213,4 @@ class PaConnectorExportCommand extends PowerAppsCommand {
   }
 }
 
-export default new PaConnectorExportCommand();
+module.exports = new PaConnectorExportCommand();

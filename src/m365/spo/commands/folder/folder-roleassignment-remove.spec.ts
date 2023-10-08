@@ -1,20 +1,20 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../../../../Auth.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import request from '../../../../request.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import spoGroupGetCommand from '../group/group-get.js';
-import spoUserGetCommand from '../user/user-get.js';
-import command from './folder-roleassignment-remove.js';
-import { settingsNames } from '../../../../settingsNames.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import auth from '../../../../Auth';
+import { Cli } from '../../../../cli/Cli';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import request from '../../../../request';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import commands from '../../commands';
+import * as SpoUserGetCommand from '../user/user-get';
+import * as SpoGroupGetCommand from '../group/group-get';
+const command: Command = require('./folder-roleassignment-remove');
+import { settingsNames } from '../../../../settingsNames';
 
 describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
   let cli: Cli;
@@ -37,13 +37,13 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };
@@ -159,7 +159,7 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
     });
 
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoUserGetCommand) {
+      if (command === SpoUserGetCommand) {
         return {
           stdout: '{"Id": 11,"IsHiddenInUI": false,"LoginName": "i:0#.f|membership|someaccount@tenant.onmicrosoft.com","Title": "Some Account","PrincipalType": 1,"Email": "someaccount@tenant.onmicrosoft.com","Expiration": "","IsEmailAuthenticationGuestUser": false,"IsShareByEmailGuestUser": false,"IsSiteAdmin": true,"UserId": {"NameId": "1003200097d06dd6","NameIdIssuer": "urn:federation:microsoftonline"},"UserPrincipalName": "someaccount@tenant.onmicrosoft.com"}'
         };
@@ -190,7 +190,7 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
 
     const error = 'no user found';
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoUserGetCommand) {
+      if (command === SpoUserGetCommand) {
         throw error;
       }
 
@@ -218,7 +218,7 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
     });
 
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoGroupGetCommand) {
+      if (command === SpoGroupGetCommand) {
         return {
           stdout: '{"Id": 11,"IsHiddenInUI": false,"LoginName": "otherGroup","Title": "otherGroup","PrincipalType": 8,"AllowMembersEditMembership": false,"AllowRequestToJoinLeave": false,"AutoAcceptRequestToJoinLeave": false,"Description": "","OnlyAllowMembersViewMembership": true,"OwnerTitle": "Some Account","RequestToJoinLeaveEmailSetting": null}'
         };
@@ -249,7 +249,7 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
 
     const error = 'no group found';
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoGroupGetCommand) {
+      if (command === SpoGroupGetCommand) {
         throw error;
       }
 
@@ -307,7 +307,7 @@ describe(commands.FOLDER_ROLEASSIGNMENT_REMOVE, () => {
     });
 
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoGroupGetCommand) {
+      if (command === SpoGroupGetCommand) {
         return {
           stdout: '{"Id": 11,"IsHiddenInUI": false,"LoginName": "otherGroup","Title": "otherGroup","PrincipalType": 8,"AllowMembersEditMembership": false,"AllowRequestToJoinLeave": false,"AutoAcceptRequestToJoinLeave": false,"Description": "","OnlyAllowMembersViewMembership": true,"OwnerTitle": "Some Account","RequestToJoinLeaveEmailSetting": null}'
         };

@@ -1,15 +1,15 @@
-import { Cli } from '../../../../cli/Cli.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { Term } from './Term.js';
-import { TermCollection } from './TermCollection.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { Term } from './Term';
+import { TermCollection } from './TermCollection';
 
 interface CommandArgs {
   options: Options;
@@ -135,7 +135,7 @@ class SpoTermGetCommand extends SpoCommand {
       const spoWebUrl: string = args.options.webUrl ? args.options.webUrl : await spo.getSpoAdminUrl(logger, this.debug);
       const res: ContextInfo = await spo.getRequestDigest(spoWebUrl);
       if (this.verbose) {
-        await logger.logToStderr(`Retrieving taxonomy term...`);
+        logger.logToStderr(`Retrieving taxonomy term...`);
       }
 
       let data = '';
@@ -178,7 +178,7 @@ class SpoTermGetCommand extends SpoCommand {
       term.Id = this.getTermId(term.Id);
       term.LastModifiedDate = this.parseTermDateToIsoString(term.LastModifiedDate);
 
-      await logger.log(term);
+      logger.log(term);
     }
     catch (err: any) {
       this.handleRejectedPromise(err);
@@ -215,4 +215,4 @@ class SpoTermGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoTermGetCommand();
+module.exports = new SpoTermGetCommand();

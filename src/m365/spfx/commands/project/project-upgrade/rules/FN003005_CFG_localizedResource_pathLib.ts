@@ -1,7 +1,7 @@
-import { Hash } from '../../../../../../utils/types.js';
-import { JsonRule } from '../../JsonRule.js';
-import { ConfigJson, JsonFile, Project } from '../../project-model/index.js';
-import { Finding, Occurrence } from '../../report-model/index.js';
+import { Hash } from '../../../../../../utils/types';
+import { JsonRule } from '../../JsonRule';
+import { ConfigJson, JsonFile, Project } from '../../project-model';
+import { Finding, Occurrence } from '../../report-model';
 
 export class FN003005_CFG_localizedResource_pathLib extends JsonRule {
   get id(): string {

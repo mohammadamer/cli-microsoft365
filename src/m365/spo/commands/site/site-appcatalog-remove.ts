@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -53,7 +53,7 @@ class SpoSiteAppCatalogRemoveCommand extends SpoCommand {
       const spoAdminUrl: string = await spo.getSpoAdminUrl(logger, this.debug);
       const requestDigest: ContextInfo = await spo.getRequestDigest(spoAdminUrl);
       if (this.verbose) {
-        await logger.logToStderr(`Disabling site collection app catalog...`);
+        logger.logToStderr(`Disabling site collection app catalog...`);
       }
 
       const requestOptions: any = {
@@ -72,14 +72,14 @@ class SpoSiteAppCatalogRemoveCommand extends SpoCommand {
       }
       else {
         if (this.verbose) {
-          await logger.logToStderr('Site collection app catalog disabled');
+          logger.logToStderr('Site collection app catalog disabled');
         }
       }
-    }
+    } 
     catch (err: any) {
       this.handleRejectedPromise(err);
     }
   }
 }
 
-export default new SpoSiteAppCatalogRemoveCommand();
+module.exports = new SpoSiteAppCatalogRemoveCommand();

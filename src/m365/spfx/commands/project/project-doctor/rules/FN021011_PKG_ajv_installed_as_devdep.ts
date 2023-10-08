@@ -1,6 +1,6 @@
-import { JsonRule } from '../../JsonRule.js';
-import { PackageJson, Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/index.js';
+import { JsonRule } from '../../JsonRule';
+import { PackageJson, Project } from '../../project-model';
+import { Finding } from '../../report-model';
 
 export class FN021011_PKG_ajv_installed_as_devdep extends JsonRule {
   get id(): string {

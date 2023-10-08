@@ -1,11 +1,11 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { CanvasSection } from './clientsidepages.js';
-import { Page } from './Page.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { CanvasSection } from './clientsidepages';
+import { Page } from './Page';
 
 interface CommandArgs {
   options: Options;
@@ -68,7 +68,7 @@ class SpoPageSectionGetCommand extends SpoCommand {
 
       const isJSONOutput = !Cli.shouldTrimOutput(args.options.output);
       if (sections.length) {
-        await logger.log(Page.getSectionInformation(sections[0], isJSONOutput));
+        logger.log(Page.getSectionInformation(sections[0], isJSONOutput));
       }
     }
     catch (err: any) {
@@ -77,4 +77,4 @@ class SpoPageSectionGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoPageSectionGetCommand();
+module.exports = new SpoPageSectionGetCommand();

@@ -6,7 +6,7 @@ import {
   IListViewCommandSetExecuteEventParameters
 } from '@microsoft/sp-listview-extensibility';
 
-import strings from 'helloWorldStrings';
+import * as strings from 'helloWorldStrings';
 
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,

@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN002023_DEVDEP_microsoft_eslint_config_spfx extends DependencyRule {
   constructor(packageVersion: string) {

@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -77,7 +77,7 @@ class SpoStorageEntitySetCommand extends SpoCommand {
       const spoAdminUrl: string = await spo.getSpoAdminUrl(logger, this.debug);
       const res: ContextInfo = await spo.getRequestDigest(spoAdminUrl);
       if (this.verbose) {
-        await logger.logToStderr(`Setting tenant property ${args.options.key} in ${args.options.appCatalogUrl}...`);
+        logger.logToStderr(`Setting tenant property ${args.options.key} in ${args.options.appCatalogUrl}...`);
       }
 
       const requestOptions: any = {
@@ -93,18 +93,18 @@ class SpoStorageEntitySetCommand extends SpoCommand {
       const response: ClientSvcResponseContents = json[0];
       if (response.ErrorInfo) {
         if (this.verbose && response.ErrorInfo.ErrorMessage.indexOf('Access denied.') > -1) {
-          await logger.logToStderr('');
-          await logger.logToStderr(`This error is often caused by invalid URL of the app catalog site. Verify, that the URL you specified as an argument of the ${commands.STORAGEENTITY_SET} command is a valid app catalog URL and try again.`);
-          await logger.logToStderr('');
+          logger.logToStderr('');
+          logger.logToStderr(`This error is often caused by invalid URL of the app catalog site. Verify, that the URL you specified as an argument of the ${commands.STORAGEENTITY_SET} command is a valid app catalog URL and try again.`);
+          logger.logToStderr('');
         }
 
         throw response.ErrorInfo.ErrorMessage;
       }
-    }
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 }
 
-export default new SpoStorageEntitySetCommand();
+module.exports = new SpoStorageEntitySetCommand();

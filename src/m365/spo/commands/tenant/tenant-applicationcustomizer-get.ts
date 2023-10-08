@@ -1,14 +1,14 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import { spo } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { ListItemInstance } from '../listitem/ListItemInstance.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import { odata } from '../../../../utils/odata';
+import { spo } from '../../../../utils/spo';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { Cli } from '../../../../cli/Cli';
+import { ListItemInstance } from '../listitem/ListItemInstance';
 
 interface CommandArgs {
   options: Options;
@@ -117,7 +117,7 @@ class SpoTenantApplicationCustomizerGetCommand extends SpoCommand {
           await logger.log(result);
         }
         else {
-          await logger.log(listItemInstances[0]);
+          logger.log(listItemInstances[0]);
         }
       }
       else {
@@ -130,4 +130,4 @@ class SpoTenantApplicationCustomizerGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoTenantApplicationCustomizerGetCommand();
+module.exports = new SpoTenantApplicationCustomizerGetCommand();

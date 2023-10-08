@@ -1,14 +1,14 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import { v4 } from 'uuid';
-import auth from '../../../../Auth.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { accessToken } from '../../../../utils/accessToken.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import { M365RcJson } from '../../../base/M365RcJson.js';
-import commands from '../../commands.js';
+import auth from '../../../../Auth';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { accessToken } from '../../../../utils/accessToken';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import { M365RcJson } from '../../../base/M365RcJson';
+import commands from '../../commands';
 
 interface ServicePrincipalInfo {
   appId: string;
@@ -272,7 +272,7 @@ class AadAppAddCommand extends GraphCommand {
         appInfo.secrets = _appInfo.secrets;
       }
 
-      await logger.log(appInfo);
+      logger.log(appInfo);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -311,7 +311,7 @@ class AadAppAddCommand extends GraphCommand {
     }
 
     if (args.options.certificateFile || args.options.certificateBase64Encoded) {
-      const certificateBase64Encoded = await this.getCertificateBase64Encoded(args, logger);
+      const certificateBase64Encoded = this.getCertificateBase64Encoded(args, logger);
 
       const newKeyCredential = {
         type: "AsymmetricX509Cert",
@@ -324,7 +324,7 @@ class AadAppAddCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Creating Azure AD app registration...`);
+      logger.logToStderr(`Creating Azure AD app registration...`);
     }
 
     const createApplicationRequestOptions: CliRequestOptions = {
@@ -346,25 +346,25 @@ class AadAppAddCommand extends GraphCommand {
 
     const sp = await this.createServicePrincipal(appInfo.appId);
     if (this.debug) {
-      await logger.logToStderr("Service principal created, returned object id: " + sp.id);
+      logger.logToStderr("Service principal created, returned object id: " + sp.id);
     }
 
     const tasks: Promise<void>[] = [];
 
-    this.appPermissions.forEach(async (permission) => {
+    this.appPermissions.forEach(permission => {
       if (permission.scope.length > 0) {
         tasks.push(this.grantOAuth2Permission(sp.id, permission.resourceId, permission.scope.join(' ')));
 
         if (this.debug) {
-          await logger.logToStderr(`Admin consent granted for following resource ${permission.resourceId}, with delegated permissions: ${permission.scope.join(',')}`);
+          logger.logToStderr(`Admin consent granted for following resource ${permission.resourceId}, with delegated permissions: ${permission.scope.join(',')}`);
         }
       }
 
-      permission.resourceAccess.filter(access => access.type === "Role").forEach(async (access: ResourceAccess) => {
+      permission.resourceAccess.filter(access => access.type === "Role").forEach((access: ResourceAccess) => {
         tasks.push(this.addRoleToServicePrincipal(sp.id, permission.resourceId, access.id));
 
         if (this.debug) {
-          await logger.logToStderr(`Admin consent granted for following resource ${permission.resourceId}, with application permission: ${access.id}`);
+          logger.logToStderr(`Admin consent granted for following resource ${permission.resourceId}, with application permission: ${access.id}`);
         }
       });
     });
@@ -676,7 +676,7 @@ class AadAppAddCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Configuring Azure AD application ID URI...`);
+      logger.logToStderr(`Configuring Azure AD application ID URI...`);
     }
 
     const applicationInfo: any = {};
@@ -718,7 +718,7 @@ class AadAppAddCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr('Resolving requested APIs...');
+      logger.logToStderr('Resolving requested APIs...');
     }
 
     const servicePrincipals = await odata.getAllItems<ServicePrincipalInfo>(`${this.resource}/v1.0/myorganization/servicePrincipals?$select=appId,appRoles,id,oauth2PermissionScopes,servicePrincipalNames`);
@@ -727,13 +727,13 @@ class AadAppAddCommand extends GraphCommand {
 
     try {
       if (args.options.apisDelegated || args.options.apisApplication) {
-        resolvedApis = await this.getRequiredResourceAccessForApis(servicePrincipals, args.options.apisDelegated, 'Scope', logger);
+        resolvedApis = this.getRequiredResourceAccessForApis(servicePrincipals, args.options.apisDelegated, 'Scope', logger);
         if (this.verbose) {
-          await logger.logToStderr(`Resolved delegated permissions: ${JSON.stringify(resolvedApis, null, 2)}`);
+          logger.logToStderr(`Resolved delegated permissions: ${JSON.stringify(resolvedApis, null, 2)}`);
         }
-        const resolvedApplicationApis = await this.getRequiredResourceAccessForApis(servicePrincipals, args.options.apisApplication, 'Role', logger);
+        const resolvedApplicationApis = this.getRequiredResourceAccessForApis(servicePrincipals, args.options.apisApplication, 'Role', logger);
         if (this.verbose) {
-          await logger.logToStderr(`Resolved application permissions: ${JSON.stringify(resolvedApplicationApis, null, 2)}`);
+          logger.logToStderr(`Resolved application permissions: ${JSON.stringify(resolvedApplicationApis, null, 2)}`);
         }
         // merge resolved application APIs onto resolved delegated APIs
         resolvedApplicationApis.forEach(resolvedRequiredResource => {
@@ -769,9 +769,9 @@ class AadAppAddCommand extends GraphCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Merged delegated and application permissions: ${JSON.stringify(resolvedApis, null, 2)}`);
-        await logger.logToStderr(`App role assignments: ${JSON.stringify(this.appPermissions.flatMap(permission => permission.resourceAccess.filter(access => access.type === "Role")), null, 2)}`);
-        await logger.logToStderr(`OAuth2 permissions: ${JSON.stringify(this.appPermissions.flatMap(permission => permission.scope), null, 2)}`);
+        logger.logToStderr(`Merged delegated and application permissions: ${JSON.stringify(resolvedApis, null, 2)}`);
+        logger.logToStderr(`App role assignments: ${JSON.stringify(this.appPermissions.flatMap(permission => permission.resourceAccess.filter(access => access.type === "Role")), null, 2)}`);
+        logger.logToStderr(`OAuth2 permissions: ${JSON.stringify(this.appPermissions.flatMap(permission => permission.scope), null, 2)}`);
       }
 
       return resolvedApis;
@@ -781,21 +781,21 @@ class AadAppAddCommand extends GraphCommand {
     }
   }
 
-  private async getRequiredResourceAccessForApis(servicePrincipals: ServicePrincipalInfo[], apis: string | undefined, scopeType: string, logger: Logger): Promise<RequiredResourceAccess[]> {
+  private getRequiredResourceAccessForApis(servicePrincipals: ServicePrincipalInfo[], apis: string | undefined, scopeType: string, logger: Logger): RequiredResourceAccess[] {
     if (!apis) {
       return [];
     }
 
     const resolvedApis: RequiredResourceAccess[] = [];
     const requestedApis: string[] = apis!.split(',').map(a => a.trim());
-    for (const api of requestedApis) {
+    requestedApis.forEach(api => {
       const pos: number = api.lastIndexOf('/');
       const permissionName: string = api.substr(pos + 1);
       const servicePrincipalName: string = api.substr(0, pos);
       if (this.debug) {
-        await logger.logToStderr(`Resolving ${api}...`);
-        await logger.logToStderr(`Permission name: ${permissionName}`);
-        await logger.logToStderr(`Service principal name: ${servicePrincipalName}`);
+        logger.logToStderr(`Resolving ${api}...`);
+        logger.logToStderr(`Permission name: ${permissionName}`);
+        logger.logToStderr(`Service principal name: ${servicePrincipalName}`);
       }
       const servicePrincipal = servicePrincipals.find(sp => (
         sp.servicePrincipalNames.indexOf(servicePrincipalName) > -1 ||
@@ -827,7 +827,7 @@ class AadAppAddCommand extends GraphCommand {
       resolvedApi.resourceAccess.push(resourceAccessPermission);
 
       this.updateAppPermissions(servicePrincipal.id, resourceAccessPermission, permission.value);
-    }
+    });
 
     return resolvedApis;
   }
@@ -861,7 +861,7 @@ class AadAppAddCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Configure Azure AD app secret...`);
+      logger.logToStderr(`Configure Azure AD app secret...`);
     }
 
     const secret = await this.createSecret({ appObjectId: appInfo.id });
@@ -904,13 +904,13 @@ class AadAppAddCommand extends GraphCommand {
     };
   }
 
-  private async getCertificateBase64Encoded(args: CommandArgs, logger: Logger): Promise<string> {
+  private getCertificateBase64Encoded(args: CommandArgs, logger: Logger): string {
     if (args.options.certificateBase64Encoded) {
       return args.options.certificateBase64Encoded;
     }
 
     if (this.debug) {
-      await logger.logToStderr(`Reading existing ${args.options.certificateFile}...`);
+      logger.logToStderr(`Reading existing ${args.options.certificateFile}...`);
     }
 
     try {
@@ -929,13 +929,13 @@ class AadAppAddCommand extends GraphCommand {
     const filePath: string = '.m365rc.json';
 
     if (this.verbose) {
-      await logger.logToStderr(`Saving Azure AD app registration information to the ${filePath} file...`);
+      logger.logToStderr(`Saving Azure AD app registration information to the ${filePath} file...`);
     }
 
     let m365rc: M365RcJson = {};
     if (fs.existsSync(filePath)) {
       if (this.debug) {
-        await logger.logToStderr(`Reading existing ${filePath}...`);
+        logger.logToStderr(`Reading existing ${filePath}...`);
       }
 
       try {
@@ -945,8 +945,8 @@ class AadAppAddCommand extends GraphCommand {
         }
       }
       catch (e) {
-        await logger.logToStderr(`Error reading ${filePath}: ${e}. Please add app info to ${filePath} manually.`);
-        return Promise.resolve(appInfo);
+        logger.logToStderr(`Error reading ${filePath}: ${e}. Please add app info to ${filePath} manually.`);
+        return appInfo;
       }
     }
 
@@ -963,10 +963,10 @@ class AadAppAddCommand extends GraphCommand {
       fs.writeFileSync(filePath, JSON.stringify(m365rc, null, 2));
     }
     catch (e) {
-      await logger.logToStderr(`Error writing ${filePath}: ${e}. Please add app info to ${filePath} manually.`);
+      logger.logToStderr(`Error writing ${filePath}: ${e}. Please add app info to ${filePath} manually.`);
     }
 
-    return Promise.resolve(appInfo);
+    return appInfo;
   }
 
   private translatePlatformToType(platform: string): string {
@@ -978,4 +978,4 @@ class AadAppAddCommand extends GraphCommand {
   }
 }
 
-export default new AadAppAddCommand();
+module.exports = new AadAppAddCommand();

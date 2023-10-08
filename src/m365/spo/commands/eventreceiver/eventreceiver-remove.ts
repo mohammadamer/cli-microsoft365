@@ -1,15 +1,17 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import getCommand, { Options as SpoEventReceiverGetOptions } from './eventreceiver-get.js';
-import { EventReceiver } from './EventReceiver.js';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import { Cli } from '../../../../cli/Cli';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import { Options as SpoEventReceiverGetOptions } from './eventreceiver-get';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { EventReceiver } from './EventReceiver';
+
+const getCommand: Command = require('./eventreceiver-get');
 
 interface CommandArgs {
   options: Options;
@@ -197,4 +199,4 @@ class SpoEventreceiverRemoveCommand extends SpoCommand {
   }
 }
 
-export default new SpoEventreceiverRemoveCommand();
+module.exports = new SpoEventreceiverRemoveCommand();

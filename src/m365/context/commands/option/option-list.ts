@@ -1,9 +1,9 @@
-import fs from 'fs';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import ContextCommand from '../../../base/ContextCommand.js';
-import { M365RcJson } from '../../../base/M365RcJson.js';
-import commands from '../../commands.js';
+import * as fs from 'fs';
+import { Logger } from '../../../../cli/Logger';
+import { CommandError } from '../../../../Command';
+import ContextCommand from '../../../base/ContextCommand';
+import { M365RcJson } from '../../../base/M365RcJson';
+import commands from '../../commands';
 
 class ContextOptionListCommand extends ContextCommand {
   public get name(): string {
@@ -16,7 +16,7 @@ class ContextOptionListCommand extends ContextCommand {
 
   public async commandAction(logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving context options...`);
+      logger.logToStderr(`Retrieving context options...`);
     }
     const filePath: string = '.m365rc.json';
 
@@ -24,7 +24,7 @@ class ContextOptionListCommand extends ContextCommand {
     if (fs.existsSync(filePath)) {
       try {
         if (this.verbose) {
-          await logger.logToStderr(`Reading context file...`);
+          logger.logToStderr(`Reading context file...`);
         }
         const fileContents: string = fs.readFileSync(filePath, 'utf8');
         if (fileContents) {
@@ -40,9 +40,9 @@ class ContextOptionListCommand extends ContextCommand {
       throw new CommandError(`No context present`);
     }
     else {
-      await logger.log(m365rc.context);
+      logger.log(m365rc.context);
     }
   }
 }
 
-export default new ContextOptionListCommand();
+module.exports = new ContextOptionListCommand();

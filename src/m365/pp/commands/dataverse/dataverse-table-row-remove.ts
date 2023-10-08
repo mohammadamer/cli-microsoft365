@@ -1,11 +1,11 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { Cli } from '../../../../cli/Cli';
 
 interface CommandArgs {
   options: Options;
@@ -93,7 +93,7 @@ class PpDataverseTableRowRemoveCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: any): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Removing row '${args.options.id}' from table '${args.options.tableName || args.options.entitySetName}'...`);
+      logger.logToStderr(`Removing row '${args.options.id}' from table '${args.options.tableName || args.options.entitySetName}'...`);
     }
 
     if (args.options.force) {
@@ -119,7 +119,7 @@ class PpDataverseTableRowRemoveCommand extends PowerPlatformCommand {
 
       const entitySetName = await this.getEntitySetName(dynamicsApiUrl, args);
       if (this.verbose) {
-        await logger.logToStderr('Entity set name is: ' + entitySetName);
+        logger.logToStderr('Entity set name is: ' + entitySetName);
       }
 
       const requestOptions: CliRequestOptions = {
@@ -156,4 +156,4 @@ class PpDataverseTableRowRemoveCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpDataverseTableRowRemoveCommand();
+module.exports = new PpDataverseTableRowRemoveCommand();

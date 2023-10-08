@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { odata } from '../../../../utils/odata.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -55,14 +55,14 @@ class PpCardListCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving list of cards`);
+      logger.logToStderr(`Retrieving list of cards`);
     }
 
     try {
       const dynamicsApiUrl = await powerPlatform.getDynamicsInstanceApiUrl(args.options.environmentName, args.options.asAdmin);
 
       const items = await odata.getAllItems<any>(`${dynamicsApiUrl}/api/data/v9.1/cards?$expand=owninguser($select=azureactivedirectoryobjectid,fullname)`);
-      await logger.log(items);
+      logger.log(items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -70,4 +70,4 @@ class PpCardListCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpCardListCommand();
+module.exports = new PpCardListCommand();

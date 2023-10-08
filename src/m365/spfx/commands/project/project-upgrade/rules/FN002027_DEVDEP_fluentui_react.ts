@@ -1,4 +1,4 @@
-import { DependencyRule } from './DependencyRule.js';
+import { DependencyRule } from './DependencyRule';
 
 export class FN002027_DEVDEP_fluentui_react extends DependencyRule {
   constructor(packageVersion: string, add: boolean) {

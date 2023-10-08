@@ -1,5 +1,5 @@
-import assert from 'assert';
-import { TsRule } from './TsRule.js';
+import * as assert from 'assert';
+import { TsRule } from './TsRule';
 
 class MockTsRule extends TsRule {
   get id(): string {

@@ -1,15 +1,16 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import { Cli } from '../../../cli/Cli.js';
-import { CommandInfo } from '../../../cli/CommandInfo.js';
-import { Logger } from '../../../cli/Logger.js';
-import { telemetry } from '../../../telemetry.js';
-import { pid } from '../../../utils/pid.js';
-import { session } from '../../../utils/session.js';
-import commands from '../commands.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../telemetry';
+import { Cli } from '../../../cli/Cli';
+import { CommandInfo } from '../../../cli/CommandInfo';
+import { Logger } from '../../../cli/Logger';
+import Command from '../../../Command';
+import { pid } from '../../../utils/pid';
+import { session } from '../../../utils/session';
+import commands from '../commands';
+import { browserUtil } from '../../../utils/browserUtil';
 
-import { browserUtil } from '../../../utils/browserUtil.js';
-import command from './cli-issue.js';
+const command: Command = require('./cli-issue');
 
 describe(commands.ISSUE, () => {
   let log: any[];
@@ -28,13 +29,13 @@ describe(commands.ISSUE, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

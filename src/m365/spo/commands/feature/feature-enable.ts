@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -91,7 +91,7 @@ class SpoFeatureEnableCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Enabling feature '${args.options.id}' on scope '${scope}' for url '${args.options.webUrl}' (force='${force}')...`);
+      logger.logToStderr(`Enabling feature '${args.options.id}' on scope '${scope}' for url '${args.options.webUrl}' (force='${force}')...`);
     }
 
     const url: string = `${args.options.webUrl}/_api/${scope}/features/add(featureId=guid'${args.options.id}',force=${force})`;
@@ -111,4 +111,4 @@ class SpoFeatureEnableCommand extends SpoCommand {
   }
 }
 
-export default new SpoFeatureEnableCommand();
+module.exports = new SpoFeatureEnableCommand();

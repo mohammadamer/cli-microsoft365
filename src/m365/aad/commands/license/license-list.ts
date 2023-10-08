@@ -1,7 +1,7 @@
-import { Logger } from '../../../../cli/Logger.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 class AadLicenseListCommand extends GraphCommand {
   public get name(): string {
@@ -19,12 +19,12 @@ class AadLicenseListCommand extends GraphCommand {
 
   public async commandAction(logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving the commercial subscriptions that an organization has acquired`);
+      logger.logToStderr(`Retrieving the commercial subscriptions that an organization has acquired`);
     }
 
     try {
       const items = await odata.getAllItems<any>(`${this.resource}/v1.0/subscribedSkus`);
-      await logger.log(items);
+      logger.log(items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -32,4 +32,4 @@ class AadLicenseListCommand extends GraphCommand {
   }
 }
 
-export default new AadLicenseListCommand();
+module.exports = new AadLicenseListCommand();

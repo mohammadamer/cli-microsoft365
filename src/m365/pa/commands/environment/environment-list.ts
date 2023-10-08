@@ -1,7 +1,7 @@
-import { Logger } from '../../../../cli/Logger.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import PowerAppsCommand from '../../../base/PowerAppsCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import request, { CliRequestOptions } from '../../../../request';
+import PowerAppsCommand from '../../../base/PowerAppsCommand';
+import commands from '../../commands';
 
 class PaEnvironmentListCommand extends PowerAppsCommand {
   public get name(): string {
@@ -18,7 +18,7 @@ class PaEnvironmentListCommand extends PowerAppsCommand {
 
   public async commandAction(logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving list of Microsoft Power Apps environments...`);
+      logger.logToStderr(`Retrieving list of Microsoft Power Apps environments...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -37,7 +37,7 @@ class PaEnvironmentListCommand extends PowerAppsCommand {
           e.displayName = e.properties.displayName;
         });
 
-        await logger.log(res.value);
+        logger.log(res.value);
       }
     }
     catch (err: any) {
@@ -46,4 +46,4 @@ class PaEnvironmentListCommand extends PowerAppsCommand {
   }
 }
 
-export default new PaEnvironmentListCommand();
+module.exports = new PaEnvironmentListCommand();

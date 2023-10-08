@@ -1,12 +1,12 @@
 import { Application } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
-import { Cli } from '../../../../cli/Cli.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { validation } from '../../../../utils/validation';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import { Cli } from '../../../../cli/Cli';
 
 interface CommandArgs {
   options: Options;
@@ -88,7 +88,7 @@ class PpManagementAppAddCommand extends PowerPlatformCommand {
       };
 
       const res = await request.put(requestOptions);
-      await logger.log(res);
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -131,4 +131,4 @@ class PpManagementAppAddCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpManagementAppAddCommand();
+module.exports = new PpManagementAppAddCommand();

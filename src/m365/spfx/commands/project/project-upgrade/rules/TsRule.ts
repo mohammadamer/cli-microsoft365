@@ -1,7 +1,7 @@
-import path from 'path';
-import ts from 'typescript';
-import { Occurrence } from '../../report-model/index.js';
-import { Rule } from '../../Rule.js';
+import * as path from 'path';
+import * as ts from 'typescript';
+import { Occurrence } from '../../report-model';
+import { Rule } from '../../Rule';
 
 export abstract class TsRule extends Rule {
   get resolution(): string {

@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDom from 'react-dom';
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
@@ -7,9 +7,9 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
-import strings from 'HelloWorldWebPartStrings';
-import HelloWorld from './components/HelloWorld.js';
-import { IHelloWorldProps } from './components/IHelloWorldProps.js';
+import * as strings from 'HelloWorldWebPartStrings';
+import HelloWorld from './components/HelloWorld';
+import { IHelloWorldProps } from './components/IHelloWorldProps';
 
 export interface IHelloWorldWebPartProps {
   description: string;

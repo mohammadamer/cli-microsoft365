@@ -1,14 +1,14 @@
-import chalk from 'chalk';
-import os from 'os';
-import { Cli } from '../../cli/Cli.js';
-import { Logger } from '../../cli/Logger.js';
-import GlobalOptions from '../../GlobalOptions.js';
-import { settingsNames } from '../../settingsNames.js';
-import { CheckStatus, formatting } from '../../utils/formatting.js';
-import { pid } from '../../utils/pid.js';
-import AnonymousCommand from '../base/AnonymousCommand.js';
-import commands from './commands.js';
-import { interactivePreset, powerShellPreset, scriptingPreset } from './setupPresets.js';
+import * as chalk from 'chalk';
+import * as os from 'os';
+import { Cli } from '../../cli/Cli';
+import { Logger } from '../../cli/Logger';
+import GlobalOptions from '../../GlobalOptions';
+import { settingsNames } from '../../settingsNames';
+import { CheckStatus, formatting } from '../../utils/formatting';
+import { pid } from '../../utils/pid';
+import AnonymousCommand from '../base/AnonymousCommand';
+import commands from './commands';
+import { interactivePreset, powerShellPreset, scriptingPreset } from './setupPresets';
 
 interface Preferences {
   experience?: string;
@@ -97,14 +97,14 @@ class SetupCommand extends AnonymousCommand {
         Object.assign(settings, powerShellPreset);
       }
 
-      await this.configureSettings(settings, true, logger);
+      this.configureSettings(settings, true, logger);
       return;
     }
 
-    await logger.logToStderr(`Welcome to the CLI for Microsoft 365 setup!`);
-    await logger.logToStderr(`This command will guide you through the process of configuring the CLI for your needs.`);
-    await logger.logToStderr(`Please, answer the following questions and we'll define a set of settings to best match how you intend to use the CLI.`);
-    await logger.logToStderr('');
+    logger.logToStderr(`Welcome to the CLI for Microsoft 365 setup!`);
+    logger.logToStderr(`This command will guide you through the process of configuring the CLI for your needs.`);
+    logger.logToStderr(`Please, answer the following questions and we'll define a set of settings to best match how you intend to use the CLI.`);
+    logger.logToStderr('');
 
     const preferences: Preferences = await Cli.prompt([
       {
@@ -151,15 +151,15 @@ class SetupCommand extends AnonymousCommand {
         settings = this.getSettings(preferences);
       }
 
-      await logger.logToStderr('');
-      await logger.logToStderr('Configuring settings...');
-      await logger.logToStderr('');
+      logger.logToStderr('');
+      logger.logToStderr('Configuring settings...');
+      logger.logToStderr('');
 
-      await this.configureSettings(settings, false, logger);
+      this.configureSettings(settings, false, logger);
 
       if (!this.verbose) {
-        await logger.logToStderr('');
-        await logger.logToStderr(chalk.green('DONE'));
+        logger.logToStderr('');
+        logger.logToStderr(chalk.green('DONE'));
       }
     }
   }
@@ -202,20 +202,20 @@ class SetupCommand extends AnonymousCommand {
     return settings;
   }
 
-  private async configureSettings(settings: SettingNames, silent: boolean, logger: Logger): Promise<void> {
+  private configureSettings(settings: SettingNames, silent: boolean, logger: Logger): void {
     if (this.debug) {
-      await logger.logToStderr('Configuring settings...');
-      await logger.logToStderr(JSON.stringify(settings, null, 2));
+      logger.logToStderr('Configuring settings...');
+      logger.logToStderr(JSON.stringify(settings, null, 2));
     }
 
     for (const [key, value] of Object.entries(settings)) {
       Cli.getInstance().config.set(key, value);
 
       if (!silent) {
-        await logger.logToStderr(formatting.getStatus(CheckStatus.Success, `${key}: ${value}`));
+        logger.logToStderr(formatting.getStatus(CheckStatus.Success, `${key}: ${value}`));
       }
     }
   }
 }
 
-export default new SetupCommand();
+module.exports = new SetupCommand();

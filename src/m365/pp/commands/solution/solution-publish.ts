@@ -1,15 +1,16 @@
 import { AxiosRequestConfig } from 'axios';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
-import ppSolutionGetCommand, { Options as PpSolutionGetCommandOptions } from './solution-get.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import { validation } from '../../../../utils/validation';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import { Options as PpSolutionGetCommandOptions } from './solution-get';
+import * as PpSolutionGetCommand from './solution-get';
+import Command from '../../../../Command';
+import { formatting } from '../../../../utils/formatting';
 
 interface CommandArgs {
   options: Options;
@@ -100,7 +101,7 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
       const dynamicsApiUrl = await powerPlatform.getDynamicsInstanceApiUrl(args.options.environmentName, args.options.asAdmin);
       const solutionId = await this.getSolutionId(args, logger);
       const solutionComponents = await this.getSolutionComponents(dynamicsApiUrl, solutionId, logger);
-      const parameterXml = await this.buildXmlRequestObject(solutionComponents, logger);
+      const parameterXml = this.buildXmlRequestObject(solutionComponents, logger);
 
       const requestOptions: AxiosRequestConfig = {
         url: `${dynamicsApiUrl}/api/data/v9.0/PublishXml`,
@@ -114,7 +115,7 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
       };
 
       if (this.verbose) {
-        await logger.logToStderr(`Publishing the solution '${args.options.id || args.options.name}'...`);
+        logger.logToStderr(`Publishing the solution '${args.options.id || args.options.name}'...`);
       }
 
       if (args.options.wait) {
@@ -139,7 +140,7 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
     };
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving solution components`);
+      logger.logToStderr(`Retrieving solution components`);
     }
 
     const response = await request.get<{ value: SolutionComponent[] }>(requestOptions);
@@ -153,7 +154,7 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving solutionId`);
+      logger.logToStderr(`Retrieving solutionId`);
     }
 
     const options: PpSolutionGetCommandOptions = {
@@ -164,14 +165,14 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
       verbose: this.verbose
     };
 
-    const output = await Cli.executeCommandWithOutput(ppSolutionGetCommand as Command, { options: { ...options, _: [] } });
+    const output = await Cli.executeCommandWithOutput(PpSolutionGetCommand as Command, { options: { ...options, _: [] } });
     const getSolutionOutput = JSON.parse(output.stdout);
     return getSolutionOutput.solutionid;
   }
 
-  private async buildXmlRequestObject(solutionComponents: SolutionComponent[], logger: Logger): Promise<string> {
+  private buildXmlRequestObject(solutionComponents: SolutionComponent[], logger: Logger): string {
     if (this.verbose) {
-      await logger.logToStderr(`Building the XML request object...`);
+      logger.logToStderr(`Building the XML request object...`);
     }
     const result = solutionComponents.reduce(function (r, a) {
       const key = a.msdyn_componentlogicalname.slice(-1) === 'y' ?
@@ -187,4 +188,4 @@ class PpSolutionPublishCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpSolutionPublishCommand();
+module.exports = new PpSolutionPublishCommand();

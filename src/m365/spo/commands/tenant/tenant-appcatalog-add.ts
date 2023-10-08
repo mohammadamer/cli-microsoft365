@@ -1,14 +1,15 @@
-import { Cli, CommandOutput } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command, { CommandError } from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import spoSiteAddCommand, { Options as SpoSiteAddCommandOptions } from '../site/site-add.js';
-import spoSiteGetCommand from '../site/site-get.js';
-import spoSiteRemoveCommand from '../site/site-remove.js';
-import spoTenantAppCatalogUrlGetCommand from './tenant-appcatalogurl-get.js';
+import { Cli } from '../../../../cli/Cli';
+import { CommandOutput } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import * as spoSiteAddCommand from '../site/site-add';
+import * as spoSiteGetCommand from '../site/site-get';
+import * as spoSiteRemoveCommand from '../site/site-remove';
+import * as spoTenantAppCatalogUrlGetCommand from './tenant-appcatalogurl-get';
 
 interface CommandArgs {
   options: Options;
@@ -87,19 +88,19 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Checking for existing app catalog URL...');
+      logger.logToStderr('Checking for existing app catalog URL...');
     }
 
     const spoTenantAppCatalogUrlGetCommandOutput: CommandOutput = await Cli.executeCommandWithOutput(spoTenantAppCatalogUrlGetCommand as Command, { options: { output: 'text', _: [] } });
     const appCatalogUrl: string | undefined = spoTenantAppCatalogUrlGetCommandOutput.stdout;
     if (!appCatalogUrl) {
       if (this.verbose) {
-        await logger.logToStderr('No app catalog URL found');
+        logger.logToStderr('No app catalog URL found');
       }
     }
     else {
       if (this.verbose) {
-        await logger.logToStderr(`Found app catalog URL ${appCatalogUrl}`);
+        logger.logToStderr(`Found app catalog URL ${appCatalogUrl}`);
       }
 
       //Using JSON.parse
@@ -111,7 +112,7 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
 
   private async ensureNoExistingSite(url: string, force: boolean, logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Checking if site ${url} exists...`);
+      logger.logToStderr(`Checking if site ${url} exists...`);
     }
 
     const siteGetOptions = {
@@ -127,7 +128,7 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
       await Cli.executeCommandWithOutput(spoSiteGetCommand as Command, siteGetOptions);
 
       if (this.verbose) {
-        await logger.logToStderr(`Found site ${url}`);
+        logger.logToStderr(`Found site ${url}`);
       }
 
       if (!force) {
@@ -135,7 +136,7 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Deleting site ${url}...`);
+        logger.logToStderr(`Deleting site ${url}...`);
       }
 
       const siteRemoveOptions = {
@@ -155,16 +156,16 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`No site found at ${url}`);
+        logger.logToStderr(`No site found at ${url}`);
       }
 
       // Site not found. Continue
     }
   }
 
-  private async createAppCatalog(options: Options, logger: Logger): Promise<void> {
+  private createAppCatalog(options: Options, logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Creating app catalog at ${options.url}...`);
+      logger.logToStderr(`Creating app catalog at ${options.url}...`);
     }
 
     const siteAddOptions = {
@@ -178,9 +179,9 @@ class SpoTenantAppCatalogAddCommand extends SpoCommand {
       verbose: this.verbose,
       debug: this.debug,
       removeDeletedSite: false
-    } as SpoSiteAddCommandOptions;
+    } as spoSiteAddCommand.Options;
     return Cli.executeCommand(spoSiteAddCommand as Command, { options: { ...siteAddOptions, _: [] } });
   }
 }
 
-export default new SpoTenantAppCatalogAddCommand();
+module.exports = new SpoTenantAppCatalogAddCommand();

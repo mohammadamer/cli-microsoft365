@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN002026_DEVDEP_typescript extends DependencyRule {
   constructor(packageVersion: string) {

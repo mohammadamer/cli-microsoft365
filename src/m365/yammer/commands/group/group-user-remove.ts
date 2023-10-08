@@ -1,9 +1,9 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import YammerCommand from "../../../base/YammerCommand.js";
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import YammerCommand from "../../../base/YammerCommand";
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -119,4 +119,4 @@ class YammerGroupUserRemoveCommand extends YammerCommand {
   }
 }
 
-export default new YammerGroupUserRemoveCommand();
+module.exports = new YammerGroupUserRemoveCommand();

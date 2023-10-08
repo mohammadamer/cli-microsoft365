@@ -1,12 +1,12 @@
-import assert from 'assert';
-import fs from 'fs';
-import sinon from 'sinon';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import { telemetry } from '../../../../telemetry.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './option-list.js';
+import * as assert from 'assert';
+import * as fs from 'fs';
+import * as sinon from 'sinon';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import { telemetry } from '../../../../telemetry';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+const command: Command = require('./option-list');
 
 describe(commands.OPTION_LIST, () => {
   let log: any[];
@@ -20,13 +20,13 @@ describe(commands.OPTION_LIST, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

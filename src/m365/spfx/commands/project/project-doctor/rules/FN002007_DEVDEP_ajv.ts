@@ -1,4 +1,4 @@
-import { DependencyRule } from './DependencyRule.js';
+import { DependencyRule } from './DependencyRule';
 
 export class FN002007_DEVDEP_ajv extends DependencyRule {
   constructor(supportedRange: string) {

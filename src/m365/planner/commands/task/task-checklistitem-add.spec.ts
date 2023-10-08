@@ -1,16 +1,16 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../../../../Auth.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import request from '../../../../request.js';
-import { telemetry } from '../../../../telemetry.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './task-checklistitem-add.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import auth from '../../../../Auth';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+const command: Command = require('./task-checklistitem-add');
 
 describe(commands.TASK_CHECKLISTITEM_ADD, () => {
   const validTaskId = 'BC3L9DGJ5UG2UQn4MlEbcZcALpqb';
@@ -50,13 +50,13 @@ describe(commands.TASK_CHECKLISTITEM_ADD, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

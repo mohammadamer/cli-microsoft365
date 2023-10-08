@@ -1,11 +1,11 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { CanvasSection } from './clientsidepages.js';
-import { Page } from './Page.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { CanvasSection } from './clientsidepages';
+import { Page } from './Page';
 
 interface CommandArgs {
   options: Options;
@@ -86,7 +86,7 @@ class SpoPageColumnGetCommand extends SpoCommand {
               .map(control => `${control.id} (${control.title})`)
               .join(', ');
           }
-          await logger.log(column);
+          logger.log(column);
         }
       }
     }
@@ -96,4 +96,4 @@ class SpoPageColumnGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoPageColumnGetCommand();
+module.exports = new SpoPageColumnGetCommand();

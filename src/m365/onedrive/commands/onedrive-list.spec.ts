@@ -1,17 +1,17 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../../../Auth.js';
-import { Logger } from '../../../cli/Logger.js';
-import { CommandError } from '../../../Command.js';
-import config from '../../../config.js';
-import request from '../../../request.js';
-import { telemetry } from '../../../telemetry.js';
-import { pid } from '../../../utils/pid.js';
-import { session } from '../../../utils/session.js';
-import { sinonUtil } from '../../../utils/sinonUtil.js';
-import { spo } from '../../../utils/spo.js';
-import commands from '../commands.js';
-import command from './onedrive-list.js';
+import sinon = require("sinon");
+import auth from "../../../Auth";
+import { Logger } from '../../../cli/Logger';
+import Command, { CommandError } from "../../../Command";
+import config from "../../../config";
+import request from "../../../request";
+import { pid } from "../../../utils/pid";
+import { session } from "../../../utils/session";
+import { sinonUtil } from "../../../utils/sinonUtil";
+import { spo } from "../../../utils/spo";
+import commands from "../commands";
+import assert = require("assert");
+import { telemetry } from "../../../telemetry";
+const command: Command = require('./onedrive-list');
 
 describe(commands.LIST, () => {
   let log: string[];
@@ -31,13 +31,13 @@ describe(commands.LIST, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

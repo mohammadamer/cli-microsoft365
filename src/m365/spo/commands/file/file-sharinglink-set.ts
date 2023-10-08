@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { spo } from '../../../../utils/spo';
 
 interface CommandArgs {
   options: Options;
@@ -96,7 +96,7 @@ class SpoFileSharingLinkSetCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Updating sharing link of file ${args.options.fileId || args.options.fileUrl}...`);
+      logger.logToStderr(`Updating sharing link of file ${args.options.fileId || args.options.fileUrl}...`);
     }
 
     try {
@@ -115,7 +115,7 @@ class SpoFileSharingLinkSetCommand extends SpoCommand {
 
       const sharingLink = await request.patch<any>(requestOptions);
 
-      await logger.log(sharingLink);
+      logger.log(sharingLink);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -123,4 +123,4 @@ class SpoFileSharingLinkSetCommand extends SpoCommand {
   }
 }
 
-export default new SpoFileSharingLinkSetCommand();
+module.exports = new SpoFileSharingLinkSetCommand();

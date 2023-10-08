@@ -1,7 +1,7 @@
-import assert from 'assert';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/Finding.js';
-import { FN008002_CFG_TSL_removeRule } from './FN008002_CFG_TSL_removeRule.js';
+import * as assert from 'assert';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model/Finding';
+import { FN008002_CFG_TSL_removeRule } from './FN008002_CFG_TSL_removeRule';
 
 describe('FN008002_CFG_TSL_removeRule', () => {
   let findings: Finding[];

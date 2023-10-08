@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 const expirationDateTimeMaxDays = 180;
 const maxExpirationDateTime: Date = new Date();
@@ -120,7 +120,7 @@ class SpoListWebhookAddCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Adding webhook to list ${args.options.listId || args.options.listTitle || args.options.listUrl} located at site ${args.options.webUrl}...`);
+      logger.logToStderr(`Adding webhook to list ${args.options.listId || args.options.listTitle || args.options.listUrl} located at site ${args.options.webUrl}...`);
     }
 
     let requestUrl: string = `${args.options.webUrl}/_api/web`;
@@ -160,7 +160,7 @@ class SpoListWebhookAddCommand extends SpoCommand {
 
     try {
       const res = await request.post<any>(requestOptions);
-      await logger.log(res);
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -168,4 +168,4 @@ class SpoListWebhookAddCommand extends SpoCommand {
   }
 }
 
-export default new SpoListWebhookAddCommand();
+module.exports = new SpoListWebhookAddCommand();

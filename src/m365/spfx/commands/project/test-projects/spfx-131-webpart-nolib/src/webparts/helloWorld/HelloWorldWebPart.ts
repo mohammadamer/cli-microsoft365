@@ -7,7 +7,7 @@ import {
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import styles from './HelloWorldWebPart.module.scss';
-import strings from 'HelloWorldWebPartStrings';
+import * as strings from 'HelloWorldWebPartStrings';
 
 export interface IHelloWorldWebPartProps {
   description: string;

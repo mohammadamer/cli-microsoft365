@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import { odata } from '../../../../utils/odata';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -80,7 +80,7 @@ class SpoFileVersionListCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving all versions of file ${args.options.fileUrl || args.options.fileId} at site ${args.options.webUrl}...`);
+      logger.logToStderr(`Retrieving all versions of file ${args.options.fileUrl || args.options.fileId} at site ${args.options.webUrl}...`);
     }
 
     try {
@@ -95,7 +95,7 @@ class SpoFileVersionListCommand extends SpoCommand {
       requestUrl += `/versions`;
 
       const response = await odata.getAllItems<any>(requestUrl);
-      await logger.log(response);
+      logger.log(response);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -103,4 +103,4 @@ class SpoFileVersionListCommand extends SpoCommand {
   }
 }
 
-export default new SpoFileVersionListCommand();
+module.exports = new SpoFileVersionListCommand();

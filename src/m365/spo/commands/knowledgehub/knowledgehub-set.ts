@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -52,7 +52,7 @@ class SpoKnowledgehubSetCommand extends SpoCommand {
       const reqDigest = await spo.getRequestDigest(spoAdminUrl);
 
       if (this.verbose) {
-        await logger.logToStderr(`Adding ${args.options.siteUrl} as the Knowledge Hub Site`);
+        logger.logToStderr(`Adding ${args.options.siteUrl} as the Knowledge Hub Site`);
       }
 
       const requestOptions: CliRequestOptions = {
@@ -70,7 +70,7 @@ class SpoKnowledgehubSetCommand extends SpoCommand {
         throw response.ErrorInfo.ErrorMessage;
       }
 
-      await logger.log(json[json.length - 1]);
+      logger.log(json[json.length - 1]);
     }
     catch (err: any) {
       this.handleRejectedPromise(err);
@@ -78,4 +78,4 @@ class SpoKnowledgehubSetCommand extends SpoCommand {
   }
 }
 
-export default new SpoKnowledgehubSetCommand();
+module.exports = new SpoKnowledgehubSetCommand();

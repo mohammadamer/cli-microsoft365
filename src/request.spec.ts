@@ -1,17 +1,17 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import { ClientRequest } from 'http';
-import https from 'https';
-import sinon from 'sinon';
-import auth, { CloudType } from './Auth.js';
-import { Logger } from './cli/Logger.js';
-import _request, { CliRequestOptions } from './request.js';
-import { sinonUtil } from './utils/sinonUtil.js';
+import * as https from 'https';
+import * as sinon from 'sinon';
+import auth, { CloudType } from './Auth';
+import { Logger } from './cli/Logger';
+import _request, { CliRequestOptions } from './request';
+import { sinonUtil } from './utils/sinonUtil';
 
 describe('Request', () => {
   const logger: Logger = {
-    log: async () => { },
-    logRaw: async () => { },
-    logToStderr: async () => { }
+    log: () => { },
+    logRaw: () => { },
+    logToStderr: () => { }
   };
 
   let _options: CliRequestOptions;
@@ -202,8 +202,8 @@ describe('Request', () => {
   });
 
   it('sets method to GET for a GET request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -225,8 +225,8 @@ describe('Request', () => {
   });
 
   it('sets method to HEAD for a HEAD request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -248,8 +248,8 @@ describe('Request', () => {
   });
 
   it('sets method to POST for a POST request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -271,8 +271,8 @@ describe('Request', () => {
   });
 
   it('sets method to PATCH for a PATCH request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -294,8 +294,8 @@ describe('Request', () => {
   });
 
   it('sets method to PUT for a PUT request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -317,8 +317,8 @@ describe('Request', () => {
   });
 
   it('sets method to DELETE for a DELETE request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -340,8 +340,8 @@ describe('Request', () => {
   });
 
   it('returns response of a successful GET request', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -357,8 +357,8 @@ describe('Request', () => {
   });
 
   it('returns response of a successful GET request, with overridden authorization', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.resolve({ data: {} });
     });
 
@@ -377,9 +377,9 @@ describe('Request', () => {
   });
 
   it('returns response of a successful GET request for large file (stream)', (done) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
-      (options as CliRequestOptions).responseType = "stream";
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
+      options.responseType = "stream";
       return Promise.resolve({ data: {} });
     });
 
@@ -395,8 +395,8 @@ describe('Request', () => {
   });
 
   it('correctly handles failed GET request', (cb) => {
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
       return Promise.reject('Error');
     });
 
@@ -583,9 +583,9 @@ describe('Request', () => {
     let i: number = 0;
     let timeout: number | undefined = -1;
 
-    sinon.stub(_request as any, 'req').callsFake(options => {
-      _options = options as CliRequestOptions;
-      (options as CliRequestOptions).responseType = "stream";
+    sinon.stub(_request as any, 'req').callsFake((options) => {
+      _options = options;
+      options.responseType = "stream";
 
       if (i++ === 0) {
         return Promise.reject({
@@ -745,7 +745,7 @@ describe('Request', () => {
   it(`updates the URL for the China cloud`, async () => {
     let url;
     auth.service.cloudType = CloudType.China;
-    sinon.stub(_request as any, 'req').callsFake((options: any) => {
+    sinon.stub(_request as any, 'req').callsFake(options => {
       url = options.url;
       return Promise.resolve({ data: {} });
     });
@@ -758,7 +758,7 @@ describe('Request', () => {
   it(`updates the URL for the USGov cloud`, async () => {
     let url;
     auth.service.cloudType = CloudType.USGov;
-    sinon.stub(_request as any, 'req').callsFake((options: any) => {
+    sinon.stub(_request as any, 'req').callsFake(options => {
       url = options.url;
       return Promise.resolve({ data: {} });
     });
@@ -771,7 +771,7 @@ describe('Request', () => {
   it(`updates the URL for the USGovDoD cloud`, async () => {
     let url;
     auth.service.cloudType = CloudType.USGovDoD;
-    sinon.stub(_request as any, 'req').callsFake((options: any) => {
+    sinon.stub(_request as any, 'req').callsFake(options => {
       url = options.url;
       return Promise.resolve({ data: {} });
     });
@@ -784,7 +784,7 @@ describe('Request', () => {
   it(`updates the URL for the USGovHigh cloud`, async () => {
     let url;
     auth.service.cloudType = CloudType.USGovHigh;
-    sinon.stub(_request as any, 'req').callsFake((options: any) => {
+    sinon.stub(_request as any, 'req').callsFake(options => {
       url = options.url;
       return Promise.resolve({ data: {} });
     });

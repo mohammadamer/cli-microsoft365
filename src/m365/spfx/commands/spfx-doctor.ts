@@ -1,10 +1,10 @@
-import child_process from 'child_process';
+import * as child_process from 'child_process';
 import { satisfies } from 'semver';
-import GlobalOptions from '../../../GlobalOptions.js';
-import { Logger } from '../../../cli/Logger.js';
-import { CheckStatus, formatting } from '../../../utils/formatting.js';
-import commands from '../commands.js';
-import { BaseProjectCommand } from './project/base-project-command.js';
+import { Logger } from '../../../cli/Logger';
+import GlobalOptions from '../../../GlobalOptions';
+import { CheckStatus, formatting } from '../../../utils/formatting';
+import commands from '../commands';
+import { BaseProjectCommand } from './project/base-project-command';
 
 interface CommandArgs {
   options: Options;
@@ -623,10 +623,10 @@ class SpfxDoctorCommand extends BaseProjectCommand {
 
     this.projectRootPath = this.getProjectRoot(process.cwd());
 
-    await logger.log(' ');
-    await logger.log('CLI for Microsoft 365 SharePoint Framework doctor');
-    await logger.log('Verifying configuration of your system for working with the SharePoint Framework');
-    await logger.log(' ');
+    logger.log(' ');
+    logger.log('CLI for Microsoft 365 SharePoint Framework doctor');
+    logger.log('Verifying configuration of your system for working with the SharePoint Framework');
+    logger.log(' ');
 
     let spfxVersion: string = '';
     let prerequisites: SpfxVersionPrerequisites;
@@ -636,13 +636,13 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       spfxVersion = args.options.spfxVersion ?? await this.getSharePointFrameworkVersion(logger);
 
       if (!spfxVersion) {
-        await logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework`));
+        logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework`));
         throw `SharePoint Framework not found`;
       }
 
       prerequisites = this.versions[spfxVersion];
       if (!prerequisites) {
-        await logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework v${spfxVersion}`));
+        logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework v${spfxVersion}`));
         throw `spfx doctor doesn't support SPFx v${spfxVersion} at this moment`;
       }
 
@@ -651,7 +651,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       }
       else {
         // spfx was detected and if we are here, it means that we support it
-        await logger.log(formatting.getStatus(CheckStatus.Success, `SharePoint Framework v${spfxVersion}`));
+        logger.log(formatting.getStatus(CheckStatus.Success, `SharePoint Framework v${spfxVersion}`));
       }
 
       await this.checkSharePointCompatibility(spfxVersion, prerequisites, args, fixes, logger);
@@ -662,25 +662,21 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       await this.checkTypeScript(fixes, logger);
 
       if (fixes.length > 0) {
-        await logger.log(' ');
-        await logger.log('Recommended fixes:');
-        await logger.log(' ');
-        for (const f of fixes) {
-          await logger.log(`- ${f}`);
-        }
-        await logger.log(' ');
+        logger.log(' ');
+        logger.log('Recommended fixes:');
+        logger.log(' ');
+        fixes.forEach(f => logger.log(`- ${f}`));
+        logger.log(' ');
       }
     }
     catch (err: any) {
-      await logger.log(' ');
+      logger.log(' ');
 
       if (fixes.length > 0) {
-        await logger.log('Recommended fixes:');
-        await logger.log(' ');
-        for (const f of fixes) {
-          await logger.log(`- ${f}`);
-        }
-        await logger.log(' ');
+        logger.log('Recommended fixes:');
+        logger.log(' ');
+        fixes.forEach(f => logger.log(`- ${f}`));
+        logger.log(' ');
       }
       this.handleRejectedPromise(err);
     }
@@ -690,11 +686,11 @@ class SpfxDoctorCommand extends BaseProjectCommand {
     if (args.options.env) {
       const sp: SharePointVersion = this.spVersionStringToEnum(args.options.env) as SharePointVersion;
       if ((prerequisites.sp & sp) === sp) {
-        await logger.log(formatting.getStatus(CheckStatus.Success, `Supported in ${SharePointVersion[sp]}`));
+        logger.log(formatting.getStatus(CheckStatus.Success, `Supported in ${SharePointVersion[sp]}`));
         return;
       }
 
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `Not supported in ${SharePointVersion[sp]}`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `Not supported in ${SharePointVersion[sp]}`));
       fixes.push(`Use SharePoint Framework v${(sp === SharePointVersion.SP2016 ? '1.1' : '1.4.1')}`);
       throw `SharePoint Framework v${spfxVersion} is not supported in ${SharePointVersion[sp]}`;
     }
@@ -706,7 +702,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
   }
 
   private async checkSharePointFrameworkVersion(spfxVersionRequested: string, fixes: string[], logger: Logger): Promise<void> {
-    let spfxVersionDetected = await this.getSPFxVersionFromYoRcFile(logger);
+    let spfxVersionDetected = this.getSPFxVersionFromYoRcFile(logger);
     if (!spfxVersionDetected) {
       spfxVersionDetected = await this.getPackageVersion('@microsoft/generator-sharepoint', PackageSearchMode.GlobalOnly, HandlePromise.Continue, logger);
     }
@@ -718,7 +714,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       this.checkStatus(`SharePoint Framework`, spfxVersionDetected, versionCheck, OptionalOrRequired.Required, fixes, logger);
     }
     else {
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework v${spfxVersionRequested} not found`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `SharePoint Framework v${spfxVersionRequested} not found`));
       fixes.push(versionCheck.fix);
     }
   }
@@ -729,7 +725,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       this.checkStatus('yo', yoVersion, prerequisites.yo, OptionalOrRequired.Required, fixes, logger);
     }
     else {
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `yo not found`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `yo not found`));
       fixes.push(prerequisites.yo.fix);
     }
   }
@@ -740,7 +736,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       this.checkStatus('gulp-cli', gulpCliVersion, prerequisites.gulpCli, OptionalOrRequired.Required, fixes, logger);
     }
     else {
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `gulp-cli not found`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `gulp-cli not found`));
       fixes.push(prerequisites.gulpCli.fix);
     }
   }
@@ -748,7 +744,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
   private async checkGulp(fixes: string[], logger: Logger): Promise<void> {
     const gulpVersion: string = await this.getPackageVersion('gulp', PackageSearchMode.GlobalOnly, HandlePromise.Continue, logger);
     if (gulpVersion) {
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `gulp should be removed`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `gulp should be removed`));
       fixes.push('npm un -g gulp');
     }
   }
@@ -756,11 +752,11 @@ class SpfxDoctorCommand extends BaseProjectCommand {
   private async checkTypeScript(fixes: string[], logger: Logger): Promise<void> {
     const typeScriptVersion: string = await this.getPackageVersion('typescript', PackageSearchMode.LocalOnly, HandlePromise.Continue, logger);
     if (typeScriptVersion) {
-      await logger.log(formatting.getStatus(CheckStatus.Failure, `typescript v${typeScriptVersion} installed in the project`));
+      logger.log(formatting.getStatus(CheckStatus.Failure, `typescript v${typeScriptVersion} installed in the project`));
       fixes.push('npm un typescript');
     }
     else {
-      await logger.log(formatting.getStatus(CheckStatus.Success, `bundled typescript used`));
+      logger.log(formatting.getStatus(CheckStatus.Success, `bundled typescript used`));
     }
   }
 
@@ -768,12 +764,12 @@ class SpfxDoctorCommand extends BaseProjectCommand {
     return (<any>SharePointVersion)[sp.toUpperCase()];
   }
 
-  private async getSPFxVersionFromYoRcFile(logger: Logger): Promise<string | undefined> {
+  private getSPFxVersionFromYoRcFile(logger: Logger): string | undefined {
     if (this.projectRootPath !== null) {
       const spfxVersion = this.getProjectVersion();
       if (spfxVersion) {
         if (this.debug) {
-          await logger.logToStderr(`SPFx version retrieved from .yo-rc.json file. Retrieved version: ${spfxVersion}`);
+          logger.logToStderr(`SPFx version retrieved from .yo-rc.json file. Retrieved version: ${spfxVersion}`);
         }
         return spfxVersion;
       }
@@ -782,20 +778,20 @@ class SpfxDoctorCommand extends BaseProjectCommand {
   }
 
   private async getSharePointFrameworkVersion(logger: Logger): Promise<string> {
-    let spfxVersion = await this.getSPFxVersionFromYoRcFile(logger);
+    let spfxVersion = this.getSPFxVersionFromYoRcFile(logger);
     if (spfxVersion) {
       return spfxVersion;
     }
     try {
       spfxVersion = await this.getPackageVersion('@microsoft/sp-core-library', PackageSearchMode.LocalOnly, HandlePromise.Fail, logger);
       if (this.debug) {
-        await logger.logToStderr(`Found @microsoft/sp-core-library@${spfxVersion}`);
+        logger.logToStderr(`Found @microsoft/sp-core-library@${spfxVersion}`);
       }
       return spfxVersion;
     }
     catch {
       if (this.debug) {
-        await logger.logToStderr(`@microsoft/sp-core-library not found. Search for @microsoft/generator-sharepoint local or global...`);
+        logger.logToStderr(`@microsoft/sp-core-library not found. Search for @microsoft/generator-sharepoint local or global...`);
       }
 
       try {
@@ -803,7 +799,7 @@ class SpfxDoctorCommand extends BaseProjectCommand {
       }
       catch (error: any) {
         if (this.debug) {
-          await logger.logToStderr('@microsoft/generator-sharepoint not found');
+          logger.logToStderr('@microsoft/generator-sharepoint not found');
         }
 
         if (error && error.indexOf('ENOENT') > -1) {
@@ -850,11 +846,11 @@ class SpfxDoctorCommand extends BaseProjectCommand {
   }
 
   private getPackageVersionFromNpm(args: string[], logger: Logger): Promise<string> {
-    return new Promise<string>(async (resolve: (version: string) => void, reject: (error: string) => void): Promise<void> => {
+    return new Promise<string>((resolve: (version: string) => void, reject: (error: string) => void): void => {
       const packageName: string = args[1];
 
       if (this.debug) {
-        await logger.logToStderr(`Executing npm: ${args.join(' ')}...`);
+        logger.logToStderr(`Executing npm: ${args.join(' ')}...`);
       }
 
       child_process.exec(`npm ${args.join(' ')}`, (err: child_process.ExecException | null, stdout: string): void => {
@@ -890,17 +886,17 @@ class SpfxDoctorCommand extends BaseProjectCommand {
     return process.version.substr(1);
   }
 
-  private async checkStatus(what: string, versionFound: string, versionCheck: VersionCheck, optionalOrRequired: OptionalOrRequired, fixes: string[], logger: Logger): Promise<void> {
+  private checkStatus(what: string, versionFound: string, versionCheck: VersionCheck, optionalOrRequired: OptionalOrRequired, fixes: string[], logger: Logger): void {
     if (versionFound) {
       if (satisfies(versionFound, versionCheck.range)) {
-        await logger.log(formatting.getStatus(CheckStatus.Success, `${what} v${versionFound}`));
+        logger.log(formatting.getStatus(CheckStatus.Success, `${what} v${versionFound}`));
       }
       else {
-        await logger.log(formatting.getStatus(CheckStatus.Failure, `${what} v${versionFound} found, v${versionCheck.range} required`));
+        logger.log(formatting.getStatus(CheckStatus.Failure, `${what} v${versionFound} found, v${versionCheck.range} required`));
         fixes.push(versionCheck.fix);
       }
     }
   }
 }
 
-export default new SpfxDoctorCommand();
+module.exports = new SpfxDoctorCommand();

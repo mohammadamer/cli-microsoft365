@@ -1,19 +1,19 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../../../../Auth.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import request from '../../../../request.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import ppSolutionGetCommand from './solution-get.js';
-import command from './solution-remove.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import auth from '../../../../Auth';
+import { Cli } from '../../../../cli/Cli';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import request from '../../../../request';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+import * as PpSolutionGetCommand from './solution-get';
+const command: Command = require('./solution-remove');
 
 describe(commands.SOLUTION_REMOVE, () => {
   let commandInfo: CommandInfo;
@@ -41,13 +41,13 @@ describe(commands.SOLUTION_REMOVE, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };
@@ -133,7 +133,7 @@ describe(commands.SOLUTION_REMOVE, () => {
     sinon.stub(powerPlatform, 'getDynamicsInstanceApiUrl').callsFake(async () => envUrl);
 
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === ppSolutionGetCommand) {
+      if (command === PpSolutionGetCommand) {
         return ({
           stdout: `{
             "solutionid": "${validId}",

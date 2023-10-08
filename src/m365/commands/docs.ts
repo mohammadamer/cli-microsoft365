@@ -1,12 +1,13 @@
-import { Cli } from '../../cli/Cli.js';
-import { Logger } from '../../cli/Logger.js';
-import { settingsNames } from '../../settingsNames.js';
-import { app } from '../../utils/app.js';
-import { browserUtil } from '../../utils/browserUtil.js';
-import AnonymousCommand from '../base/AnonymousCommand.js';
-import commands from './commands.js';
+import AnonymousCommand from '../base/AnonymousCommand';
+import { Cli } from '../../cli/Cli';
+import commands from './commands';
+import { Logger } from '../../cli/Logger';
+import { settingsNames } from '../../settingsNames';
+import { browserUtil } from '../../utils/browserUtil';
+const packageJSON = require('../../../package.json');
 
 class DocsCommand extends AnonymousCommand {
+
   public get name(): string {
     return commands.DOCS;
   }
@@ -16,14 +17,14 @@ class DocsCommand extends AnonymousCommand {
   }
 
   public async commandAction(logger: Logger): Promise<void> {
-    await logger.log(app.packageJson().homepage);
+    logger.log(packageJSON.homepage);
 
     if (Cli.getInstance().getSettingWithDefaultValue<boolean>(settingsNames.autoOpenLinksInBrowser, false) === false) {
       return;
     }
 
-    await browserUtil.open(app.packageJson().homepage);
+    await browserUtil.open(packageJSON.homepage);
   }
 }
 
-export default new DocsCommand();
+module.exports = new DocsCommand();

@@ -7,8 +7,8 @@ import {
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import styles from './HelloWorld.module.scss';
-import strings from 'helloWorldStrings';
-import { IHelloWorldWebPartProps } from './IHelloWorldWebPartProps.js';
+import * as strings from 'helloWorldStrings';
+import { IHelloWorldWebPartProps } from './IHelloWorldWebPartProps';
 
 export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
 

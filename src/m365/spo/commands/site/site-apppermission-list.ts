@@ -1,11 +1,11 @@
 import { IdentitySet, Permission } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -139,7 +139,7 @@ class SpoSiteAppPermissionListCommand extends GraphCommand {
       }
 
       const res: Permission[] = await Promise.all(permissions.map(g => this.getApplicationPermission(g.id!)));
-      await logger.log(this.getTransposed(res));
+      logger.log(this.getTransposed(res));
 
     }
     catch (err: any) {
@@ -148,4 +148,4 @@ class SpoSiteAppPermissionListCommand extends GraphCommand {
   }
 }
 
-export default new SpoSiteAppPermissionListCommand();
+module.exports = new SpoSiteAppPermissionListCommand();

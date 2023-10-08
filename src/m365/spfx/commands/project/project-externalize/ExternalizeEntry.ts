@@ -1,4 +1,4 @@
-import { External } from '../project-model/index.js';
+import { External } from '../project-model';
 
 export interface ExternalizeEntry extends External {
   key: string;

@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CustomAction } from '../customaction/customaction.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import { spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { Cli } from '../../../../cli/Cli';
+import { CustomAction } from '../customaction/customaction';
 
 interface CommandArgs {
   options: Options;
@@ -101,7 +101,7 @@ class SpoCommandSetGetCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       if (this.verbose) {
-        await logger.logToStderr(`Attempt to get a specific commandset by property ${args.options.title || args.options.id || args.options.clientSideComponentId}.`);
+        logger.logToStderr(`Attempt to get a specific commandset by property ${args.options.title || args.options.id || args.options.clientSideComponentId}.`);
       }
 
       if (args.options.id) {
@@ -113,7 +113,7 @@ class SpoCommandSetGetCommand extends SpoCommand {
         else if (!SpoCommandSetGetCommand.allowedCommandSetLocations.some(allowedLocation => allowedLocation === commandSet.Location)) {
           throw `Custom action with id ${args.options.id} is not a command set.`;
         }
-        await logger.log(commandSet);
+        logger.log(commandSet);
       }
       else if (args.options.clientSideComponentId) {
         const filter = `${this.getBaseFilter()} ClientSideComponentId eq guid'${args.options.clientSideComponentId}'`;
@@ -122,14 +122,14 @@ class SpoCommandSetGetCommand extends SpoCommand {
         if (commandSets.length === 0) {
           throw `No command set with clientSideComponentId '${args.options.clientSideComponentId}' found.`;
         }
-        await logger.log(commandSets[0]);
+        logger.log(commandSets[0]);
       }
       else if (args.options.title) {
         const filter = `${this.getBaseFilter()} Title eq '${formatting.encodeQueryParameter(args.options.title)}'`;
         const commandSets = await spo.getCustomActions(args.options.webUrl, args.options.scope, filter);
 
         if (commandSets.length === 1) {
-          await logger.log(commandSets[0]);
+          logger.log(commandSets[0]);
         }
         else if (commandSets.length === 0) {
           throw `No command set with title '${args.options.title}' found.`;
@@ -151,4 +151,4 @@ class SpoCommandSetGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoCommandSetGetCommand();
+module.exports = new SpoCommandSetGetCommand();

@@ -1,11 +1,11 @@
 import { User } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { aadGroup } from '../../../../utils/aadGroup';
 
 interface CommandArgs {
   options: Options;
@@ -90,7 +90,7 @@ class AadM365GroupUserListCommand extends GraphCommand {
         users = users.filter(i => i.userType === args.options.role);
       }
 
-      await logger.log(users);
+      logger.log(users);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -99,7 +99,7 @@ class AadM365GroupUserListCommand extends GraphCommand {
 
   private async getOwners(groupId: string, logger: Logger): Promise<User[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving owners of the group with id ${groupId}`);
+      logger.logToStderr(`Retrieving owners of the group with id ${groupId}`);
     }
 
     const endpoint: string = `${this.resource}/v1.0/groups/${groupId}/owners?$select=id,displayName,userPrincipalName,userType`;
@@ -117,7 +117,7 @@ class AadM365GroupUserListCommand extends GraphCommand {
 
   private async getMembersAndGuests(groupId: string, logger: Logger): Promise<User[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving members of the group with id ${groupId}`);
+      logger.logToStderr(`Retrieving members of the group with id ${groupId}`);
     }
 
     const endpoint: string = `${this.resource}/v1.0/groups/${groupId}/members?$select=id,displayName,userPrincipalName,userType`;
@@ -125,4 +125,4 @@ class AadM365GroupUserListCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupUserListCommand();
+module.exports = new AadM365GroupUserListCommand();

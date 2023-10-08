@@ -1,7 +1,7 @@
-import ts from 'typescript';
-import { Finding, Occurrence } from '../../report-model/index.js';
-import { Project } from '../../project-model/index.js';
-import { TsRule } from './TsRule.js';
+import * as ts from 'typescript';
+import { Finding, Occurrence } from '../../report-model';
+import { Project } from '../../project-model';
+import { TsRule } from './TsRule';
 
 export class FN016003_TS_aadhttpclient_instance extends TsRule {
   constructor() {

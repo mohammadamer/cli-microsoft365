@@ -1,4 +1,4 @@
-import { ExternalizeEntry, FileEdit } from "./index.js";
+import { ExternalizeEntry, FileEdit } from "./";
 
 export interface VisitationResult {
   entries: ExternalizeEntry[];

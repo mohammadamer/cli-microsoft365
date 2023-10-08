@@ -1,9 +1,9 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import { Logger } from '../../../../cli/Logger.js';
-import request from '../../../../request.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import { Page } from './Page.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { Logger } from '../../../../cli/Logger';
+import request from '../../../../request';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import { Page } from './Page';
 
 describe('Page', () => {
   let log: string[];
@@ -12,13 +12,13 @@ describe('Page', () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

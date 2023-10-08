@@ -4,7 +4,7 @@ import {
   BaseApplicationCustomizer
 } from '@microsoft/sp-application-base';
 
-import strings from 'HelloWorldApplicationCustomizerStrings';
+import * as strings from 'HelloWorldApplicationCustomizerStrings';
 
 const LOG_SOURCE: string = 'HelloWorldApplicationCustomizer';
 

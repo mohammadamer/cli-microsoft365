@@ -1,6 +1,6 @@
-import { spfx } from '../../../../../../utils/spfx.js';
+import { spfx } from '../../../../../../utils/spfx';
 import { Project } from '../../project-model';
-import { DependencyRule } from './DependencyRule.js';
+import { DependencyRule } from './DependencyRule';
 
 export class FN001035_DEP_fluentui_react extends DependencyRule {
   constructor(packageVersion: string) {

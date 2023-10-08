@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { MenuState, MenuStateNode, NavigationNode } from './NavigationNode.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { MenuState, MenuStateNode, NavigationNode } from './NavigationNode';
 
 interface CommandArgs {
   options: Options;
@@ -131,7 +131,7 @@ class SpoNavigationNodeAddCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Adding navigation node...`);
+      logger.logToStderr(`Adding navigation node...`);
     }
 
     const nodesCollection: string = args.options.parentNodeId ?
@@ -158,7 +158,7 @@ class SpoNavigationNodeAddCommand extends SpoCommand {
 
       if (args.options.openInNewWindow) {
         if (this.verbose) {
-          await logger.logToStderr(`Making sure that the newly added navigation node opens in a new window.`);
+          logger.logToStderr(`Making sure that the newly added navigation node opens in a new window.`);
         }
 
         const id: string = res.Id.toString();
@@ -175,7 +175,7 @@ class SpoNavigationNodeAddCommand extends SpoCommand {
         await spo.saveMenuState(args.options.webUrl, menuState);
       }
 
-      await logger.log(res);
+      logger.log(res);
     }
 
     catch (err: any) {
@@ -198,4 +198,4 @@ class SpoNavigationNodeAddCommand extends SpoCommand {
 
 }
 
-export default new SpoNavigationNodeAddCommand();
+module.exports = new SpoNavigationNodeAddCommand();

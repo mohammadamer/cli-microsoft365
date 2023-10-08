@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ListInstance } from './ListInstance.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ListInstance } from './ListInstance';
 
 interface CommandArgs {
   options: Options;
@@ -73,7 +73,7 @@ class SpoListListCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving all lists in site at ${args.options.webUrl}...`);
+      logger.logToStderr(`Retrieving all lists in site at ${args.options.webUrl}...`);
     }
 
     try {
@@ -89,7 +89,7 @@ class SpoListListCommand extends SpoCommand {
         l.Url = l.RootFolder.ServerRelativeUrl;
       });
 
-      await logger.log(listInstances);
+      logger.log(listInstances);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -121,4 +121,4 @@ class SpoListListCommand extends SpoCommand {
   }
 }
 
-export default new SpoListListCommand();
+module.exports = new SpoListListCommand();

@@ -1,13 +1,13 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ListInstance } from "./ListInstance.js";
-import { ListPrincipalType } from './ListPrincipalType.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ListInstance } from "./ListInstance";
+import { ListPrincipalType } from './ListPrincipalType';
 
 interface Properties {
   selectProperties: string[],
@@ -105,7 +105,7 @@ class SpoListGetCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving information for list in site at ${args.options.webUrl}...`);
+      logger.logToStderr(`Retrieving information for list in site at ${args.options.webUrl}...`);
     }
 
     let requestUrl: string = `${args.options.webUrl}/_api/web/`;
@@ -150,7 +150,7 @@ class SpoListGetCommand extends SpoCommand {
         });
       }
 
-      await logger.log(listInstance);
+      logger.log(listInstance);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -182,4 +182,4 @@ class SpoListGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoListGetCommand();
+module.exports = new SpoListGetCommand();

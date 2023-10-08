@@ -1,4 +1,4 @@
-import { Dictionary, Hash } from "../../../../../utils/types.js";
+import { Dictionary, Hash } from "../../../../../utils/types";
 
 export interface ReportData {
   commandsToExecute: string[];

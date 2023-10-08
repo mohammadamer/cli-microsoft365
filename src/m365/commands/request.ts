@@ -1,12 +1,12 @@
-import { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from 'axios';
-import fs from 'fs';
-import path from 'path';
-import auth from '../../Auth.js';
-import Command from '../../Command.js';
-import GlobalOptions from '../../GlobalOptions.js';
-import { Logger } from '../../cli/Logger.js';
-import request from '../../request.js';
-import commands from './commands.js';
+import { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios';
+import * as fs from 'fs';
+import { Logger } from '../../cli/Logger';
+import Command from '../../Command';
+import GlobalOptions from '../../GlobalOptions';
+import request from '../../request';
+import commands from './commands';
+import path = require('path');
+import auth from '../../Auth';
 
 interface CommandArgs {
   options: Options;
@@ -111,13 +111,13 @@ class RequestCommand extends Command {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.debug) {
-      await logger.logToStderr(`Preparing request...`);
+      logger.logToStderr(`Preparing request...`);
     }
 
     try {
       const url = this.resolveUrlTokens(args.options.url);
       const method = (args.options.method || 'get').toUpperCase();
-      const headers: RawAxiosRequestHeaders = {};
+      const headers: AxiosRequestHeaders = {};
 
       const unknownOptions: any = this.getUnknownOptions(args.options);
       const unknownOptionsNames: string[] = Object.getOwnPropertyNames(unknownOptions);
@@ -149,7 +149,7 @@ class RequestCommand extends Command {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Executing request...`);
+        logger.logToStderr(`Executing request...`);
       }
 
 
@@ -169,12 +169,12 @@ class RequestCommand extends Command {
         });
 
         if (this.verbose) {
-          await logger.logToStderr(`File saved to path ${filePath}`);
+          logger.logToStderr(`File saved to path ${filePath}`);
         }
       }
       else {
         const res = await request.execute<string>(config);
-        await logger.log(res);
+        logger.log(res);
       }
     }
     catch (err: any) {
@@ -201,4 +201,4 @@ class RequestCommand extends Command {
   }
 }
 
-export default new RequestCommand();
+module.exports = new RequestCommand();

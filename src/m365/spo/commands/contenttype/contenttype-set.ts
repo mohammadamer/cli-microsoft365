@@ -1,13 +1,13 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import config from '../../../../config';
+import { ClientSvcResponse, ClientSvcResponseContents } from '../../../../utils/spo';
 
 interface CommandArgs {
   options: Options;
@@ -138,7 +138,7 @@ class SpoContentTypeSetCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving content type to update...`);
+      logger.logToStderr(`Retrieving content type to update...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -171,7 +171,7 @@ class SpoContentTypeSetCommand extends SpoCommand {
 
   private async updateContentType(logger: Logger, siteId: string, webId: string, contentTypeId: string, options: Options): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Updating content type...`);
+      logger.logToStderr(`Updating content type...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -230,7 +230,7 @@ class SpoContentTypeSetCommand extends SpoCommand {
 
   private async getSiteId(logger: Logger, webUrl: string): Promise<string> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving site collection id...`);
+      logger.logToStderr(`Retrieving site collection id...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -247,7 +247,7 @@ class SpoContentTypeSetCommand extends SpoCommand {
 
   private async getWebId(logger: Logger, webUrl: string): Promise<string> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving web id...`);
+      logger.logToStderr(`Retrieving web id...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -298,4 +298,4 @@ class SpoContentTypeSetCommand extends SpoCommand {
   }
 }
 
-export default new SpoContentTypeSetCommand();
+module.exports = new SpoContentTypeSetCommand();

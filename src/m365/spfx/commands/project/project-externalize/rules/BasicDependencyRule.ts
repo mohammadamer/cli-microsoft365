@@ -1,5 +1,5 @@
-import { VisitationResult } from "../index.js";
-import { Project } from '../../project-model/index.js';
+import { VisitationResult } from "../";
+import { Project } from '../../project-model';
 
 export abstract class BasicDependencyRule {
   abstract visit(project: Project): Promise<VisitationResult>;

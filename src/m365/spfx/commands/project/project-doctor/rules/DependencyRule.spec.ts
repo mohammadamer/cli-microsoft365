@@ -1,7 +1,7 @@
-import assert from 'assert';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/Finding.js';
-import { DependencyRule } from './DependencyRule.js';
+import * as assert from 'assert';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model/Finding';
+import { DependencyRule } from './DependencyRule';
 
 class MockDepRule extends DependencyRule {
   constructor() {

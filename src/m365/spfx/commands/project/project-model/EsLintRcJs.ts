@@ -1,3 +1,3 @@
-import { TsFile } from "./TsFile.js";
+import { TsFile } from "./TsFile";
 
 export type EsLintRcJs = TsFile;

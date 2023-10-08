@@ -1,15 +1,16 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { settingsNames } from '../../../../settingsNames.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './config-get.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import { Cli } from '../../../../cli/Cli';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import { settingsNames } from '../../../../settingsNames';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+const command: Command = require('./config-get');
 
 describe(commands.CONFIG_GET, () => {
   let log: any[];
@@ -27,13 +28,13 @@ describe(commands.CONFIG_GET, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

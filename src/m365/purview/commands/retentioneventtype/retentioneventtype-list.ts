@@ -1,7 +1,7 @@
-import { Logger } from '../../../../cli/Logger.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 class PurviewRetentionEventTypeListCommand extends GraphCommand {
   public get name(): string {
@@ -19,7 +19,7 @@ class PurviewRetentionEventTypeListCommand extends GraphCommand {
   public async commandAction(logger: Logger): Promise<void> {
     try {
       const items = await odata.getAllItems(`${this.resource}/v1.0/security/triggerTypes/retentionEventTypes`);
-      await logger.log(items);
+      logger.log(items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -27,4 +27,4 @@ class PurviewRetentionEventTypeListCommand extends GraphCommand {
   }
 }
 
-export default new PurviewRetentionEventTypeListCommand();
+module.exports = new PurviewRetentionEventTypeListCommand();

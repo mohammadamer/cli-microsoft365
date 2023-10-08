@@ -1,17 +1,18 @@
 import { AxiosRequestConfig } from 'axios';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import spoWebRetentionLabelListCommand, { Options as SpoWebRetentionLabelListCommandOptions } from '../web/web-retentionlabel-list.js';
-import { ListItemRetentionLabel } from './ListItemRetentionLabel.js';
-import { SiteRetentionLabel } from './SiteRetentionLabel.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { SiteRetentionLabel } from './SiteRetentionLabel';
+import * as SpoWebRetentionLabelListCommand from '../web/web-retentionlabel-list';
+import { Options as SpoWebRetentionLabelListCommandOptions } from '../web/web-retentionlabel-list';
+import Command from '../../../../Command';
+import { Cli } from '../../../../cli/Cli';
+import { ListItemRetentionLabel } from './ListItemRetentionLabel';
 
 interface CommandArgs {
   options: Options;
@@ -144,17 +145,17 @@ class SpoListItemRetentionLabelEnsureCommand extends SpoCommand {
       verbose: options.verbose
     };
 
-    const output = await Cli.executeCommandWithOutput(spoWebRetentionLabelListCommand as Command, { options: { ...cmdOptions, _: [] } });
+    const output = await Cli.executeCommandWithOutput(SpoWebRetentionLabelListCommand as Command, { options: { ...cmdOptions, _: [] } });
 
     if (this.verbose) {
-      await logger.logToStderr(output.stderr);
+      logger.logToStderr(output.stderr);
     }
 
     const labels = JSON.parse(output.stdout) as SiteRetentionLabel[];
     const label = labels.find(l => l.TagName === options.name || l.TagId === options.id);
 
     if (this.verbose && label !== undefined) {
-      await logger.logToStderr(`Retention label found in the list of available labels: '${label.TagName}' / '${label.TagId}'...`);
+      logger.logToStderr(`Retention label found in the list of available labels: '${label.TagName}' / '${label.TagId}'...`);
     }
 
     if (label === undefined) {
@@ -173,7 +174,7 @@ class SpoListItemRetentionLabelEnsureCommand extends SpoCommand {
 
   private async applyLabel(options: Options, labelInformation: ListItemRetentionLabel, logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Applying retention label to item in list '${options.listId || options.listTitle || options.listUrl}' in site at ${options.webUrl}...`);
+      logger.logToStderr(`Applying retention label to item in list '${options.listId || options.listTitle || options.listUrl}' in site at ${options.webUrl}...`);
     }
 
     let requestUrl = `${options.webUrl}/_api/web`;
@@ -203,7 +204,7 @@ class SpoListItemRetentionLabelEnsureCommand extends SpoCommand {
 
   async applyAssetId(options: GlobalOptions, logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Applying the asset Id ${options.assetId}...`);
+      logger.logToStderr(`Applying the asset Id ${options.assetId}...`);
     }
 
     let requestUrl = `${options.webUrl}/_api/web`;
@@ -234,4 +235,4 @@ class SpoListItemRetentionLabelEnsureCommand extends SpoCommand {
   }
 }
 
-export default new SpoListItemRetentionLabelEnsureCommand();
+module.exports = new SpoListItemRetentionLabelEnsureCommand();

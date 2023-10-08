@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { Manifest, Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/index.js';
-import { Rule } from '../../Rule.js';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Manifest, Project } from '../../project-model';
+import { Finding } from '../../report-model';
+import { Rule } from '../../Rule';
 
 export class FN018001_TEAMS_folder extends Rule {
   constructor() {

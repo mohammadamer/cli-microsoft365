@@ -1,4 +1,4 @@
-import { Occurrence } from "./index.js";
+import { Occurrence } from "./";
 
 export interface Finding {
   description: string;

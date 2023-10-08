@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { odata } from '../../../../utils/odata.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { odata } from '../../../../utils/odata';
 
 interface CommandArgs {
   options: Options;
@@ -70,7 +70,7 @@ class PpDataverseTableRowListCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Retrieving list of table rows');
+      logger.logToStderr('Retrieving list of table rows');
     }
 
     try {
@@ -78,11 +78,11 @@ class PpDataverseTableRowListCommand extends PowerPlatformCommand {
 
       const entitySetName = await this.getEntitySetName(dynamicsApiUrl, args);
       if (this.verbose) {
-        await logger.logToStderr('Entity set name is: ' + entitySetName);
+        logger.logToStderr('Entity set name is: ' + entitySetName);
       }
 
       const response = await odata.getAllItems<any>(`${dynamicsApiUrl}/api/data/v9.0/${entitySetName}`);
-      await logger.log(response);
+      logger.log(response);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -108,4 +108,4 @@ class PpDataverseTableRowListCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpDataverseTableRowListCommand();
+module.exports = new PpDataverseTableRowListCommand();

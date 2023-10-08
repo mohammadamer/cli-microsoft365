@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import commands from '../../commands.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import { odata } from '../../../../utils/odata.js';
+import { Logger } from '../../../../cli/Logger';
+import GraphCommand from '../../../base/GraphCommand';
+import GlobalOptions from '../../../../GlobalOptions';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { odata } from '../../../../utils/odata';
 
 interface CommandArgs {
   options: Options;
@@ -101,7 +101,7 @@ class PurviewRetentionEventAddCommand extends GraphCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Creating retention event...`);
+      logger.logToStderr(`Creating retention event...`);
     }
 
     const eventQueries: any[] = [];
@@ -135,7 +135,7 @@ class PurviewRetentionEventAddCommand extends GraphCommand {
       };
 
       const res: any = await request.post<any>(requestOptions);
-      await logger.log(res);
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -148,7 +148,7 @@ class PurviewRetentionEventAddCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving the event type id for event type ${args.options.eventTypeName}`);
+      logger.logToStderr(`Retrieving the event type id for event type ${args.options.eventTypeName}`);
     }
 
     const items: any = await odata.getAllItems(`${this.resource}/v1.0/security/triggerTypes/retentionEventTypes`);
@@ -163,4 +163,4 @@ class PurviewRetentionEventAddCommand extends GraphCommand {
   }
 }
 
-export default new PurviewRetentionEventAddCommand();
+module.exports = new PurviewRetentionEventAddCommand();

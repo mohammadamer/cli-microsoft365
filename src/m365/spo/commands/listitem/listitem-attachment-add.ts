@@ -6,7 +6,7 @@ import { urlUtil } from '../../../../utils/urlUtil.js';
 import { validation } from '../../../../utils/validation.js';
 import SpoCommand from '../../../base/SpoCommand.js';
 import commands from '../../commands.js';
-import fs from 'fs';
+import * as fs from 'fs';
 
 interface CommandArgs {
   options: Options;

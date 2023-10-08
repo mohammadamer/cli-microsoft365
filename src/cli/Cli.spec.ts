@@ -1,28 +1,23 @@
-import assert from 'assert';
-import chalk from 'chalk';
-import Table from 'easy-table';
-import fs from 'fs';
-import inquirer from 'inquirer';
-import { createRequire } from 'module';
-import os from 'os';
-import path from 'path';
-import sinon from 'sinon';
-import url from 'url';
-import Command, { CommandError } from '../Command.js';
-import AnonymousCommand from '../m365/base/AnonymousCommand.js';
-import cliCompletionUpdateCommand from '../m365/cli/commands/completion/completion-clink-update.js';
-import { settingsNames } from '../settingsNames.js';
-import { telemetry } from '../telemetry.js';
-import { md } from '../utils/md.js';
-import { pid } from '../utils/pid.js';
-import { session } from '../utils/session.js';
-import { sinonUtil } from '../utils/sinonUtil.js';
-import { Cli, CommandOutput } from './Cli.js';
-import { Logger } from './Logger.js';
-
-const require = createRequire(import.meta.url);
+import * as assert from 'assert';
+import * as chalk from 'chalk';
+import * as fs from 'fs';
+import * as inquirer from 'inquirer';
+import * as os from 'os';
+import * as path from 'path';
+import * as sinon from 'sinon';
+import { telemetry } from '../telemetry';
+import Command, { CommandError } from '../Command';
+import AnonymousCommand from '../m365/base/AnonymousCommand';
+import * as cliCompletionUpdateCommand from '../m365/cli/commands/completion/completion-clink-update';
+import { settingsNames } from '../settingsNames';
+import { md } from '../utils/md';
+import { pid } from '../utils/pid';
+import { session } from '../utils/session';
+import { sinonUtil } from '../utils/sinonUtil';
+import { Cli, CommandOutput } from './Cli';
+import { Logger } from './Logger';
+import Table = require('easy-table');
 const packageJSON = require('../../package.json');
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 class MockCommand extends AnonymousCommand {
   public get name(): string {
@@ -45,7 +40,7 @@ class MockCommand extends AnonymousCommand {
     this.types.string.push('x', 'y');
   }
   public async commandAction(logger: Logger, args: any): Promise<void> {
-    await logger.log(args.options.parameterX);
+    logger.log(args.options.parameterX);
   }
 }
 
@@ -154,8 +149,8 @@ class MockCommandWithBooleanRewrite extends AnonymousCommand {
     this.types.boolean.push('x', 'booleanParameterX', 'y', 'booleanParameterY');
   }
   public async commandAction(logger: Logger, args: any): Promise<void> {
-    await logger.log(`booleanParameterX: ${args.options.booleanParameterX}`);
-    await logger.log(`booleanParameterY: ${args.options.booleanParameterY}`);
+    logger.log(`booleanParameterX: ${args.options.booleanParameterX}`);
+    logger.log(`booleanParameterY: ${args.options.booleanParameterY}`);
   }
 }
 
@@ -184,7 +179,7 @@ class MockCommandWithHandleMultipleResultsFound extends AnonymousCommand {
     return 'Mock command with interactive prompt';
   }
   public async commandAction(): Promise<void> {
-    await Cli.handleMultipleResultsFound(`Multiple values with name found.`, { '1': { 'id': '1', 'title': 'Option1' }, '2': { 'id': '2', 'title': 'Option2' } });
+    Cli.handleMultipleResultsFound(`Multiple values with name found. Pick one`, { '1': { 'id': '1', 'title': 'Option1' }, '2': { 'id': '2', 'title': 'Option2' } });
   }
 }
 
@@ -196,7 +191,7 @@ class MockCommandWithOutput extends AnonymousCommand {
     return 'Mock command with output';
   }
   public async commandAction(logger: Logger): Promise<void> {
-    await logger.log('Command output');
+    logger.log('Command output');
   }
 }
 
@@ -209,10 +204,10 @@ class MockCommandWithRawOutput extends AnonymousCommand {
   }
   public async commandAction(logger: Logger): Promise<void> {
     if (this.debug) {
-      await logger.logToStderr('Debug output');
+      logger.logToStderr('Debug output');
     }
 
-    await logger.logRaw('Raw output');
+    logger.logRaw('Raw output');
   }
 }
 
@@ -238,11 +233,11 @@ describe('Cli', () => {
     sinon.stub(session, 'getId').callsFake(() => '');
 
     cliLogStub = sinon.stub((Cli as any), 'log').callsFake(message => {
-      log.push(message as string ?? '');
+      log.push(message ?? '');
     });
     cliErrorStub = sinon.stub((Cli as any), 'error');
     cliFormatOutputSpy = sinon.spy((Cli as any), 'formatOutput');
-    processExitStub = sinon.stub(process, 'exit').callsFake((() => { }) as any);
+    processExitStub = sinon.stub(process, 'exit');
     md2plainSpy = sinon.spy(md, 'md2plain');
 
     mockCommand = new MockCommand();
@@ -1265,13 +1260,22 @@ describe('Cli', () => {
       }, e => done(e));
   });
 
-  it('calls inquirer when command shows interactive prompt and executed with output', async () => {
+  it('calls inquirer when command shows interactive prompt and executed with output', (done) => {
     sinon.stub(Cli.getInstance(), 'getSettingWithDefaultValue').callsFake((() => true));
-    const promptStub: sinon.SinonStub = sinon.stub(inquirer, 'prompt').callsFake(() => Promise.resolve({ select: '1' }));
+    const promptStub: sinon.SinonStub = sinon.stub(inquirer, 'prompt').callsFake(() => Promise.resolve() as any);
     const mockCommandWithHandleMultipleResultsFound = new MockCommandWithHandleMultipleResultsFound();
 
-    await Cli.executeCommandWithOutput(mockCommandWithHandleMultipleResultsFound, { options: { _: [] } });
-    assert(promptStub.called);
+    Cli
+      .executeCommandWithOutput(mockCommandWithHandleMultipleResultsFound, { options: { _: [] } })
+      .then(_ => {
+        try {
+          assert(promptStub.called);
+          done();
+        }
+        catch (e) {
+          done(e);
+        }
+      }, e => done(e));
   });
 
   it('throws error when interactive mode not set', async () => {
@@ -1350,7 +1354,7 @@ describe('Cli', () => {
   });
 
   it('loads all commands when completion requested', (done) => {
-    const loadAllCommandsStub: sinon.SinonStub = sinon.stub(cli, 'loadAllCommands').callsFake(() => Promise.resolve());
+    const loadAllCommandsStub: sinon.SinonStub = sinon.stub(cli, 'loadAllCommands').callsFake(() => { });
     cli.loadCommandFromArgs(['completion']);
 
     try {
@@ -1362,59 +1366,83 @@ describe('Cli', () => {
     }
   });
 
-  it('loads command with one word', async () => {
+  it('loads command with one word', (done) => {
     (cli as any).commandsFolder = path.join(rootFolder, '..', 'm365');
     const loadAllCommandsSpy: sinon.SinonSpy = sinon.spy(cli, 'loadAllCommands');
     const loadCommandSpy: sinon.SinonSpy = sinon.spy((cli as any), 'loadCommand');
-    await cli.loadCommandFromArgs(['status']);
+    cli.loadCommandFromArgs(['status']);
 
-    assert(loadAllCommandsSpy.notCalled);
-    assert(loadCommandSpy.called);
+    try {
+      assert(loadAllCommandsSpy.notCalled);
+      assert(loadCommandSpy.called);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it(`loads all commands, when the matched file doesn't contain command`, async () => {
+  it(`loads all commands, when the matched file doesn't contain command`, (done) => {
     sinon.stub(cli as any, 'loadCommandFromFile').callsFake(_ => (cli as any).loadCommandFromFile.wrappedMethod.apply(cli, [path.join(rootFolder, 'CommandInfo.js')]));
-    const loadAllCommandsStub: sinon.SinonSpy = sinon.stub(cli, 'loadAllCommands').callsFake(() => Promise.resolve());
-    const loadCommandStub: sinon.SinonSpy = sinon.stub((cli as any), 'loadCommand').callsFake(() => Promise.resolve());
-    await cli.loadCommandFromArgs(['status']);
+    const loadAllCommandsStub: sinon.SinonSpy = sinon.stub(cli, 'loadAllCommands').callsFake(() => { });
+    const loadCommandStub: sinon.SinonSpy = sinon.stub((cli as any), 'loadCommand').callsFake(() => { });
+    cli.loadCommandFromArgs(['status']);
 
-    assert(loadCommandStub.notCalled);
-    assert(loadAllCommandsStub.called);
+    try {
+      assert(loadCommandStub.notCalled);
+      assert(loadAllCommandsStub.called);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it(`loads all commands, when exception was thrown when loading a command file`, async () => {
+  it(`loads all commands, when exception was thrown when loading a command file`, (done) => {
     (cli as any).commandsFolder = path.join(rootFolder, '..', 'm365');
-    const loadAllCommandsStub: sinon.SinonSpy = sinon.stub(cli, 'loadAllCommands').callsFake(() => Promise.resolve());
+    const loadAllCommandsStub: sinon.SinonSpy = sinon.stub(cli, 'loadAllCommands').callsFake(() => { });
     const loadCommandStub: sinon.SinonSpy = sinon.stub((cli as any), 'loadCommand').callsFake(() => { throw 'Error'; });
-    await cli.loadCommandFromArgs(['status']);
+    cli.loadCommandFromArgs(['status']);
 
-    assert(loadCommandStub.called);
-    assert(loadAllCommandsStub.called);
+    try {
+      assert(loadCommandStub.called);
+      assert(loadAllCommandsStub.called);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('doesn\'t fail when undefined object is passed to the log', async () => {
-    const actual = await (Cli as any).formatOutput(mockCommand, undefined, { output: 'text' });
+  it('doesn\'t fail when undefined object is passed to the log', () => {
+    const actual = (Cli as any).formatOutput(mockCommand, undefined, { output: 'text' });
     assert.strictEqual(actual, undefined);
   });
 
-  it('returns the same object if non-array is passed to the log', async () => {
+  it('returns the same object if non-array is passed to the log', () => {
     const s = 'foo';
-    const actual = await (Cli as any).formatOutput(mockCommand, s, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, s, { output: 'text' });
     assert.strictEqual(actual, s);
   });
 
-  it('doesn\'t fail when an array with undefined object is passed to the log', async () => {
-    const actual = await (Cli as any).formatOutput(mockCommand, [undefined], { output: 'text' });
+  it('doesn\'t fail when an array with undefined object is passed to the log', () => {
+    const actual = (Cli as any).formatOutput(mockCommand, [undefined], { output: 'text' });
     assert.strictEqual(actual, '');
   });
 
-  it('formats output as pretty JSON when JSON output requested', async () => {
+  it('formats output as pretty JSON when JSON output requested', (done) => {
     const o = { lorem: 'ipsum', dolor: 'sit' };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'json' });
-    assert.strictEqual(actual, JSON.stringify(o, null, 2));
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'json' });
+    try {
+      assert.strictEqual(actual, JSON.stringify(o, null, 2));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('properly handles new line characters in JSON output', async () => {
+  it('properly handles new line characters in JSON output', (done) => {
     const input = {
       "_ObjectIdentity_": "b61700a0-9062-3000-659e-7f5738e3385a|908bed80-a04a-4433-b4a0-883d9847d110:1b11f502-9eb0-401a-b164-68933e6e9443\nSiteProperties\nhttps%3a%2f%2fm365x954810.sharepoint.com%2fsites%2fsite1617"
     };
@@ -1423,11 +1451,17 @@ describe('Cli', () => {
       '  "_ObjectIdentity_": "b61700a0-9062-3000-659e-7f5738e3385a|908bed80-a04a-4433-b4a0-883d9847d110:1b11f502-9eb0-401a-b164-68933e6e9443\\\\\\nSiteProperties\\\\\\nhttps%3a%2f%2fm365x954810.sharepoint.com%2fsites%2fsite1617"',
       '}'
     ].join('\n');
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'json' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'json' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats object with array as csv', async () => {
+  it('formats object with array as csv', (done) => {
     const input =
       [{
         "header1": "value1item1",
@@ -1439,22 +1473,34 @@ describe('Cli', () => {
       }
       ];
     const expected = "header1,header2\nvalue1item1,value2item1\nvalue1item2,value2item2\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats a simple object as csv', async () => {
+  it('formats a simple object as csv', (done) => {
     const input =
     {
       "header1": "value1item1",
       "header2": "value2item1"
     };
     const expected = "header1,header2\nvalue1item1,value2item1\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('does not produce headers when csvHeader config is set to false ', async () => {
+  it('does not produce headers when csvHeader config is set to false ', (done) => {
     const input =
     {
       "header1": "value1item1",
@@ -1468,11 +1514,17 @@ describe('Cli', () => {
     });
 
     const expected = "value1item1,value2item1\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('quotes all non-empty fields even if not required when csvQuoted config is set to true', async () => {
+  it('quotes all non-empty fields even if not required when csvQuoted config is set to true', (done) => {
     const input =
     {
       "header1": "value1item1",
@@ -1486,11 +1538,17 @@ describe('Cli', () => {
     });
 
     const expected = "\"header1\",\"header2\"\n\"value1item1\",\"value2item1\"\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('quotes all empty fields if csvQuotedEmpty config is set to true', async () => {
+  it('quotes all empty fields if csvQuotedEmpty config is set to true', (done) => {
     const input =
     {
       "header1": "value1item1",
@@ -1504,11 +1562,17 @@ describe('Cli', () => {
     });
 
     const expected = "header1,header2\nvalue1item1,\"\"\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('quotes all fields with character set in csvQuote config', async () => {
+  it('quotes all fields with character set in csvQuote config', (done) => {
     const input =
     {
       "header1": "value1item1",
@@ -1528,25 +1592,37 @@ describe('Cli', () => {
     });
 
     const expected = "_header1_,_header2_\n_value1item1_,_value2item1_\n";
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
-    assert.strictEqual(actual, expected);
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'csv' });
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats simple output as text', async () => {
+  it('formats simple output as text', (done) => {
     const o = false;
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
-    assert.strictEqual(actual, `${o}`);
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    try {
+      assert.strictEqual(actual, `${o}`);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats date output as text', async () => {
+  it('formats date output as text', () => {
     const d = new Date();
-    const actual = await (Cli as any).formatOutput(mockCommand, d, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, d, { output: 'text' });
     assert.strictEqual(actual, d.toString());
   });
 
-  it('formats object output as transposed table when passing sequential props', async () => {
+  it('formats object output as transposed table when passing seqential props', (done) => {
     const o = { prop1: 'value1', prop2: 'value2' };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('prop1', 'value1');
     t.cell('prop2', 'value2');
@@ -1554,12 +1630,18 @@ describe('Cli', () => {
     const expected = t.printTransposed({
       separator: ': '
     });
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats object output as transposed table', async () => {
+  it('formats object output as transposed table', (done) => {
     const o = { prop1: 'value1 ', prop12: 'value12' };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('prop1', 'value1');
     t.cell('prop12', 'value12');
@@ -1567,32 +1649,50 @@ describe('Cli', () => {
     const expected = t.printTransposed({
       separator: ': '
     });
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats array values as JSON', async () => {
+  it('formats array values as JSON', (done) => {
     const o = { prop1: ['value1', 'value2'] };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const expected = 'prop1: ["value1","value2"]' + '\n';
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats array of string arrays output as comma-separated strings', async () => {
+  it('formats array of string arrays output as comma-separated strings', (done) => {
     const o = [
       ['value1', 'value2'],
       ['value3', 'value4']
     ];
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const expected = [o[0].join(','), o[1].join(',')].join(os.EOL);
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats array of object output as table', async () => {
+  it('formats array of object output as table', (done) => {
     const o = [
       { prop1: 'value1', prop2: 'value2' },
       { prop1: 'value3', prop2: 'value4' }
     ];
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('prop1', 'value1');
     t.cell('prop2', 'value2');
@@ -1601,30 +1701,48 @@ describe('Cli', () => {
     t.cell('prop2', 'value4');
     t.newRow();
     const expected = t.toString();
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats command error as error message', async () => {
+  it('formats command error as error message', (done) => {
     const o = new CommandError('An error has occurred');
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const expected = chalk.red('Error: An error has occurred');
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('sets array type to the first non-undefined value', async () => {
+  it('sets array type to the first non-undefined value', (done) => {
     const o = [undefined, 'lorem', 'ipsum'];
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const expected = `${os.EOL}lorem${os.EOL}ipsum`;
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('skips primitives mixed with objects when rendering a table', async () => {
+  it('skips primitives mixed with objects when rendering a table', (done) => {
     const o = [
       { prop1: 'value1', prop2: 'value2' },
       'lorem',
       { prop1: 'value3', prop2: 'value4' }
     ];
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('prop1', 'value1');
     t.cell('prop2', 'value2');
@@ -1633,10 +1751,16 @@ describe('Cli', () => {
     t.cell('prop2', 'value4');
     t.newRow();
     const expected = t.toString();
-    assert.strictEqual(actual, expected);
+    try {
+      assert.strictEqual(actual, expected);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats object with array as md', async () => {
+  it('formats object with array as md', (done) => {
     const input =
       [{
         "header1": "value1item1",
@@ -1647,32 +1771,50 @@ describe('Cli', () => {
         "header2": "value2item2"
       }
       ];
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'md' });
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'md' });
     const match = actual.match(/^## /gm);
-    assert.strictEqual(match, null);
+    try {
+      assert.strictEqual(match, null);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('formats a simple object as md', async () => {
+  it('formats a simple object as md', (done) => {
     const input =
     {
       "header1": "value1item1",
       "header2": "value2item1"
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, input, { output: 'md' });
+    const actual = (Cli as any).formatOutput(mockCommand, input, { output: 'md' });
     const match = actual.match(/^## /gm);
-    assert.strictEqual(match, null);
+    try {
+      assert.strictEqual(match, null);
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('applies JMESPath query to a single object', async () => {
+  it('applies JMESPath query to a single object', (done) => {
     const o = {
       "first": "Joe",
       "last": "Doe"
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { query: 'first', output: 'json' });
-    assert.strictEqual(actual, JSON.stringify("Joe"));
+    const actual = (Cli as any).formatOutput(mockCommand, o, { query: 'first', output: 'json' });
+    try {
+      assert.strictEqual(actual, JSON.stringify("Joe"));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('filters output following command definition in output text', async () => {
+  it('filters output following command definition in output text', (done) => {
     const o = [
       { "name": "Seattle", "state": "WA" },
       { "name": "New York", "state": "NY" },
@@ -1683,7 +1825,7 @@ describe('Cli', () => {
     (cli as any).commandToExecute = {
       defaultProperties: ['name']
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('name', 'Seattle');
     t.newRow();
@@ -1694,10 +1836,19 @@ describe('Cli', () => {
     t.cell('name', 'Olympia');
     t.newRow();
     const expected = t.toString();
-    assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected));
+    try {
+      assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
+    finally {
+      (cli as any).commandToExecute = undefined;
+    }
   });
 
-  it('filters output wrapped in a value property following command definition in output text', async () => {
+  it('filters output wrapped in a value property following command definition in output text', (done) => {
     const o = {
       value: [
         { "name": "Seattle", "state": "WA" },
@@ -1710,7 +1861,7 @@ describe('Cli', () => {
     (cli as any).commandToExecute = {
       defaultProperties: ['name']
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
+    const actual = (Cli as any).formatOutput(mockCommand, o, { output: 'text' });
     const t = new Table();
     t.cell('name', 'Seattle');
     t.newRow();
@@ -1721,10 +1872,19 @@ describe('Cli', () => {
     t.cell('name', 'Olympia');
     t.newRow();
     const expected = t.toString();
-    assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected));
+    try {
+      assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
+    finally {
+      (cli as any).commandToExecute = undefined;
+    }
   });
 
-  it('applies JMESPath query to an array', async () => {
+  it('applies JMESPath query to an array', (done) => {
     const o = {
       "locations": [
         { "name": "Seattle", "state": "WA" },
@@ -1733,16 +1893,22 @@ describe('Cli', () => {
         { "name": "Olympia", "state": "WA" }
       ]
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, {
+    const actual = (Cli as any).formatOutput(mockCommand, o, {
       query: `locations[?state == 'WA'].name | sort(@) | {WashingtonCities: join(', ', @)}`,
       output: 'json'
     });
-    assert.strictEqual(actual, JSON.stringify({
-      "WashingtonCities": "Bellevue, Olympia, Seattle"
-    }, null, 2));
+    try {
+      assert.strictEqual(actual, JSON.stringify({
+        "WashingtonCities": "Bellevue, Olympia, Seattle"
+      }, null, 2));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('doesn\'t apply JMESPath query when command help requested', async () => {
+  it('doesn\'t apply JMESPath query when command help requested', (done) => {
     const o = {
       "locations": [
         { "name": "Seattle", "state": "WA" },
@@ -1751,15 +1917,21 @@ describe('Cli', () => {
         { "name": "Olympia", "state": "WA" }
       ]
     };
-    const actual = await (Cli as any).formatOutput(mockCommand, o, {
+    const actual = (Cli as any).formatOutput(mockCommand, o, {
       query: `locations[?state == 'WA'].name | sort(@) | {WashingtonCities: join(', ', @)}`,
       output: 'json',
       help: true
     });
-    assert.strictEqual(actual, JSON.stringify(o, null, 2));
+    try {
+      assert.strictEqual(actual, JSON.stringify(o, null, 2));
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 
-  it('throws human-readable error when invalid JMESPath query specified', async () => {
+  it('throws human-readable error when invalid JMESPath query specified', () => {
     const o = {
       "locations": [
         { "name": "Seattle", "state": "WA" },
@@ -1768,12 +1940,14 @@ describe('Cli', () => {
         { "name": "Olympia", "state": "WA" }
       ]
     };
-    assert.rejects(async () => {
-      await (Cli as any).formatOutput(mockCommand, o, {
+    assert.throws(() => {
+      (Cli as any).formatOutput(mockCommand, o, {
         query: `contains(abc)`,
         output: 'json'
       });
-    }, chalk.red('Error: JMESPath query error. ArgumentError: contains() takes 2 arguments but received 1. See https://jmespath.org/specification.html for more information'));
+
+      assert(cliErrorStub.calledWith(chalk.red('Error: JMESPath query error. ArgumentError: contains() takes 2 arguments but received 1. See https://jmespath.org/specification.html for more information')));
+    });
   });
 
   it(`prints commands grouped per service when no command specified`, (done) => {
@@ -1936,9 +2110,9 @@ describe('Cli', () => {
       });
   });
 
-  it(`exits with the specified exit code`, async () => {
+  it(`exits with the specified exit code`, () => {
     try {
-      await (cli as any).closeWithError(new CommandError('Error', 5), { options: {} });
+      (cli as any).closeWithError(new CommandError('Error', 5), { options: {} });
       assert.fail(`Didn't fail while expected`);
     }
     catch {
@@ -1946,12 +2120,12 @@ describe('Cli', () => {
     }
   });
 
-  it(`prints error as JSON in JSON output mode and printErrorsAsPlainText set to false`, async () => {
+  it(`prints error as JSON in JSON output mode and printErrorsAsPlainText set to false`, () => {
     const config = cli.config;
     sinon.stub(config, 'get').callsFake(() => false);
 
     try {
-      await (cli as any).closeWithError(new CommandError('Error'), { options: { output: 'json' } });
+      (cli as any).closeWithError(new CommandError('Error'), { options: { output: 'json' } });
       assert.fail(`Didn't fail while expected`);
     }
     catch (err) {
@@ -2039,23 +2213,23 @@ describe('Cli', () => {
     assert(consoleLogSpy.calledWith());
   });
 
-  it(`logs error to console stderr`, async () => {
+  it(`logs error to console stderr`, () => {
     sinonUtil.restore((Cli as any).error);
     sinon.stub(cli, 'getSettingWithDefaultValue').callsFake((name, defaultValue) => defaultValue);
     const consoleErrorStub = sinon.stub(console, 'error').callsFake(() => { });
 
-    await (Cli as any).error('Message');
+    (Cli as any).error('Message');
     assert(consoleErrorStub.calledWith('Message'));
   });
 
-  it(`logs error to console stdout when stdout configured as error output`, async () => {
+  it(`logs error to console stdout when stdout configured as error output`, () => {
     const config = cli.config;
     sinon.stub(config, 'get').callsFake(() => 'stdout');
     sinonUtil.restore((Cli as any).error);
     const consoleErrorSpy: sinon.SinonSpy = sinon.stub(console, 'error').callsFake(() => { });
     const consoleLogSpy: sinon.SinonSpy = sinon.stub(console, 'log').callsFake(() => { });
 
-    await (Cli as any).error('Message');
+    (Cli as any).error('Message');
     assert(consoleErrorSpy.notCalled, 'console.error called');
     assert(consoleLogSpy.calledWith('Message'), 'console.log not called with the right message');
   });

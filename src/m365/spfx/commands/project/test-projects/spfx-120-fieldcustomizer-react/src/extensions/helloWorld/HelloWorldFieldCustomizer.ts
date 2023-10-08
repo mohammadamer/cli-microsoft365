@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
 import { Log } from '@microsoft/sp-core-library';
 import { override } from '@microsoft/decorators';
@@ -8,8 +8,8 @@ import {
   IFieldCustomizerCellEventParameters
 } from '@microsoft/sp-listview-extensibility';
 
-import strings from 'HelloWorldFieldCustomizerStrings';
-import HelloWorld, { IHelloWorldProps } from './components/HelloWorld.js';
+import * as strings from 'HelloWorldFieldCustomizerStrings';
+import HelloWorld, { IHelloWorldProps } from './components/HelloWorld';
 
 /**
  * If your field customizer uses the ClientSideComponentProperties JSON input,

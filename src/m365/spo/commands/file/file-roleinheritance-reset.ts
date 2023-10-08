@@ -1,14 +1,15 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import spoFileGetCommand, { Options as SpoFileGetCommandOptions } from './file-get.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { formatting } from '../../../../utils/formatting';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import * as SpoFileGetCommand from './file-get';
+import { Options as SpoFileGetCommandOptions } from './file-get';
+import { urlUtil } from '../../../../utils/urlUtil';
 
 interface CommandArgs {
   options: Options;
@@ -90,7 +91,7 @@ class SpoFileRoleInheritanceResetCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     const resetFileRoleInheritance = async (): Promise<void> => {
       if (this.verbose) {
-        await logger.logToStderr(`Resetting role inheritance for file ${args.options.fileId || args.options.fileUrl}`);
+        logger.logToStderr(`Resetting role inheritance for file ${args.options.fileId || args.options.fileUrl}`);
       }
       try {
         const fileURL: string = await this.getFileURL(args);
@@ -140,10 +141,10 @@ class SpoFileRoleInheritanceResetCommand extends SpoCommand {
       verbose: this.verbose
     };
 
-    const output = await Cli.executeCommandWithOutput(spoFileGetCommand as Command, { options: { ...options, _: [] } });
+    const output = await Cli.executeCommandWithOutput(SpoFileGetCommand as Command, { options: { ...options, _: [] } });
     const getFileOutput = JSON.parse(output.stdout);
     return getFileOutput.ServerRelativeUrl;
   }
 }
 
-export default new SpoFileRoleInheritanceResetCommand();
+module.exports = new SpoFileRoleInheritanceResetCommand();

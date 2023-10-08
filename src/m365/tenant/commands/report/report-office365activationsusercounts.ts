@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: GlobalOptions;
@@ -44,8 +44,8 @@ class TenantReportOffice365ActivationsUserCountsCommand extends GraphCommand {
         content = cleanResponse;
       }
 
-      await logger.log(content);
-    }
+      logger.log(content);
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
@@ -58,4 +58,4 @@ class TenantReportOffice365ActivationsUserCountsCommand extends GraphCommand {
   }
 }
 
-export default new TenantReportOffice365ActivationsUserCountsCommand();
+module.exports = new TenantReportOffice365ActivationsUserCountsCommand();

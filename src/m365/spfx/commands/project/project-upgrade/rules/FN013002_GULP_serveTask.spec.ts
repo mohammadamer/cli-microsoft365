@@ -1,7 +1,7 @@
-import assert from 'assert';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/Finding.js';
-import { FN013002_GULP_serveTask } from './FN013002_GULP_serveTask.js';
+import * as assert from 'assert';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model/Finding';
+import { FN013002_GULP_serveTask } from './FN013002_GULP_serveTask';
 
 describe('FN013002_GULP_serveTask', () => {
   let findings: Finding[];

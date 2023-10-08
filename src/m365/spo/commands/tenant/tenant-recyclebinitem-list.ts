@@ -1,13 +1,13 @@
-import { Logger } from '../../../../cli/Logger.js';
+import { Logger } from '../../../../cli/Logger';
 import {
   CommandArgs
-} from '../../../../Command.js';
-import config from '../../../../config.js';
-import request from '../../../../request.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { DeletedSitePropertiesEnumerable } from './DeletedSitePropertiesEnumerable.js';
+} from '../../../../Command';
+import config from '../../../../config';
+import request from '../../../../request';
+import { spo, ContextInfo, ClientSvcResponse, ClientSvcResponseContents } from '../../../../utils/spo';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { DeletedSitePropertiesEnumerable } from './DeletedSitePropertiesEnumerable';
 
 class SpoTenantRecycleBinItemListCommand extends SpoCommand {
   public get name(): string {
@@ -48,8 +48,8 @@ class SpoTenantRecycleBinItemListCommand extends SpoCommand {
           s.DeletionTime = this.dateParser(s.DeletionTime as string);
         });
       }
-      await logger.log(results._Child_Items_);
-    }
+      logger.log(results._Child_Items_);
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
@@ -60,4 +60,4 @@ class SpoTenantRecycleBinItemListCommand extends SpoCommand {
   }
 }
 
-export default new SpoTenantRecycleBinItemListCommand();
+module.exports = new SpoTenantRecycleBinItemListCommand();

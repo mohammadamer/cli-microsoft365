@@ -1,13 +1,13 @@
 import { Group, User } from '@microsoft/microsoft-graph-types';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 import { setTimeout } from 'timers/promises';
-import fs from 'fs';
-import path from 'path';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
 
 interface CommandArgs {
   options: Options;
@@ -165,7 +165,7 @@ class AadM365GroupAddCommand extends GraphCommand {
     const resolvedVisibility = args.options.visibility || 'Public';
 
     if (this.verbose) {
-      await logger.logToStderr('Creating Microsoft 365 Group...');
+      logger.logToStderr(`Creating Microsoft 365 Group...`);
     }
 
     if (args.options.allowMembersToPost) {
@@ -211,13 +211,13 @@ class AadM365GroupAddCommand extends GraphCommand {
 
       if (!args.options.logoPath) {
         if (this.debug) {
-          await logger.logToStderr('logoPath not set. Skipping');
+          logger.logToStderr('logoPath not set. Skipping');
         }
       }
       else {
         const fullPath: string = path.resolve(args.options.logoPath);
         if (this.verbose) {
-          await logger.logToStderr(`Setting group logo ${fullPath}...`);
+          logger.logToStderr(`Setting group logo ${fullPath}...`);
         }
 
         const requestOptionsPhoto: CliRequestOptions = {
@@ -257,7 +257,7 @@ class AadM365GroupAddCommand extends GraphCommand {
         })));
       }
 
-      await logger.log(group);
+      logger.log(group);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -267,13 +267,13 @@ class AadM365GroupAddCommand extends GraphCommand {
   private async getUserIds(logger: Logger, users: string | undefined): Promise<string[]> {
     if (!users) {
       if (this.debug) {
-        await logger.logToStderr('No users to validate, skipping.');
+        logger.logToStderr('No users to validate, skipping.');
       }
       return [];
     }
 
     if (this.verbose) {
-      await logger.logToStderr('Retrieving user information.');
+      logger.logToStderr('Retrieving user information.');
     }
 
     const userArr: string[] = users.split(',').map(o => o.trim());
@@ -336,4 +336,4 @@ class AadM365GroupAddCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupAddCommand();
+module.exports = new AadM365GroupAddCommand();

@@ -1,11 +1,11 @@
 import { Group, TeamsAsyncOperation } from '@microsoft/microsoft-graph-types';
-import { setTimeout } from 'timers/promises';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { aadGroup } from '../../../../utils/aadGroup';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { setTimeout } from "timers/promises";
 
 interface CommandArgs {
   options: Options;
@@ -86,27 +86,27 @@ class TeamsTeamAddCommand extends GraphCommand {
     let requestBody: any;
     if (args.options.template) {
       if (this.verbose) {
-        await logger.logToStderr(`Using template...`);
+        logger.logToStderr(`Using template...`);
       }
       requestBody = JSON.parse(args.options.template);
 
       if (args.options.name) {
         if (this.verbose) {
-          await logger.logToStderr(`Using '${args.options.name}' as name...`);
+          logger.logToStderr(`Using '${args.options.name}' as name...`);
         }
         requestBody.displayName = args.options.name;
       }
 
       if (args.options.description) {
         if (this.verbose) {
-          await logger.logToStderr(`Using '${args.options.description}' as description...`);
+          logger.logToStderr(`Using '${args.options.description}' as description...`);
         }
         requestBody.description = args.options.description;
       }
     }
     else {
       if (this.verbose) {
-        await logger.logToStderr(`Creating team with name ${args.options.name} and description ${args.options.description}`);
+        logger.logToStderr(`Creating team with name ${args.options.name} and description ${args.options.description}`);
       }
 
       requestBody = {
@@ -138,12 +138,12 @@ class TeamsTeamAddCommand extends GraphCommand {
       const teamsAsyncOperation: TeamsAsyncOperation = await request.get<TeamsAsyncOperation>(requestOptions);
 
       if (!args.options.wait) {
-        await logger.log(teamsAsyncOperation);
+        logger.log(teamsAsyncOperation);
       }
       else {
         await this.waitUntilTeamFinishedProvisioning(teamsAsyncOperation, requestOptions, logger);
         const aadGroup = await this.getAadGroup(teamsAsyncOperation.targetResourceId!, logger);
-        await logger.log(aadGroup);
+        logger.log(aadGroup);
       }
     }
     catch (err: any) {
@@ -154,7 +154,7 @@ class TeamsTeamAddCommand extends GraphCommand {
   private async waitUntilTeamFinishedProvisioning(teamsAsyncOperation: TeamsAsyncOperation, requestOptions: CliRequestOptions, logger: Logger): Promise<void> {
     if (teamsAsyncOperation.status === 'succeeded') {
       if (this.verbose) {
-        await logger.logToStderr('Team provisioned succesfully. Returning...');
+        logger.logToStderr('Team provisioned succesfully. Returning...');
       }
       return;
     }
@@ -163,7 +163,7 @@ class TeamsTeamAddCommand extends GraphCommand {
     }
     else {
       if (this.verbose) {
-        await logger.logToStderr(`Team still provisioning. Retrying in ${this.pollingInterval / 1000} seconds...`);
+        logger.logToStderr(`Team still provisioning. Retrying in ${this.pollingInterval / 1000} seconds...`);
       }
       await setTimeout(this.pollingInterval);
       teamsAsyncOperation = await request.get<TeamsAsyncOperation>(requestOptions);
@@ -179,7 +179,7 @@ class TeamsTeamAddCommand extends GraphCommand {
     }
     catch {
       if (this.verbose) {
-        await logger.logToStderr(`Error occurred on retrieving the aad group. Retrying in ${this.pollingInterval / 1000} seconds.`);
+        logger.logToStderr(`Error occured on retrieving the aad group. Retrying in ${this.pollingInterval / 1000} seconds.`);
       }
       await setTimeout(this.pollingInterval);
       return await this.getAadGroup(id, logger);
@@ -189,4 +189,4 @@ class TeamsTeamAddCommand extends GraphCommand {
   }
 }
 
-export default new TeamsTeamAddCommand();
+module.exports = new TeamsTeamAddCommand();

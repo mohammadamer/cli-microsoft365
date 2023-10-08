@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { MenuStateNode } from './NavigationNode.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { MenuStateNode } from './NavigationNode';
 
 interface CommandArgs {
   options: Options;
@@ -112,7 +112,7 @@ class SpoNavigationNodeSetCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       if (this.verbose) {
-        await logger.logToStderr(`Setting navigation node...`);
+        logger.logToStderr(`Setting navigation node...`);
       }
 
       let url = args.options.url;
@@ -147,7 +147,7 @@ class SpoNavigationNodeSetCommand extends SpoCommand {
 
       if (args.options.openInNewWindow !== undefined) {
         if (this.verbose) {
-          await logger.logToStderr(`Making sure that the navigation node opens in a new window.`);
+          logger.logToStderr(`Making sure that the navigation node opens in a new window.`);
         }
 
         let menuState = await spo.getQuickLaunchMenuState(args.options.webUrl);
@@ -179,4 +179,4 @@ class SpoNavigationNodeSetCommand extends SpoCommand {
   }
 }
 
-export default new SpoNavigationNodeSetCommand();
+module.exports = new SpoNavigationNodeSetCommand();

@@ -1,12 +1,12 @@
 import { PlannerPlan, PlannerPlanDetails } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import { planner } from '../../../../utils/planner.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { aadGroup } from '../../../../utils/aadGroup';
+import { planner } from '../../../../utils/planner';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -110,7 +110,7 @@ class PlannerPlanGetCommand extends GraphCommand {
       if (args.options.id) {
         const plan = await planner.getPlanById(args.options.id);
         const result = await this.getPlanDetails(plan);
-        await logger.log(result);
+        logger.log(result);
       }
       else {
         let plan: PlannerPlan = {};
@@ -128,7 +128,7 @@ class PlannerPlanGetCommand extends GraphCommand {
         const result = await this.getPlanDetails(plan);
 
         if (result) {
-          await logger.log(result);
+          logger.log(result);
         }
       }
     }
@@ -161,4 +161,4 @@ class PlannerPlanGetCommand extends GraphCommand {
   }
 }
 
-export default new PlannerPlanGetCommand();
+module.exports = new PlannerPlanGetCommand();

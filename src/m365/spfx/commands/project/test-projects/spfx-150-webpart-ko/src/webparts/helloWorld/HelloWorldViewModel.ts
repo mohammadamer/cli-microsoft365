@@ -1,6 +1,6 @@
-import ko from 'knockout';
+import * as ko from 'knockout';
 import styles from './HelloWorld.module.scss';
-import { IHelloWorldWebPartProps } from './HelloWorldWebPart.js';
+import { IHelloWorldWebPartProps } from './HelloWorldWebPart';
 
 export interface IHelloWorldBindingContext extends IHelloWorldWebPartProps {
   shouter: KnockoutSubscribable<{}>;

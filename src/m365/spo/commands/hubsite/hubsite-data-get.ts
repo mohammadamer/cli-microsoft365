@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -58,7 +58,7 @@ class SpoHubSiteDataGetCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Retrieving hub site data...');
+      logger.logToStderr('Retrieving hub site data...');
     }
 
     const forceRefresh: boolean = args.options.forceRefresh === true;
@@ -74,11 +74,11 @@ class SpoHubSiteDataGetCommand extends SpoCommand {
     try {
       const res = await request.get<any>(requestOptions);
       if (res['odata.null'] !== true) {
-        await logger.log(JSON.parse(res.value));
+        logger.log(JSON.parse(res.value));
       }
       else {
         if (this.verbose) {
-          await logger.logToStderr(`${args.options.webUrl} is not connected to a hub site and is not a hub site itself`);
+          logger.logToStderr(`${args.options.webUrl} is not connected to a hub site and is not a hub site itself`);
         }
       }
     }
@@ -88,4 +88,4 @@ class SpoHubSiteDataGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoHubSiteDataGetCommand();
+module.exports = new SpoHubSiteDataGetCommand();

@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -123,7 +123,7 @@ class SpoFileCopyCommand extends SpoCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Copying file '${sourcePath}' to '${destinationPath}'...`);
+        logger.logToStderr(`Copying file '${sourcePath}' to '${destinationPath}'...`);
       }
 
       const requestOptions: CliRequestOptions = {
@@ -161,7 +161,7 @@ class SpoFileCopyCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving server-relative path for file with ID '${options.sourceId}'...`);
+      logger.logToStderr(`Retrieving server-relative path for file with ID '${options.sourceId}'...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -181,4 +181,4 @@ class SpoFileCopyCommand extends SpoCommand {
   }
 }
 
-export default new SpoFileCopyCommand();
+module.exports = new SpoFileCopyCommand();

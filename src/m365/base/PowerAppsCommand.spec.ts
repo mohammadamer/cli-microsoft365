@@ -1,9 +1,9 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth, { CloudType } from '../../Auth.js';
-import { CommandError } from '../../Command.js';
-import { telemetry } from '../../telemetry.js';
-import PowerAppsCommand from './PowerAppsCommand.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import auth, { CloudType } from '../../Auth';
+import { CommandError } from '../../Command';
+import { telemetry } from '../../telemetry';
+import PowerAppsCommand from './PowerAppsCommand';
 
 class MockCommand extends PowerAppsCommand {
   public get name(): string {

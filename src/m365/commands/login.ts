@@ -1,14 +1,14 @@
-import fs from 'fs';
-import auth, { AuthType, CloudType } from '../../Auth.js';
-import { Logger } from '../../cli/Logger.js';
+import * as fs from 'fs';
+import auth, { AuthType, CloudType } from '../../Auth';
+import { Logger } from '../../cli/Logger';
 import Command, {
   CommandError
-} from '../../Command.js';
-import config from '../../config.js';
-import GlobalOptions from '../../GlobalOptions.js';
-import { accessToken } from '../../utils/accessToken.js';
-import { misc } from '../../utils/misc.js';
-import commands from './commands.js';
+} from '../../Command';
+import config from '../../config';
+import GlobalOptions from '../../GlobalOptions';
+import { accessToken } from '../../utils/accessToken';
+import { misc } from '../../utils/misc';
+import commands from './commands';
 
 interface CommandArgs {
   options: Options;
@@ -145,14 +145,14 @@ class LoginCommand extends Command {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     // disconnect before re-connecting
     if (this.debug) {
-      await logger.logToStderr(`Logging out from Microsoft 365...`);
+      logger.logToStderr(`Logging out from Microsoft 365...`);
     }
 
     const logout: () => void = (): void => auth.service.logout();
 
     const login: () => Promise<void> = async (): Promise<void> => {
       if (this.verbose) {
-        await logger.logToStderr(`Signing in to Microsoft 365...`);
+        logger.logToStderr(`Signing in to Microsoft 365...`);
       }
 
       auth.service.appId = args.options.appId || config.cliAadAppId;
@@ -196,16 +196,16 @@ class LoginCommand extends Command {
       }
       catch (error: any) {
         if (this.debug) {
-          await logger.logToStderr('Error:');
-          await logger.logToStderr(error);
-          await logger.logToStderr('');
+          logger.logToStderr('Error:');
+          logger.logToStderr(error);
+          logger.logToStderr('');
         }
 
         throw new CommandError(error.message);
       }
 
       if (this.debug) {
-        await logger.log({
+        logger.logToStderr({
           connectedAs: accessToken.getUserNameFromAccessToken(auth.service.accessTokens[auth.defaultResource].accessToken),
           authType: AuthType[auth.service.authType],
           appId: auth.service.appId,
@@ -215,7 +215,7 @@ class LoginCommand extends Command {
         });
       }
       else {
-        await logger.log({
+        logger.logToStderr({
           connectedAs: accessToken.getUserNameFromAccessToken(auth.service.accessTokens[auth.defaultResource].accessToken),
           authType: AuthType[auth.service.authType],
           appId: auth.service.appId,
@@ -230,7 +230,7 @@ class LoginCommand extends Command {
     }
     catch (error: any) {
       if (this.debug) {
-        await logger.logToStderr(new CommandError(error));
+        logger.logToStderr(new CommandError(error));
       }
     }
     finally {
@@ -252,4 +252,4 @@ class LoginCommand extends Command {
   }
 }
 
-export default new LoginCommand();
+module.exports = new LoginCommand();

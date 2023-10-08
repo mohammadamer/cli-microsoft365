@@ -1,11 +1,11 @@
 import { Channel, Group } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import { aadGroup } from '../../../../utils/aadGroup';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface ExtendedGroup extends Group {
   resourceProvisioningOptions: string[];
@@ -110,7 +110,7 @@ class TeamsChannelListCommand extends GraphCommand {
       }
 
       const items = await odata.getAllItems<Channel>(endpoint);
-      await logger.log(items);
+      logger.log(items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -118,4 +118,4 @@ class TeamsChannelListCommand extends GraphCommand {
   }
 }
 
-export default new TeamsChannelListCommand();
+module.exports = new TeamsChannelListCommand();

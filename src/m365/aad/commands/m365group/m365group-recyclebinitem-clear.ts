@@ -1,11 +1,11 @@
 import { DirectoryObject } from '@microsoft/microsoft-graph-types';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -100,4 +100,4 @@ class AadM365GroupRecycleBinItemClearCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupRecycleBinItemClearCommand();
+module.exports = new AadM365GroupRecycleBinItemClearCommand();

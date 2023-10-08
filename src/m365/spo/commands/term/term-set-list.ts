@@ -1,13 +1,13 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { TermSetCollection } from './TermSetCollection.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { TermSetCollection } from './TermSetCollection';
 
 interface CommandArgs {
   options: Options;
@@ -95,7 +95,7 @@ class SpoTermSetListCommand extends SpoCommand {
       const spoWebUrl: string = args.options.webUrl ? args.options.webUrl : await spo.getSpoAdminUrl(logger, this.debug);
       const res: ContextInfo = await spo.getRequestDigest(spoWebUrl);
       if (this.verbose) {
-        await logger.logToStderr(`Retrieving taxonomy term sets...`);
+        logger.logToStderr(`Retrieving taxonomy term sets...`);
       }
 
       const query: string = args.options.termGroupId ? `<Method Id="62" ParentId="60" Name="GetById"><Parameters><Parameter Type="Guid">{${args.options.termGroupId}}</Parameter></Parameters></Method>` : `<Method Id="62" ParentId="60" Name="GetByName"><Parameters><Parameter Type="String">${formatting.escapeXml(args.options.termGroupName)}</Parameter></Parameters></Method>`;
@@ -123,7 +123,8 @@ class SpoTermSetListCommand extends SpoCommand {
           t.LastModifiedDate = new Date(Number(t.LastModifiedDate.replace('/Date(', '').replace(')/', ''))).toISOString();
           return t;
         });
-        await logger.log(result._Child_Items_);
+
+        logger.log(result._Child_Items_);
       }
     }
     catch (err: any) {
@@ -132,4 +133,4 @@ class SpoTermSetListCommand extends SpoCommand {
   }
 }
 
-export default new SpoTermSetListCommand();
+module.exports = new SpoTermSetListCommand();

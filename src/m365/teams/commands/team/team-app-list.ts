@@ -1,12 +1,13 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import teamGetCommand, { Options as TeamsTeamGetOptions } from './team-get.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { odata } from '../../../../utils/odata';
+import { Cli } from '../../../../cli/Cli';
+import { Options as TeamsTeamGetOptions } from './team-get';
+import * as TeamGetCommand from './team-get';
+import Command from '../../../../Command';
 
 interface CommandArgs {
   options: Options;
@@ -78,18 +79,18 @@ class TeamsTeamAppListCommand extends GraphCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       if (this.verbose) {
-        await logger.logToStderr(`Retrieving installed apps for team '${args.options.teamId || args.options.teamName}'`);
+        logger.logToStderr(`Retrieving installed apps for team '${args.options.teamId || args.options.teamName}'`);
       }
 
       const teamId: string = await this.getTeamId(args);
       const res = await odata.getAllItems<any>(`${this.resource}/v1.0/teams/${teamId}/installedApps?$expand=teamsApp,teamsAppDefinition`);
 
       if (!Cli.shouldTrimOutput(args.options.output)) {
-        await logger.log(res);
+        logger.log(res);
       }
       else {
         //converted to text friendly output
-        await logger.log(res.map(i => {
+        logger.log(res.map(i => {
           return {
             id: i.id,
             displayName: i.teamsApp.displayName,
@@ -114,10 +115,10 @@ class TeamsTeamAppListCommand extends GraphCommand {
       verbose: this.verbose
     };
 
-    const commandOutput = await Cli.executeCommandWithOutput(teamGetCommand as Command, { options: { ...teamGetOptions, _: [] } });
+    const commandOutput = await Cli.executeCommandWithOutput(TeamGetCommand as Command, { options: { ...teamGetOptions, _: [] } });
     const team = JSON.parse(commandOutput.stdout);
     return team.id;
   }
 }
 
-export default new TeamsTeamAppListCommand();
+module.exports = new TeamsTeamAppListCommand();

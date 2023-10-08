@@ -1,7 +1,7 @@
-import path from 'path';
-import { JsonRule } from '../../JsonRule.js';
-import { Project } from '../../project-model/index.js';
-import { Finding, Occurrence } from '../../report-model/index.js';
+import * as path from 'path';
+import { JsonRule } from '../../JsonRule';
+import { Project } from '../../project-model';
+import { Finding, Occurrence } from '../../report-model';
 
 export class FN014007_CODE_launch_localWorkbench extends JsonRule {
   constructor() {

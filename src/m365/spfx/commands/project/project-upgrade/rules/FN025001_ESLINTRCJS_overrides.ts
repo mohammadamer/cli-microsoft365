@@ -1,7 +1,7 @@
-import ts from 'typescript';
-import { Project } from '../../project-model/index.js';
-import { Finding, Occurrence } from '../../report-model/index.js';
-import { TsRule } from './TsRule.js';
+import { Finding, Occurrence } from '../../report-model';
+import { Project } from '../../project-model';
+import { TsRule } from './TsRule';
+import ts = require('typescript');
 
 export class FN025001_ESLINTRCJS_overrides extends TsRule {
   constructor(private contents: string) {
@@ -21,7 +21,7 @@ export class FN025001_ESLINTRCJS_overrides extends TsRule {
   }
 
   get resolution(): string {
-    return `export default {
+    return `module.exports = {
       overrides: [
         ${this.contents}
       ]

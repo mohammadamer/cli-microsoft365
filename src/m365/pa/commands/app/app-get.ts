@@ -1,13 +1,14 @@
-import { Cli, CommandOutput } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerAppsCommand from '../../../base/PowerAppsCommand.js';
-import commands from '../../commands.js';
-import paAppListCommand from '../app/app-list.js';
+import { Cli } from '../../../../cli/Cli';
+import { CommandOutput } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { validation } from '../../../../utils/validation';
+import PowerAppsCommand from '../../../base/PowerAppsCommand';
+import commands from '../../commands';
+import * as paAppListCommand from '../app/app-list';
 
 interface CommandArgs {
   options: Options;
@@ -88,15 +89,15 @@ class PaAppGetCommand extends PowerAppsCommand {
         };
 
         if (this.verbose) {
-          await logger.logToStderr(`Retrieving information about Microsoft Power App with name '${args.options.name}'...`);
+          logger.logToStderr(`Retrieving information about Microsoft Power App with name '${args.options.name}'...`);
         }
 
         const res = await request.get<any>(requestOptions);
-        await logger.log(this.setProperties(res));
+        logger.log(this.setProperties(res));
       }
       else {
         if (this.verbose) {
-          await logger.logToStderr(`Retrieving information about Microsoft Power App with displayName '${args.options.displayName}'...`);
+          logger.logToStderr(`Retrieving information about Microsoft Power App with displayName '${args.options.displayName}'...`);
         }
 
         const getAppsOutput = await this.getApps(args, logger);
@@ -107,17 +108,17 @@ class PaAppGetCommand extends PowerAppsCommand {
             return a.properties.displayName.toLowerCase() === `${args.options.displayName}`.toLowerCase();
           });
           if (!!app) {
-            await logger.log(this.setProperties(app));
+            logger.log(this.setProperties(app));
           }
           else {
             if (this.verbose) {
-              await logger.logToStderr(`No app found with displayName '${args.options.displayName}'`);
+              logger.logToStderr(`No app found with displayName '${args.options.displayName}'`);
             }
           }
         }
         else {
           if (this.verbose) {
-            await logger.logToStderr('No apps found');
+            logger.logToStderr('No apps found');
           }
         }
       }
@@ -129,7 +130,7 @@ class PaAppGetCommand extends PowerAppsCommand {
 
   private async getApps(args: CommandArgs, logger: Logger): Promise<CommandOutput> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving all apps...`);
+      logger.logToStderr(`Retrieving all apps...`);
     }
 
     const options: GlobalOptions = {
@@ -150,4 +151,4 @@ class PaAppGetCommand extends PowerAppsCommand {
   }
 }
 
-export default new PaAppGetCommand();
+module.exports = new PaAppGetCommand();

@@ -1,11 +1,11 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { validation } from '../../../../utils/validation.js';
-import AzmgmtCommand from '../../../base/AzmgmtCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { validation } from '../../../../utils/validation';
+import AzmgmtCommand from '../../../base/AzmgmtCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -73,7 +73,7 @@ class FlowRunCancelCommand extends AzmgmtCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.log(`Cancelling run ${args.options.name} of Microsoft Flow ${args.options.flowName}...`);
+      logger.log(`Cancelling run ${args.options.name} of Microsoft Flow ${args.options.flowName}...`);
     }
 
     const cancelFlow = async (): Promise<void> => {
@@ -111,4 +111,4 @@ class FlowRunCancelCommand extends AzmgmtCommand {
   }
 }
 
-export default new FlowRunCancelCommand();
+module.exports = new FlowRunCancelCommand();

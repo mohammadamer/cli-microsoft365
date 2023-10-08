@@ -1,15 +1,16 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import removeCommand, { Options as SpoFileRemoveOptions } from './file-remove.js';
-import { FileProperties } from './FileProperties.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { Options as SpoFileRemoveOptions } from './file-remove';
+import { FileProperties } from './FileProperties';
+const removeCommand: Command = require('./file-remove');
 
 interface CommandArgs {
   options: Options;
@@ -111,7 +112,7 @@ class SpoFileRenameCommand extends SpoCommand {
       };
 
       const resp = await request.post<RenameResponse>(requestOptions);
-      await logger.log(resp.value);
+      logger.log(resp.value);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -155,4 +156,4 @@ class SpoFileRenameCommand extends SpoCommand {
   }
 }
 
-export default new SpoFileRenameCommand();
+module.exports = new SpoFileRenameCommand();

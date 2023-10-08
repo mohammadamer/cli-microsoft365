@@ -1,4 +1,4 @@
-import { FileAddRemoveRule } from "./FileAddRemoveRule.js";
+import { FileAddRemoveRule } from "./FileAddRemoveRule";
 
 export class FN015003_FILE_tslint_json extends FileAddRemoveRule {
   constructor(add: boolean, contents: string) {

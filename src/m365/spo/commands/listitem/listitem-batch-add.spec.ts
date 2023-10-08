@@ -1,19 +1,19 @@
-import assert from 'assert';
-import fs from 'fs';
-import os from 'os';
-import sinon from 'sinon';
-import auth from '../../../../Auth.js';
-import { CommandError } from '../../../../Command.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request from '../../../../request.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './listitem-batch-add.js';
+import * as assert from 'assert';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import auth from '../../../../Auth';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import request from '../../../../request';
+import { Cli } from '../../../../cli/Cli';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import Command, { CommandError } from '../../../../Command';
+import commands from '../../commands';
+import { Logger } from '../../../../cli/Logger';
+const command: Command = require('./listitem-batch-add');
 
 describe(commands.LISTITEM_BATCH_ADD, () => {
   const filePath = 'C:\\Path\\To\\CSV\\CsvFile.csv';
@@ -46,13 +46,13 @@ describe(commands.LISTITEM_BATCH_ADD, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

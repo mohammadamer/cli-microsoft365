@@ -1,7 +1,7 @@
-import ts from 'typescript';
-import { Project } from '../../project-model/index.js';
-import { Finding, Occurrence } from '../../report-model/index.js';
-import { TsRule } from "./TsRule.js";
+import * as ts from 'typescript';
+import { Project } from '../../project-model';
+import { Finding, Occurrence } from '../../report-model';
+import { TsRule } from "./TsRule";
 
 export class FN016001_TS_msgraphclient_packageName extends TsRule {
   constructor(private packageName: string) {

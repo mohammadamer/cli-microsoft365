@@ -1,14 +1,11 @@
-import fs from 'fs';
-import inquirer from 'inquirer';
-import ora from 'ora';
-import path from 'path';
-import url from 'url';
-import { Cli } from '../cli/Cli.js';
-import request, { CliRequestOptions } from '../request.js';
-import { settingsNames } from '../settingsNames.js';
-import { md } from '../utils/md.js';
-
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import * as fs from 'fs';
+import * as inquirer from 'inquirer';
+import * as ora from 'ora';
+import * as path from 'path';
+import { Cli } from '../cli/Cli';
+import request, { CliRequestOptions } from '../request';
+import { settingsNames } from '../settingsNames';
+import { md } from '../utils/md';
 
 interface MendableConversationIdResponse {
   conversation_id: number;
@@ -44,9 +41,9 @@ const showSpinner = cli.getSettingWithDefaultValue<boolean>(settingsNames.showSp
 
 request.logger = {
   /* c8 ignore next 3 */
-  log: async (msg: string) => console.log(msg),
-  logRaw: async (msg: string) => console.log(msg),
-  logToStderr: async (msg: string) => console.error(msg)
+  log: (msg: string) => console.log(msg),
+  logRaw: (msg: string) => console.log(msg),
+  logToStderr: (msg: string) => console.error(msg)
 };
 request.debug = debug;
 

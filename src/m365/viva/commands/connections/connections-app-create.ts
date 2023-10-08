@@ -1,14 +1,16 @@
-import AdmZip from 'adm-zip';
-import fs from 'fs';
-import path from 'path';
+import * as AdmZip from 'adm-zip';
+import * as fs from 'fs';
+import * as path from 'path';
 import { v4 } from 'uuid';
-import { Cli, CommandOutput } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import AnonymousCommand from '../../../base/AnonymousCommand.js';
-import spoWebGetCommand, { Options as SpoWebGetCommandOptions } from '../../../spo/commands/web/web-get.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { CommandOutput } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import AnonymousCommand from '../../../base/AnonymousCommand';
+import * as spoWebGetCommand from '../../../spo/commands/web/web-get';
+import { Options as SpoWebGetCommandOptions } from '../../../spo/commands/web/web-get';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -104,11 +106,11 @@ class VivaConnectionsAppCreateCommand extends AnonymousCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       const getWebOutput: CommandOutput = await this.getWeb(args, logger); if (this.debug) {
-        await logger.logToStderr(getWebOutput.stderr);
+        logger.logToStderr(getWebOutput.stderr);
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Site found at ${args.options.portalUrl}. Checking if it's a communication site...`);
+        logger.logToStderr(`Site found at ${args.options.portalUrl}. Checking if it's a communication site...`);
       }
 
       const web: {
@@ -122,7 +124,7 @@ class VivaConnectionsAppCreateCommand extends AnonymousCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Site ${args.options.portalUrl} is a Communication Site. Building app...`);
+        logger.logToStderr(`Site ${args.options.portalUrl} is a Communication Site. Building app...`);
       }
 
       const portalUrl: URL = new URL(args.options.portalUrl);
@@ -213,15 +215,15 @@ class VivaConnectionsAppCreateCommand extends AnonymousCommand {
       catch (ex: any) {
         throw ex.message;
       }
-    }
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 
-  private async getWeb(args: CommandArgs, logger: Logger): Promise<CommandOutput> {
+  private getWeb(args: CommandArgs, logger: Logger): Promise<CommandOutput> {
     if (this.verbose) {
-      await logger.logToStderr(`Checking if site ${args.options.url} exists...`);
+      logger.logToStderr(`Checking if site ${args.options.url} exists...`);
     }
 
     const options: SpoWebGetCommandOptions = {
@@ -234,4 +236,4 @@ class VivaConnectionsAppCreateCommand extends AnonymousCommand {
   }
 }
 
-export default new VivaConnectionsAppCreateCommand();
+module.exports = new VivaConnectionsAppCreateCommand();

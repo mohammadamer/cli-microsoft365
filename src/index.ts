@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import url from 'url';
-import { Cli } from './cli/Cli.js';
-import { telemetry } from './telemetry.js';
-import { app } from './utils/app.js';
+import * as fs from 'fs';
+import * as path from 'path';
+import type * as UpdateNotifier from 'update-notifier';
+import { Cli } from './cli/Cli';
+import { telemetry } from './telemetry';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const packageJSON = require('../package.json');
 
 // required to make console.log() in combination with piped output synchronous
 // on Windows/in PowerShell so that the output is not trimmed by calling
@@ -18,15 +17,14 @@ if ((process.stdout as any)._handle) {
 }
 
 if (!process.env.CLIMICROSOFT365_NOUPDATE) {
-  import('update-notifier').then(updateNotifier => {
-    updateNotifier.default({ pkg: app.packageJson() as any }).notify({ defer: false });
-  });
+  const updateNotifier: typeof UpdateNotifier = require('update-notifier');
+  updateNotifier({ pkg: packageJSON }).notify({ defer: false });
 }
 
-fs.realpath(__dirname, async (err: NodeJS.ErrnoException | null, resolvedPath: string): Promise<void> => {
+fs.realpath(__dirname, (err: NodeJS.ErrnoException | null, resolvedPath: string): void => {
   try {
     const cli: Cli = Cli.getInstance();
-    await cli.execute(path.join(resolvedPath, 'm365'), process.argv.slice(2));
+    cli.execute(path.join(resolvedPath, 'm365'), process.argv.slice(2));
   }
   catch (e: any) {
     telemetry.trackException(e);

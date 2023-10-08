@@ -1,5 +1,5 @@
-import assert from 'assert';
-import { accessToken } from '../utils/accessToken.js';
+import * as assert from 'assert';
+import { accessToken } from '../utils/accessToken';
 
 describe('utils/accessToken', () => {
   it('isAppOnlyAccessToken returns undefined when access token is undefined', () => {

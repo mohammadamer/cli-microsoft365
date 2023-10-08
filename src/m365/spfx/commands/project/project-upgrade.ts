@@ -1,21 +1,21 @@
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 // uncomment to support upgrading to preview releases
 // import { prerelease } from 'semver';
-import { Logger } from '../../../../cli/Logger.js';
-import Command, { CommandError } from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { fsUtil } from '../../../../utils/fsUtil.js';
-import { packageManager } from '../../../../utils/packageManager.js';
-import { Dictionary, Hash } from '../../../../utils/types.js';
-import commands from '../../commands.js';
-import { BaseProjectCommand } from './base-project-command.js';
-import { Project } from './project-model/index.js';
-import { FN017001_MISC_npm_dedupe } from './project-upgrade/rules/FN017001_MISC_npm_dedupe.js';
-import { Finding, FindingToReport, FindingTour, FindingTourStep } from './report-model/index.js';
-import { ReportData, ReportDataModification } from './report-model/ReportData.js';
-import { Rule } from './Rule.js';
+import { Logger } from '../../../../cli/Logger';
+import { CommandError } from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import { fsUtil } from '../../../../utils/fsUtil';
+import { packageManager } from '../../../../utils/packageManager';
+import { Dictionary, Hash } from '../../../../utils/types';
+import commands from '../../commands';
+import { BaseProjectCommand } from './base-project-command';
+import { Project } from './project-model';
+import { FN017001_MISC_npm_dedupe } from './project-upgrade/rules/FN017001_MISC_npm_dedupe';
+import { Finding, FindingToReport, FindingTour, FindingTourStep } from './report-model';
+import { ReportData, ReportDataModification } from './report-model/ReportData';
+import { Rule } from './Rule';
 
 interface CommandArgs {
   options: Options;
@@ -205,30 +205,30 @@ class SpfxProjectUpgradeCommand extends BaseProjectCommand {
     }
 
     if (pos === posTo) {
-      await logger.log(`Project doesn't need to be upgraded`);
+      logger.log(`Project doesn't need to be upgraded`);
       return;
     }
 
     if (this.verbose) {
-      await logger.logToStderr('Collecting project...');
+      logger.logToStderr('Collecting project...');
     }
     const project: Project = this.getProject(this.projectRootPath);
 
     if (this.debug) {
-      await logger.logToStderr('Collected project');
-      await logger.logToStderr(project);
+      logger.logToStderr('Collected project');
+      logger.logToStderr(project);
     }
 
     // reverse the list of versions to upgrade to, so that most recent findings
     // will end up on top already. Saves us reversing a larger array later
     const versionsToUpgradeTo: string[] = this.supportedVersions.slice(pos + 1, posTo + 1).reverse();
     try {
-      for (const v of versionsToUpgradeTo) {
-        const rules: Rule[] = (await import(`./project-upgrade/upgrade-${v}.js`)).default;
+      versionsToUpgradeTo.forEach(v => {
+        const rules: Rule[] = require(`./project-upgrade/upgrade-${v}`);
         rules.forEach(r => {
           r.visit(project, this.allFindings);
         });
-      }
+      });
     }
     catch (e: any) {
       throw new CommandError(e.message);
@@ -351,27 +351,26 @@ class SpfxProjectUpgradeCommand extends BaseProjectCommand {
 
     switch (args.options.output) {
       case 'text':
-        await logger.log(this.getTextReport(findingsToReport));
+        logger.log(this.getTextReport(findingsToReport));
         break;
       case 'json':
-        await logger.log(findingsToReport);
+        logger.log(findingsToReport);
         break;
       case 'tour':
         this.writeReportTourFolder(this.getTourReport(findingsToReport, project));
         break;
       case 'md':
-        await logger.log(this.getMdReport(findingsToReport));
+        logger.log(this.getMdReport(findingsToReport));
         break;
       default:
-        await logger.log(findingsToReport);
+        logger.log(findingsToReport);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getMdOutput(logStatement: any[], command: Command, options: GlobalOptions): string {
+  public getMdOutput(logStatement: any): string {
     // overwrite markdown output to return the output as-is
     // because the command already implements its own logic to format the output
-    return logStatement as any;
+    return logStatement;
   }
 
   private writeReportTourFolder(findingsToReport: any): void {
@@ -617,4 +616,4 @@ ${f.resolution}
   }
 }
 
-export default new SpfxProjectUpgradeCommand();
+module.exports = new SpfxProjectUpgradeCommand();

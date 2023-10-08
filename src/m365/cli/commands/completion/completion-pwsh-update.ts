@@ -1,7 +1,7 @@
-import { autocomplete } from '../../../../autocomplete.js';
-import { Logger } from '../../../../cli/Logger.js';
-import AnonymousCommand from '../../../base/AnonymousCommand.js';
-import commands from '../../commands.js';
+import { autocomplete } from '../../../../autocomplete';
+import { Logger } from '../../../../cli/Logger';
+import AnonymousCommand from '../../../base/AnonymousCommand';
+import commands from '../../commands';
 
 class CliCompletionPwshUpdateCommand extends AnonymousCommand {
   public get name(): string {
@@ -14,11 +14,11 @@ class CliCompletionPwshUpdateCommand extends AnonymousCommand {
 
   public async commandAction(logger: Logger): Promise<void> {
     if (this.debug) {
-      await logger.logToStderr('Generating command completion...');
+      logger.logToStderr('Generating command completion...');
     }
 
     autocomplete.generateShCompletion();
   }
 }
 
-export default new CliCompletionPwshUpdateCommand();
+module.exports = new CliCompletionPwshUpdateCommand();

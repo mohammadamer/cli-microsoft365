@@ -1,11 +1,11 @@
-import Auth from '../../../../Auth.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { accessToken } from '../../../../utils/accessToken.js';
-import { validation } from '../../../../utils/validation.js';
-import O365MgmtCommand from '../../../base/O365MgmtCommand.js';
-import commands from '../../commands.js';
+import Auth from '../../../../Auth';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { accessToken } from '../../../../utils/accessToken';
+import { validation } from '../../../../utils/validation';
+import O365MgmtCommand from '../../../base/O365MgmtCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -118,7 +118,7 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
       const endTime = args.options.endTime ? new Date(args.options.endTime) : new Date(now);
 
       if (this.verbose) {
-        await logger.logToStderr(`Getting audit logs for content type '${args.options.contentType}' within a time frame from '${startTime.toISOString()}' to '${endTime.toISOString()}'.`);
+        logger.logToStderr(`Getting audit logs for content type '${args.options.contentType}' within a time frame from '${startTime.toISOString()}' to '${endTime.toISOString()}'.`);
       }
 
       const tenantId = accessToken.getTenantIdFromAccessToken(Auth.service.accessTokens[Auth.defaultResource].accessToken);
@@ -126,7 +126,7 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
 
       await this.ensureSubscription(tenantId, contentTypeValue);
       if (this.verbose) {
-        await logger.logToStderr(`'${args.options.contentType}' subscription is active.`);
+        logger.logToStderr(`'${args.options.contentType}' subscription is active.`);
       }
 
       const contentUris: string[] = [];
@@ -135,7 +135,7 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
         const endTimeBatch = new Date(time.getTime() + Math.min(differenceInMs, 1000 * 60 * 60 * 24)); // ms difference cannot be greater than 1 day
 
         if (this.verbose) {
-          await logger.logToStderr(`Get content URIs for date range from '${time.toISOString()}' to '${endTimeBatch.toISOString()}'.`);
+          logger.logToStderr(`Get content URIs for date range from '${time.toISOString()}' to '${endTimeBatch.toISOString()}'.`);
         }
 
         const contentUrisBatch = await this.getContentUris(tenantId, contentTypeValue, time, endTimeBatch);
@@ -143,13 +143,13 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Get content from ${contentUris.length} content URIs.`);
+        logger.logToStderr(`Get content from ${contentUris.length} content URIs.`);
       }
 
       const logs = await this.getContent(logger, contentUris);
       const sortedLogs = logs.sort(this.auditLogsCompare);
 
-      await logger.log(sortedLogs);
+      logger.log(sortedLogs);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -209,7 +209,7 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
       const contentUrisBatch = contentUris.slice(i, i + batchSize);
 
       if (this.verbose) {
-        await logger.logToStderr(`Retrieving content from next ${contentUrisBatch.length} content URIs. Progress: ${Math.round(i / contentUris.length * 100)}%`);
+        logger.logToStderr(`Retrieving content from next ${contentUrisBatch.length} content URIs. Progress: ${Math.round(i / contentUris.length * 100)}%`);
       }
 
       const batchResult = await Promise.all(
@@ -241,4 +241,4 @@ class PurviewAuditLogListCommand extends O365MgmtCommand {
   }
 }
 
-export default new PurviewAuditLogListCommand();
+module.exports = new PurviewAuditLogListCommand();

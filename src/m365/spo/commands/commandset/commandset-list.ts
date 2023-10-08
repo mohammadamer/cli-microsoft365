@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -70,12 +70,12 @@ class SpoCommandSetListCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     try {
       if (this.verbose) {
-        await logger.logToStderr(`Attempt to get commandsets...`);
+        logger.logToStderr(`Attempt to get commandsets...`);
       }
 
       const commandsets = await spo.getCustomActions(args.options.webUrl, args.options.scope, `startswith(Location,'ClientSideExtension.ListViewCommandSet')`);
 
-      await logger.log(commandsets);
+      logger.log(commandsets);
     }
     catch (err: any) {
       this.handleRejectedPromise(err);
@@ -83,4 +83,4 @@ class SpoCommandSetListCommand extends SpoCommand {
   }
 }
 
-export default new SpoCommandSetListCommand();
+module.exports = new SpoCommandSetListCommand();

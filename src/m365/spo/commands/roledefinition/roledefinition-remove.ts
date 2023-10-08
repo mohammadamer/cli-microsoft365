@@ -1,10 +1,10 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -88,7 +88,7 @@ class SpoRoleDefinitionRemoveCommand extends SpoCommand {
 
   private async removeRoleDefinition(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Removing role definition from site ${args.options.webUrl}...`);
+      logger.logToStderr(`Removing role definition from site ${args.options.webUrl}...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -111,4 +111,4 @@ class SpoRoleDefinitionRemoveCommand extends SpoCommand {
   }
 }
 
-export default new SpoRoleDefinitionRemoveCommand();
+module.exports = new SpoRoleDefinitionRemoveCommand();

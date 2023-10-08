@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import { spo } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ListItemInstance } from '../listitem/ListItemInstance.js';
+import { Logger } from '../../../../cli/Logger';
+import { CommandError } from '../../../../Command';
+import { formatting } from '../../../../utils/formatting';
+import { odata } from '../../../../utils/odata';
+import { spo } from '../../../../utils/spo';
+import { urlUtil } from '../../../../utils/urlUtil';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ListItemInstance } from '../listitem/ListItemInstance';
 
 class SpoTenantCommandSetListCommand extends SpoCommand {
   public get name(): string {
@@ -29,7 +29,7 @@ class SpoTenantCommandSetListCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr('Retrieving a list of ListView Command Sets that are installed tenant-wide');
+      logger.logToStderr('Retrieving a list of ListView Command Sets that are installed tenant-wide');
     }
 
     const listServerRelativeUrl: string = urlUtil.getServerRelativePath(appCatalogUrl, '/lists/TenantWideExtensions');
@@ -38,7 +38,7 @@ class SpoTenantCommandSetListCommand extends SpoCommand {
       const listItems = await odata.getAllItems<ListItemInstance>(`${appCatalogUrl}/_api/web/GetList('${formatting.encodeQueryParameter(listServerRelativeUrl)}')/items?$filter=startswith(TenantWideExtensionLocation, 'ClientSideExtension.ListViewCommandSet')`);
       listItems.forEach(i => delete i.ID);
 
-      await logger.log(listItems);
+      logger.log(listItems);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -46,4 +46,4 @@ class SpoTenantCommandSetListCommand extends SpoCommand {
   }
 }
 
-export default new SpoTenantCommandSetListCommand();
+module.exports = new SpoTenantCommandSetListCommand();

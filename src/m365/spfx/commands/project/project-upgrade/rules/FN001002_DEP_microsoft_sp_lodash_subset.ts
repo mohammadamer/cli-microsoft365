@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN001002_DEP_microsoft_sp_lodash_subset extends DependencyRule {
   constructor(packageVersion: string) {

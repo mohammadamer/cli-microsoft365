@@ -1,5 +1,5 @@
-import { ClientSideComponent } from "../../ClientSideComponent.js";
+import { ClientSideComponent } from "../../ClientSideComponent";
 
 export interface GetClientSideWebPartsRsp {
-  value: ClientSideComponent[];
+  value : ClientSideComponent[];
 }

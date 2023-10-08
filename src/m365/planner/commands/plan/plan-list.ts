@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import { planner } from '../../../../utils/planner.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import { planner } from '../../../../utils/planner';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { aadGroup } from '../../../../utils/aadGroup';
 
 interface CommandArgs {
   options: Options;
@@ -95,7 +95,7 @@ class PlannerPlanListCommand extends GraphCommand {
         plannerPlans.push(plan);
       }
 
-      await logger.log(plannerPlans);
+      logger.log(plannerPlans);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -112,4 +112,4 @@ class PlannerPlanListCommand extends GraphCommand {
   }
 }
 
-export default new PlannerPlanListCommand();
+module.exports = new PlannerPlanListCommand();

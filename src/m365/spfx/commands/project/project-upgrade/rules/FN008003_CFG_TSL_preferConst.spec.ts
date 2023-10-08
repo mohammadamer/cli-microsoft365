@@ -1,7 +1,7 @@
-import assert from 'assert';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/Finding.js';
-import { FN008003_CFG_TSL_preferConst } from './FN008003_CFG_TSL_preferConst.js';
+import * as assert from 'assert';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model/Finding';
+import { FN008003_CFG_TSL_preferConst } from './FN008003_CFG_TSL_preferConst';
 
 describe('FN010201_CFG_TSL_preferConst', () => {
   let findings: Finding[];

@@ -1,8 +1,8 @@
-import GlobalOptions from '../../../GlobalOptions.js';
-import { Logger } from '../../../cli/Logger.js';
-import { browserUtil } from '../../../utils/browserUtil.js';
-import AnonymousCommand from '../../base/AnonymousCommand.js';
-import commands from '../commands.js';
+import { Logger } from '../../../cli/Logger';
+import GlobalOptions from '../../../GlobalOptions';
+import AnonymousCommand from '../../base/AnonymousCommand';
+import commands from '../commands';
+import { browserUtil } from '../../../utils/browserUtil';
 
 interface CommandArgs {
   options: Options;
@@ -74,7 +74,7 @@ class CliIssueCommand extends AnonymousCommand {
     }
 
     await browserUtil.open(issueLink);
-    await logger.log(issueLink);
+    logger.log(issueLink);
   }
 
   private static issueType: string[] = [
@@ -84,4 +84,4 @@ class CliIssueCommand extends AnonymousCommand {
   ];
 }
 
-export default new CliIssueCommand();
+module.exports = new CliIssueCommand();

@@ -1,20 +1,20 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import appInsights from '../../../../appInsights.js';
-import auth from '../../../../Auth.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import spoWebRetentionLabelListCommand from '../web/web-retentionlabel-list.js';
-import command from './listitem-retentionlabel-ensure.js';
-import { settingsNames } from '../../../../settingsNames.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import appInsights from '../../../../appInsights';
+import auth from '../../../../Auth';
+import { Cli } from '../../../../cli/Cli';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+import * as SpoWebRetentionLabelListCommand from '../web/web-retentionlabel-list';
+const command: Command = require('./listitem-retentionlabel-ensure');
+import { settingsNames } from '../../../../settingsNames';
 
 describe(commands.LISTITEM_RETENTIONLABEL_ENSURE, () => {
 
@@ -75,19 +75,19 @@ describe(commands.LISTITEM_RETENTIONLABEL_ENSURE, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };
     loggerLogStderrSpy = sinon.spy(logger, 'logToStderr');
     sinon.stub(Cli, 'executeCommandWithOutput').callsFake(async (command): Promise<any> => {
-      if (command === spoWebRetentionLabelListCommand) {
+      if (command === SpoWebRetentionLabelListCommand) {
         return { stdout: JSON.stringify(mockSpoWebRetentionLabelListResponseArray) };
       }
 

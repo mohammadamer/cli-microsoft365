@@ -1,13 +1,14 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
-import ppChatbotGetCommand, { Options as PpChatbotGetCommandOptions } from './chatbot-get.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { Cli } from '../../../../cli/Cli';
+import { Options as PpChatbotGetCommandOptions } from './chatbot-get';
+import * as PpChatbotGetCommand from './chatbot-get';
+import Command from '../../../../Command';
 
 interface CommandArgs {
   options: Options;
@@ -91,7 +92,7 @@ class PpChatbotRemoveCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Removing chatbot '${args.options.id || args.options.name}'...`);
+      logger.logToStderr(`Removing chatbot '${args.options.id || args.options.name}'...`);
     }
 
     if (args.options.force) {
@@ -124,7 +125,7 @@ class PpChatbotRemoveCommand extends PowerPlatformCommand {
       verbose: this.verbose
     };
 
-    const output = await Cli.executeCommandWithOutput(ppChatbotGetCommand as Command, { options: { ...options, _: [] } });
+    const output = await Cli.executeCommandWithOutput(PpChatbotGetCommand as Command, { options: { ...options, _: [] } });
     const getBotOutput = JSON.parse(output.stdout);
     return getBotOutput.botid;
   }
@@ -151,4 +152,4 @@ class PpChatbotRemoveCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpChatbotRemoveCommand();
+module.exports = new PpChatbotRemoveCommand();

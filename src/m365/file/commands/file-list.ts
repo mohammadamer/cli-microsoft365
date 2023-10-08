@@ -1,12 +1,12 @@
 import { Drive, DriveItem, Site } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../cli/Logger.js';
-import GlobalOptions from '../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../request.js';
-import { formatting } from '../../../utils/formatting.js';
-import { odata } from '../../../utils/odata.js';
-import { validation } from '../../../utils/validation.js';
-import GraphCommand from '../../base/GraphCommand.js';
-import commands from '../commands.js';
+import { Logger } from '../../../cli/Logger';
+import GlobalOptions from '../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../request';
+import { formatting } from '../../../utils/formatting';
+import { odata } from '../../../utils/odata';
+import { validation } from '../../../utils/validation';
+import GraphCommand from '../../base/GraphCommand';
+import commands from '../commands';
 
 interface CommandArgs {
   options: Options;
@@ -84,27 +84,27 @@ class FileListCommand extends GraphCommand {
 
       const folderId = await this.getStartingFolderId(drive, folderUrl, logger);
       if (this.verbose) {
-        await logger.logToStderr(`Loading folders to get files from...`);
+        logger.logToStderr(`Loading folders to get files from...`);
       }
 
       // add the starting folder to the list of folders to get files from
       this.foldersToGetFilesFrom.push(folderId);
       await this.loadFoldersToGetFilesFrom(folderId, driveId, args.options.recursive);
       if (this.debug) {
-        await logger.logToStderr(`Folders to get files from: ${this.foldersToGetFilesFrom.join(', ')}`);
+        logger.logToStderr(`Folders to get files from: ${this.foldersToGetFilesFrom.join(', ')}`);
       }
 
       const files = await this.loadFilesFromFolders(driveId, this.foldersToGetFilesFrom, logger);
-      await logger.log(files);
+      logger.log(files);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 
-  private async getSiteId(webUrl: string, logger: Logger): Promise<string> {
+  private getSiteId(webUrl: string, logger: Logger): Promise<string> {
     if (this.verbose) {
-      await logger.logToStderr(`Getting site id...`);
+      logger.logToStderr(`Getting site id...`);
     }
 
     const url: URL = new URL(webUrl);
@@ -117,9 +117,9 @@ class FileListCommand extends GraphCommand {
     };
     return request
       .get<Site>(requestOptions)
-      .then(async (site: Site): Promise<string> => {
+      .then((site: Site): string => {
         if (this.verbose) {
-          await logger.logToStderr(`Site id: ${site.id}`);
+          logger.logToStderr(`Site id: ${site.id}`);
         }
 
         return site.id as string;
@@ -128,7 +128,7 @@ class FileListCommand extends GraphCommand {
 
   private async getDocumentLibrary(siteId: string, folderUrl: URL, folderUrlFromUser: string, logger: Logger): Promise<Drive> {
     if (this.verbose) {
-      await logger.logToStderr(`Getting document library...`);
+      logger.logToStderr(`Getting document library...`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -157,7 +157,7 @@ class FileListCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Document library: ${drive.webUrl}, ${drive.id}`);
+      logger.logToStderr(`Document library: ${drive.webUrl}, ${drive.id}`);
     }
 
     return drive;
@@ -165,7 +165,7 @@ class FileListCommand extends GraphCommand {
 
   private async getStartingFolderId(documentLibrary: Drive, folderUrl: URL, logger: Logger): Promise<string> {
     if (this.verbose) {
-      await logger.logToStderr(`Getting starting folder id...`);
+      logger.logToStderr(`Getting starting folder id...`);
     }
 
     const documentLibraryRelativeFolderUrl: string = folderUrl.href.replace(new RegExp(documentLibrary.webUrl as string, 'i'), '');
@@ -179,7 +179,7 @@ class FileListCommand extends GraphCommand {
     const folder = await request.get<DriveItem>(requestOptions);
 
     if (this.verbose) {
-      await logger.logToStderr(`Starting folder id: ${folder.id}`);
+      logger.logToStderr(`Starting folder id: ${folder.id}`);
     }
 
     return folder.id as string;
@@ -205,7 +205,7 @@ class FileListCommand extends GraphCommand {
 
   private async loadFilesFromFolders(driveId: string, folderIds: string[], logger: Logger): Promise<DriveItem[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Loading files from folders...`);
+      logger.logToStderr(`Loading files from folders...`);
     }
 
     let files: DriveItem[] = [];
@@ -226,4 +226,4 @@ class FileListCommand extends GraphCommand {
   }
 }
 
-export default new FileListCommand();
+module.exports = new FileListCommand();

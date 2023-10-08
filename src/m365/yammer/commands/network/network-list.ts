@@ -1,8 +1,8 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import YammerCommand from '../../../base/YammerCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import YammerCommand from '../../../base/YammerCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -63,13 +63,13 @@ class YammerNetworkListCommand extends YammerCommand {
 
     try {
       const res: any = await request.get(requestOptions);
-
-      await logger.log(res);
-    }
+      
+      logger.log(res);
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 }
 
-export default new YammerNetworkListCommand();
+module.exports = new YammerNetworkListCommand();

@@ -1,14 +1,12 @@
-import assert, { fail } from 'assert';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import sinon from 'sinon';
-import url from 'url';
-import Command from './Command.js';
-import { Cli } from './cli/Cli.js';
-import { sinonUtil } from './utils/sinonUtil.js';
-
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import * as assert from 'assert';
+import { fail } from 'assert';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import * as sinon from 'sinon';
+import { Cli } from './cli/Cli';
+import Command from './Command';
+import { sinonUtil } from './utils/sinonUtil';
 
 class SimpleCommand extends Command {
   public get name(): string {
@@ -100,10 +98,10 @@ describe('autocomplete', () => {
   };
   let cli: Cli;
 
-  before(async () => {
+  before(() => {
     cli = Cli.getInstance();
     sinon.stub(fs, 'existsSync').callsFake(() => false);
-    autocomplete = (await import('./autocomplete.js')).autocomplete;
+    autocomplete = require('./autocomplete').autocomplete;
   });
 
   afterEach(() => {

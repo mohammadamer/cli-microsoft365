@@ -1,11 +1,11 @@
-import chalk from 'chalk';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ClientSidePageProperties } from './ClientSidePageProperties.js';
+import * as chalk from 'chalk';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ClientSidePageProperties } from './ClientSidePageProperties';
 
 interface CommandArgs {
   options: Options;
@@ -92,7 +92,7 @@ class SpoPageCopyCommand extends SpoCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Creating page copy...`);
+      logger.logToStderr(`Creating page copy...`);
     }
 
     try {
@@ -121,10 +121,10 @@ class SpoPageCopyCommand extends SpoCommand {
       };
 
       const res = await request.get<ClientSidePageProperties>(requestOptions);
-      await logger.log(res);
+      logger.log(res);
 
       if (this.verbose) {
-        await logger.logToStderr(chalk.green('DONE'));
+        logger.logToStderr(chalk.green('DONE'));
       }
     }
     catch (err: any) {
@@ -158,4 +158,4 @@ class SpoPageCopyCommand extends SpoCommand {
   }
 }
 
-export default new SpoPageCopyCommand(); 
+module.exports = new SpoPageCopyCommand(); 

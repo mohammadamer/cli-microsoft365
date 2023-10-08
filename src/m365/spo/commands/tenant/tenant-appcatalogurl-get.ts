@@ -1,8 +1,8 @@
-import { Logger } from '../../../../cli/Logger.js';
-import request from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import request from '../../../../request';
+import { spo } from '../../../../utils/spo';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 class SpoTenantAppCatalogUrlGetCommand extends SpoCommand {
   public get name(): string {
@@ -22,23 +22,23 @@ class SpoTenantAppCatalogUrlGetCommand extends SpoCommand {
           accept: 'application/json;odata=nometadata'
         }
       };
-
+  
       const res: string = await request.get(requestOptions);
       const json = JSON.parse(res);
 
       if (json.CorporateCatalogUrl) {
-        await logger.log(json.CorporateCatalogUrl);
+        logger.log(json.CorporateCatalogUrl);
       }
       else {
         if (this.verbose) {
-          await logger.logToStderr("Tenant app catalog is not configured.");
+          logger.logToStderr("Tenant app catalog is not configured.");
         }
       }
-    }
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 }
 
-export default new SpoTenantAppCatalogUrlGetCommand();
+module.exports = new SpoTenantAppCatalogUrlGetCommand();

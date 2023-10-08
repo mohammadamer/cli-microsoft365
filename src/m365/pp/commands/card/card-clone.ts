@@ -1,13 +1,14 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
-import ppCardGetCommand, { Options as PpCardGetCommandOptions } from './card-get.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import { Cli } from '../../../../cli/Cli';
+import { Options as PpCardGetCommandOptions } from './card-get';
+import * as PpCardGetCommand from './card-get';
+import Command from '../../../../Command';
 
 interface CommandArgs {
   options: Options;
@@ -90,11 +91,11 @@ class PpCardCloneCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Cloning a card from '${args.options.id || args.options.name}'...`);
+      logger.logToStderr(`Cloning a card from '${args.options.id || args.options.name}'...`);
     }
 
     const res = await this.cloneCard(args);
-    await logger.log(res);
+    logger.log(res);
   }
 
   private async getCardId(args: CommandArgs): Promise<any> {
@@ -110,7 +111,7 @@ class PpCardCloneCommand extends PowerPlatformCommand {
       verbose: this.verbose
     };
 
-    const output = await Cli.executeCommandWithOutput(ppCardGetCommand as Command, { options: { ...options, _: [] } });
+    const output = await Cli.executeCommandWithOutput(PpCardGetCommand as Command, { options: { ...options, _: [] } });
     const getCardOutput = JSON.parse(output.stdout);
     return getCardOutput.cardid;
   }
@@ -141,4 +142,4 @@ class PpCardCloneCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpCardCloneCommand();
+module.exports = new PpCardCloneCommand();

@@ -1,8 +1,8 @@
 import { GroupSettingTemplate } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 class AadGroupSettingTemplateListCommand extends GraphCommand {
   public get name(): string {
@@ -20,7 +20,7 @@ class AadGroupSettingTemplateListCommand extends GraphCommand {
   public async commandAction(logger: Logger): Promise<void> {
     try {
       const templates = await odata.getAllItems<GroupSettingTemplate>(`${this.resource}/v1.0/groupSettingTemplates`);
-      await logger.log(templates);
+      logger.log(templates);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -28,4 +28,4 @@ class AadGroupSettingTemplateListCommand extends GraphCommand {
   }
 }
 
-export default new AadGroupSettingTemplateListCommand();
+module.exports = new AadGroupSettingTemplateListCommand();

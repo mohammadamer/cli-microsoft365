@@ -1,6 +1,6 @@
-import { JsonRule } from '../../JsonRule.js';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/index.js';
+import { JsonRule } from '../../JsonRule';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model';
 
 export class FN006004_CFG_PS_developer extends JsonRule {
   constructor(private version?: string) {

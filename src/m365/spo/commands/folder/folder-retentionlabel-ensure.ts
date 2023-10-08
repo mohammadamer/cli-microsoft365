@@ -1,16 +1,18 @@
-import Command from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import spoListRetentionLabelEnsureCommand, { Options as SpoListRetentionLabelEnsureCommandOptions } from '../list/list-retentionlabel-ensure.js';
-import spoListItemRetentionLabelEnsureCommand, { Options as SpoListItemRetentionLabelEnsureCommandOptions } from '../listitem/listitem-retentionlabel-ensure.js';
-import { FolderProperties } from './FolderProperties.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import Command from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { FolderProperties } from './FolderProperties';
+import { Options as SpoListItemRetentionLabelEnsureCommandOptions } from '../listitem/listitem-retentionlabel-ensure';
+import * as SpoListItemRetentionLabelEnsureCommand from '../listitem/listitem-retentionlabel-ensure';
+import { Options as SpoListRetentionLabelEnsureCommandOptions } from '../list/list-retentionlabel-ensure';
+import * as SpoListRetentionLabelEnsureCommand from '../list/list-retentionlabel-ensure';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
 
 interface CommandArgs {
   options: Options;
@@ -104,10 +106,10 @@ class SpoFolderRetentionLabelEnsureCommand extends SpoCommand {
           verbose: this.verbose
         };
 
-        const spoListItemRetentionLabelEnsureCommandOutput = await Cli.executeCommandWithOutput(spoListItemRetentionLabelEnsureCommand as Command, { options: { ...options, _: [] } });
+        const spoListItemRetentionLabelEnsureCommandOutput = await Cli.executeCommandWithOutput(SpoListItemRetentionLabelEnsureCommand as Command, { options: { ...options, _: [] } });
 
         if (this.verbose) {
-          await logger.logToStderr(spoListItemRetentionLabelEnsureCommandOutput.stderr);
+          logger.logToStderr(spoListItemRetentionLabelEnsureCommandOutput.stderr);
         }
       }
       else {
@@ -120,10 +122,10 @@ class SpoFolderRetentionLabelEnsureCommand extends SpoCommand {
           verbose: this.verbose
         };
 
-        const spoListRetentionLabelEnsureCommandOutput = await Cli.executeCommandWithOutput(spoListRetentionLabelEnsureCommand as Command, { options: { ...options, _: [] } });
+        const spoListRetentionLabelEnsureCommandOutput = await Cli.executeCommandWithOutput(SpoListRetentionLabelEnsureCommand as Command, { options: { ...options, _: [] } });
 
         if (this.verbose) {
-          await logger.logToStderr(spoListRetentionLabelEnsureCommandOutput.stderr);
+          logger.logToStderr(spoListRetentionLabelEnsureCommandOutput.stderr);
         }
       }
     }
@@ -134,7 +136,7 @@ class SpoFolderRetentionLabelEnsureCommand extends SpoCommand {
 
   private async getFolderProperties(logger: Logger, args: CommandArgs): Promise<FolderProperties> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving list and item information for folder '${args.options.folderId || args.options.folderUrl}' in site at ${args.options.webUrl}...`);
+      logger.logToStderr(`Retrieving list and item information for folder '${args.options.folderId || args.options.folderUrl}' in site at ${args.options.webUrl}...`);
     }
 
     let requestUrl = `${args.options.webUrl}/_api/web/`;
@@ -159,4 +161,4 @@ class SpoFolderRetentionLabelEnsureCommand extends SpoCommand {
   }
 }
 
-export default new SpoFolderRetentionLabelEnsureCommand();
+module.exports = new SpoFolderRetentionLabelEnsureCommand();

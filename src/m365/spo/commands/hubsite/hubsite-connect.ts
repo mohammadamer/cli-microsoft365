@@ -1,13 +1,13 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { HubSite } from './HubSite.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { HubSite } from './HubSite';
+import request, { CliRequestOptions } from '../../../../request';
+import { spo } from '../../../../utils/spo';
 import { Cli } from '../../../../cli/Cli.js';
-import { formatting } from '../../../../utils/formatting.js';
+import { formatting } from '../../../../utils/formatting';
 
 interface CommandArgs {
   options: Options;
@@ -117,7 +117,7 @@ class SpoHubSiteConnectCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Connecting hub site '${args.options.id || args.options.title || args.options.url}' to hub site '${args.options.parentId || args.options.parentTitle || args.options.parentUrl}'...`);
+      logger.logToStderr(`Connecting hub site '${args.options.id || args.options.title || args.options.url}' to hub site '${args.options.parentId || args.options.parentTitle || args.options.parentUrl}'...`);
     }
 
     try {
@@ -184,4 +184,4 @@ class SpoHubSiteConnectCommand extends SpoCommand {
   }
 }
 
-export default new SpoHubSiteConnectCommand();
+module.exports = new SpoHubSiteConnectCommand();

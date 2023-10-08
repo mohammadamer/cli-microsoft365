@@ -1,7 +1,7 @@
-import { Cli } from "../../../../cli/Cli.js";
-import { Logger } from "../../../../cli/Logger.js";
-import AnonymousCommand from "../../../base/AnonymousCommand.js";
-import commands from "../../commands.js";
+import { Cli } from "../../../../cli/Cli";
+import { Logger } from "../../../../cli/Logger";
+import AnonymousCommand from "../../../base/AnonymousCommand";
+import commands from "../../commands";
 
 class CliConfigListCommand extends AnonymousCommand {
   public get name(): string {
@@ -13,8 +13,8 @@ class CliConfigListCommand extends AnonymousCommand {
   }
 
   public async commandAction(logger: Logger): Promise<void> {
-    await logger.log(Cli.getInstance().config.all);
+    logger.log(Cli.getInstance().config.all);
   }
 }
 
-export default new CliConfigListCommand();
+module.exports = new CliConfigListCommand();

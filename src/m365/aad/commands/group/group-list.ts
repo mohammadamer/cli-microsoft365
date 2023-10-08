@@ -1,10 +1,10 @@
 import { Group } from '@microsoft/microsoft-graph-types';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: GlobalOptions;
@@ -48,7 +48,7 @@ class AadGroupListCommand extends GraphCommand {
         });
       }
 
-      await logger.log(groups);
+      logger.log(groups);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -56,4 +56,4 @@ class AadGroupListCommand extends GraphCommand {
   }
 }
 
-export default new AadGroupListCommand();
+module.exports = new AadGroupListCommand();

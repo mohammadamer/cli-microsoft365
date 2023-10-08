@@ -1,5 +1,5 @@
-import { FN010001_YORC_version } from "./rules/FN010001_YORC_version.js";
+import { FN010001_YORC_version } from "./rules/FN010001_YORC_version";
 
-export default [
+module.exports = [
   new FN010001_YORC_version('1.3.2')
 ];

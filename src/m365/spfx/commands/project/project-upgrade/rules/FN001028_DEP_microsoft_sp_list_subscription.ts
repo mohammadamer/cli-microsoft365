@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN001028_DEP_microsoft_sp_list_subscription extends DependencyRule {
   constructor(packageVersion: string) {

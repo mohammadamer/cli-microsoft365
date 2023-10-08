@@ -1,12 +1,12 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import request from "../request.js";
-import { aadGroup } from './aadGroup.js';
-import { formatting } from './formatting.js';
-import { sinonUtil } from "./sinonUtil.js";
-import { Logger } from '../cli/Logger.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import request from "../request";
+import { aadGroup } from './aadGroup';
+import { formatting } from './formatting';
+import { sinonUtil } from "./sinonUtil";
+import { Logger } from '../cli/Logger';
 import { Cli } from '../cli/Cli.js';
-import { settingsNames } from '../settingsNames.js';
+import { settingsNames } from '../settingsNames';
 
 const validGroupName = 'Group name';
 const validGroupId = '00000000-0000-0000-0000-000000000000';
@@ -28,13 +28,13 @@ describe('utils/aadGroup', () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

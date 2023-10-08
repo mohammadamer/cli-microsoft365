@@ -1,15 +1,16 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import { Cli } from '../../cli/Cli.js';
-import { Logger } from '../../cli/Logger.js';
-import { telemetry } from '../../telemetry.js';
-import { app } from '../../utils/app.js';
-import { browserUtil } from '../../utils/browserUtil.js';
-import { pid } from '../../utils/pid.js';
-import { session } from '../../utils/session.js';
-import { sinonUtil } from '../../utils/sinonUtil.js';
-import commands from './commands.js';
-import command from './docs.js';
+import Command from '../../Command';
+import commands from './commands';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { Logger } from '../../cli/Logger';
+import { telemetry } from '../../telemetry';
+import { pid } from '../../utils/pid';
+import { session } from '../../utils/session';
+import { sinonUtil } from '../../utils/sinonUtil';
+import { Cli } from '../../cli/Cli';
+import { browserUtil } from '../../utils/browserUtil';
+const packageJSON = require('../../../package.json');
+const command: Command = require('./docs');
 
 describe(commands.DOCS, () => {
   let log: any[];
@@ -28,13 +29,13 @@ describe(commands.DOCS, () => {
     log = [];
     cli = Cli.getInstance();
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };
@@ -63,7 +64,7 @@ describe(commands.DOCS, () => {
 
   it('should log a message and return if autoOpenLinksInBrowser is false', async () => {
     await command.action(logger, { options: {} });
-    assert(loggerLogSpy.calledWith(app.packageJson().homepage));
+    assert(loggerLogSpy.calledWith(packageJSON.homepage));
   });
 
   it('should open the CLI for Microsoft 365 docs webpage URL using "open" if autoOpenLinksInBrowser is true', async () => {
@@ -77,6 +78,6 @@ describe(commands.DOCS, () => {
       throw 'Invalid url';
     });
     await command.action(logger, { options: {} });
-    assert(openStub.calledWith(app.packageJson().homepage));
+    assert(openStub.calledWith(packageJSON.homepage));
   });
 });

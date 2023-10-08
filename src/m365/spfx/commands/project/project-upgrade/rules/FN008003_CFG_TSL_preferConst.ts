@@ -1,6 +1,6 @@
-import { JsonRule } from '../../JsonRule.js';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/index.js';
+import { JsonRule } from '../../JsonRule';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model';
 
 export class FN008003_CFG_TSL_preferConst extends JsonRule {
   constructor() {

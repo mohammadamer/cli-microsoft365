@@ -1,11 +1,11 @@
-import os from 'os';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import * as os from 'os';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 import { ServicePrincipal } from '@microsoft/microsoft-graph-types';
 import { Cli } from '../../../../cli/Cli.js';
 
@@ -211,10 +211,10 @@ class AadAppRoleAssignmentAddCommand extends GraphCommand {
       const rolesAddedResponse = await Promise.all(tasks);
 
       if (args.options.output && args.options.output.toLowerCase() === 'json') {
-        await logger.log(rolesAddedResponse);
+        logger.log(rolesAddedResponse);
       }
       else {
-        await logger.log(rolesAddedResponse.map((result: any) => ({
+        logger.log(rolesAddedResponse.map((result: any) => ({
           objectId: result.id,
           principalDisplayName: result.principalDisplayName,
           resourceDisplayName: result.resourceDisplayName
@@ -244,4 +244,4 @@ class AadAppRoleAssignmentAddCommand extends GraphCommand {
   }
 }
 
-export default new AadAppRoleAssignmentAddCommand();
+module.exports = new AadAppRoleAssignmentAddCommand();

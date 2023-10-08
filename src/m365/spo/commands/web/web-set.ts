@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -200,14 +200,14 @@ class SpoWebSetCommand extends SpoCommand {
       };
 
       if (this.verbose) {
-        await logger.logToStderr(`Updating properties of subsite ${args.options.url}...`);
+        logger.logToStderr(`Updating properties of subsite ${args.options.url}...`);
       }
 
       await request.patch(requestOptions);
 
       if (typeof args.options.welcomePage !== 'undefined') {
         if (this.verbose) {
-          await logger.logToStderr(`Setting welcome page to: ${args.options.welcomePage}...`);
+          logger.logToStderr(`Setting welcome page to: ${args.options.welcomePage}...`);
         }
 
         const requestOptions: CliRequestOptions = {
@@ -235,4 +235,4 @@ class SpoWebSetCommand extends SpoCommand {
   }
 }
 
-export default new SpoWebSetCommand();
+module.exports = new SpoWebSetCommand();

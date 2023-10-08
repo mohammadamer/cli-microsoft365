@@ -1,10 +1,10 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -61,7 +61,7 @@ class SpoWebRoleInheritanceResetCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Restore role inheritance of subsite at ${args.options.webUrl}...`);
+      logger.logToStderr(`Restore role inheritance of subsite at ${args.options.webUrl}...`);
     }
 
     if (args.options.force) {
@@ -101,4 +101,4 @@ class SpoWebRoleInheritanceResetCommand extends SpoCommand {
   }
 }
 
-export default new SpoWebRoleInheritanceResetCommand();
+module.exports = new SpoWebRoleInheritanceResetCommand();

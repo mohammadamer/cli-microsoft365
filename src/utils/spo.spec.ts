@@ -1,14 +1,14 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../Auth.js';
-import { Logger } from '../cli/Logger.js';
-import config from '../config.js';
-import { RoleDefinition } from '../m365/spo/commands/roledefinition/RoleDefinition.js';
-import request from '../request.js';
-import { sinonUtil } from '../utils/sinonUtil.js';
-import { FormDigestInfo, spo } from '../utils/spo.js';
-import { aadGroup } from './aadGroup.js';
-import { formatting } from './formatting.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import auth from '../Auth';
+import { Logger } from '../cli/Logger';
+import request from '../request';
+import { sinonUtil } from '../utils/sinonUtil';
+import { FormDigestInfo, spo } from '../utils/spo';
+import { formatting } from './formatting';
+import { RoleDefinition } from '../m365/spo/commands/roledefinition/RoleDefinition';
+import config from '../config';
+import { aadGroup } from './aadGroup';
 
 const stubPostResponses: any = (
   folderAddResp: any = null
@@ -55,13 +55,13 @@ describe('utils/spo', () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

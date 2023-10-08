@@ -1,9 +1,10 @@
-import { Cli } from '../../../cli/Cli.js';
-import { Logger } from '../../../cli/Logger.js';
-import Command from '../../../Command.js';
-import aadAppGetCommand, { Options as AadAppGetCommandOptions } from '../../aad/commands/app/app-get.js';
-import AppCommand, { AppCommandArgs } from '../../base/AppCommand.js';
-import commands from '../commands.js';
+import { Cli } from '../../../cli/Cli';
+import { Logger } from '../../../cli/Logger';
+import Command from '../../../Command';
+import * as AadAppGetCommand from '../../aad/commands/app/app-get';
+import { Options as AadAppGetCommandOptions } from '../../aad/commands/app/app-get';
+import AppCommand, { AppCommandArgs } from '../../base/AppCommand';
+import commands from '../commands';
 
 class AppGetCommand extends AppCommand {
   public get name(): string {
@@ -23,12 +24,12 @@ class AppGetCommand extends AppCommand {
     };
 
     try {
-      const appGetOutput = await Cli.executeCommandWithOutput(aadAppGetCommand as Command, { options: { ...options, _: [] } });
+      const appGetOutput = await Cli.executeCommandWithOutput(AadAppGetCommand as Command, { options: { ...options, _: [] } });
       if (this.verbose) {
-        await logger.logToStderr(appGetOutput.stderr);
+        logger.logToStderr(appGetOutput.stderr);
       }
 
-      await logger.log(JSON.parse(appGetOutput.stdout));
+      logger.log(JSON.parse(appGetOutput.stdout));
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -36,4 +37,4 @@ class AppGetCommand extends AppCommand {
   }
 }
 
-export default new AppGetCommand();
+module.exports = new AppGetCommand();

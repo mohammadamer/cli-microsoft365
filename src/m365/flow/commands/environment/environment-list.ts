@@ -1,8 +1,8 @@
-import { CommandArgs } from '../../../../Command.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { odata } from '../../../../utils/odata.js';
-import AzmgmtCommand from '../../../base/AzmgmtCommand.js';
-import commands from '../../commands.js';
+import { CommandArgs } from '../../../../Command';
+import { Logger } from '../../../../cli/Logger';
+import { odata } from '../../../../utils/odata';
+import AzmgmtCommand from '../../../base/AzmgmtCommand';
+import commands from '../../commands';
 
 class FlowEnvironmentListCommand extends AzmgmtCommand {
   public get name(): string {
@@ -19,7 +19,7 @@ class FlowEnvironmentListCommand extends AzmgmtCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving list of Microsoft Flow environments...`);
+      logger.logToStderr(`Retrieving list of Microsoft Flow environments...`);
     }
 
     try {
@@ -29,9 +29,9 @@ class FlowEnvironmentListCommand extends AzmgmtCommand {
         res.forEach(e => {
           e.displayName = e.properties.displayName;
         });
-
-        await logger.log(res);
       }
+
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -39,4 +39,4 @@ class FlowEnvironmentListCommand extends AzmgmtCommand {
   }
 }
 
-export default new FlowEnvironmentListCommand();
+module.exports = new FlowEnvironmentListCommand();

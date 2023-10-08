@@ -1,17 +1,17 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import auth from '../../../../Auth.js';
-import { CommandError } from '../../../../Command.js';
-import { Cli } from '../../../../cli/Cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request from '../../../../request.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './tenant-settings-set.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import { telemetry } from '../../../../telemetry';
+import auth from '../../../../Auth';
+import { Logger } from '../../../../cli/Logger';
+import Command, { CommandError } from '../../../../Command';
+import request from '../../../../request';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+import { session } from '../../../../utils/session';
+import { pid } from '../../../../utils/pid';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Cli } from '../../../../cli/Cli';
+const command: Command = require('./tenant-settings-set');
 
 describe(commands.TENANT_SETTINGS_SET, () => {
   let commandInfo: CommandInfo;
@@ -83,13 +83,13 @@ describe(commands.TENANT_SETTINGS_SET, () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

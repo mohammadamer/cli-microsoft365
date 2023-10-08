@@ -1,14 +1,14 @@
 import { Group } from '@microsoft/microsoft-graph-types';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 import { setTimeout } from 'timers/promises';
-import fs from 'fs';
-import path from 'path';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
+import { aadGroup } from '../../../../utils/aadGroup';
 
 interface CommandArgs {
   options: Options;
@@ -150,7 +150,7 @@ class AadM365GroupSetCommand extends GraphCommand {
 
       if (args.options.displayName || args.options.description || typeof args.options.isPrivate !== 'undefined') {
         if (this.verbose) {
-          await logger.logToStderr(`Updating Microsoft 365 Group ${args.options.id}...`);
+          logger.logToStderr(`Updating Microsoft 365 Group ${args.options.id}...`);
         }
 
         const update: Group = {};
@@ -179,7 +179,7 @@ class AadM365GroupSetCommand extends GraphCommand {
       if (args.options.logoPath) {
         const fullPath: string = path.resolve(args.options.logoPath);
         if (this.verbose) {
-          await logger.logToStderr(`Setting group logo ${fullPath}...`);
+          logger.logToStderr(`Setting group logo ${fullPath}...`);
         }
 
         const requestOptions: CliRequestOptions = {
@@ -193,14 +193,14 @@ class AadM365GroupSetCommand extends GraphCommand {
         await this.setGroupLogo(requestOptions, AadM365GroupSetCommand.numRepeat, logger);
       }
       else if (this.debug) {
-        await logger.logToStderr('logoPath not set. Skipping');
+        logger.logToStderr('logoPath not set. Skipping');
       }
 
       if (args.options.owners) {
         const owners: string[] = args.options.owners.split(',').map(o => o.trim());
 
         if (this.verbose) {
-          await logger.logToStderr('Retrieving user information to set group owners...');
+          logger.logToStderr('Retrieving user information to set group owners...');
         }
 
         const requestOptions: CliRequestOptions = {
@@ -225,14 +225,14 @@ class AadM365GroupSetCommand extends GraphCommand {
         })));
       }
       else if (this.debug) {
-        await logger.logToStderr('Owners not set. Skipping');
+        logger.logToStderr('Owners not set. Skipping');
       }
 
       if (args.options.members) {
         const members: string[] = args.options.members.split(',').map(o => o.trim());
 
         if (this.verbose) {
-          await logger.logToStderr('Retrieving user information to set group members...');
+          logger.logToStderr('Retrieving user information to set group members...');
         }
 
         const requestOptions: CliRequestOptions = {
@@ -257,7 +257,7 @@ class AadM365GroupSetCommand extends GraphCommand {
         })));
       }
       else if (this.debug) {
-        await logger.logToStderr('Members not set. Skipping');
+        logger.logToStderr('Members not set. Skipping');
       }
     }
     catch (err: any) {
@@ -294,4 +294,4 @@ class AadM365GroupSetCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupSetCommand();
+module.exports = new AadM365GroupSetCommand();

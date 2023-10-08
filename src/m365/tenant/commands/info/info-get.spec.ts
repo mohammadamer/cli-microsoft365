@@ -1,5 +1,5 @@
-import assert from 'assert';
-import sinon from 'sinon';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
 import auth from '../../../../Auth.js';
 import { Cli } from '../../../../cli/Cli.js';
 import { CommandInfo } from '../../../../cli/CommandInfo.js';

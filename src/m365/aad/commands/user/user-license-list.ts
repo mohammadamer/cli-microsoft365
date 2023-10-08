@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { accessToken } from '../../../../utils/accessToken.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import auth from '../../../../Auth.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { accessToken } from '../../../../utils/accessToken';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import auth from '../../../../Auth';
 
 interface CommandArgs {
   options: Options;
@@ -88,7 +88,7 @@ class AadUserLicenseListCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving licenses from user: ${args.options.userId || args.options.userName || 'current user'}.`);
+      logger.logToStderr(`Retrieving licenses from user: ${args.options.userId || args.options.userName || 'current user'}.`);
     }
 
     let requestUrl: string = `${this.resource}/v1.0/`;
@@ -102,7 +102,7 @@ class AadUserLicenseListCommand extends GraphCommand {
 
     try {
       const items = await odata.getAllItems<any>(requestUrl);
-      await logger.log(items);
+      logger.log(items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -110,4 +110,4 @@ class AadUserLicenseListCommand extends GraphCommand {
   }
 }
 
-export default new AadUserLicenseListCommand();
+module.exports = new AadUserLicenseListCommand();

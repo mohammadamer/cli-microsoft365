@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { chili } from './chili.js';
+import { chili } from './chili';
 
 try {
   (async () => await chili.startConversation(process.argv.slice(2)))();

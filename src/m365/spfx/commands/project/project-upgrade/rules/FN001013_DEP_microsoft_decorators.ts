@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN001013_DEP_microsoft_decorators extends DependencyRule {
   constructor(packageVersion: string) {

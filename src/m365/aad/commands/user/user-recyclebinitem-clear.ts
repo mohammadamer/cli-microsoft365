@@ -1,11 +1,11 @@
 import { User } from '@microsoft/microsoft-graph-types';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -52,7 +52,7 @@ class AadUserRecycleBinItemClearCommand extends GraphCommand {
       try {
         const users = await odata.getAllItems<User>(`${this.resource}/v1.0/directory/deletedItems/microsoft.graph.user?$select=id`);
         if (this.verbose) {
-          await logger.logToStderr(`Amount of users to permanently delete: ${users.length}`);
+          logger.logToStderr(`Amount of users to permanently delete: ${users.length}`);
         }
         const batchRequests = users.map((user, index) => {
           return {
@@ -64,7 +64,7 @@ class AadUserRecycleBinItemClearCommand extends GraphCommand {
         for (let i = 0; i < batchRequests.length; i += 20) {
           const batchRequestChunk = batchRequests.slice(i, i + 20);
           if (this.verbose) {
-            await logger.logToStderr(`Deleting users: ${i + batchRequestChunk.length}/${users.length}`);
+            logger.logToStderr(`Deleting users: ${i + batchRequestChunk.length}/${users.length}`);
           }
 
           const requestOptions: CliRequestOptions = {
@@ -104,4 +104,4 @@ class AadUserRecycleBinItemClearCommand extends GraphCommand {
   }
 }
 
-export default new AadUserRecycleBinItemClearCommand();
+module.exports = new AadUserRecycleBinItemClearCommand();

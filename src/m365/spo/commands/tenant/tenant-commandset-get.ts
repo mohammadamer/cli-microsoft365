@@ -1,16 +1,16 @@
 import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { CommandError } from '../../../../Command.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { spo } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import { CommandError } from '../../../../Command';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { spo } from '../../../../utils/spo';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 import { ListItemInstance } from '../listitem/ListItemInstance';
-import { ListItemInstanceCollection } from '../listitem/ListItemInstanceCollection.js';
+import { ListItemInstanceCollection } from '../listitem/ListItemInstanceCollection';
 
 interface CommandArgs {
   options: Options;
@@ -122,9 +122,10 @@ class SpoTenantCommandSetGetCommand extends SpoCommand {
           const result = await Cli.handleMultipleResultsFound<ListItemInstance>(`Multiple ListView Command Sets with ${args.options.title || args.options.clientSideComponentId} were found.`, resultAsKeyValuePair);
           await logger.log(result);
         }
-        else {
-          await logger.log(listItemInstances.value[0]);
-        }
+
+        listItemInstances.value.forEach(v => delete v['ID']);
+
+        logger.log(listItemInstances.value[0]);
       }
       else {
         throw 'The specified ListView Command Set was not found';
@@ -136,4 +137,4 @@ class SpoTenantCommandSetGetCommand extends SpoCommand {
   }
 }
 
-export default new SpoTenantCommandSetGetCommand();
+module.exports = new SpoTenantCommandSetGetCommand();

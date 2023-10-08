@@ -1,5 +1,5 @@
-import path from 'path';
-import { JsonRule } from '../../JsonRule.js';
+import * as path from 'path';
+import { JsonRule } from '../../JsonRule';
 import { Project } from '../../project-model';
 import { Finding, Occurrence } from '../../report-model';
 

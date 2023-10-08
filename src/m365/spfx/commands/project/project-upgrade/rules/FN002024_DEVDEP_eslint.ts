@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN002024_DEVDEP_eslint extends DependencyRule {
   constructor(packageVersion: string) {

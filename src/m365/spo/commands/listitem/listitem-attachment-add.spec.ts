@@ -1,5 +1,5 @@
-import assert from 'assert';
-import sinon from 'sinon';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
 import { telemetry } from '../../../../telemetry.js';
 import auth from '../../../../Auth.js';
 import { Cli } from '../../../../cli/Cli.js';
@@ -12,7 +12,7 @@ import { session } from '../../../../utils/session.js';
 import { sinonUtil } from '../../../../utils/sinonUtil.js';
 import { urlUtil } from '../../../../utils/urlUtil.js';
 import commands from '../../commands.js';
-import fs from 'fs';
+import * as fs from 'fs';
 import request from '../../../../request.js';
 import command from './listitem-attachment-add.js';
 

@@ -1,21 +1,22 @@
 import { DeviceCodeResponse } from "@azure/msal-common";
 import * as msal from '@azure/msal-node';
-import assert from 'assert';
-import clipboard from 'clipboardy';
-import fs from 'fs';
+import * as assert from 'assert';
+import * as clipboard from 'clipboardy';
+import type * as Configstore from 'configstore';
+import * as fs from 'fs';
 import 'node-forge';
-import sinon from 'sinon';
-import { Auth, AuthType, CertificateType, CloudType, InteractiveAuthorizationCodeResponse, InteractiveAuthorizationErrorResponse, Service } from './Auth.js';
-import authServer from './AuthServer.js';
-import { CommandError } from './Command.js';
-import { FileTokenStorage } from './auth/FileTokenStorage.js';
-import { TokenStorage } from './auth/TokenStorage.js';
-import { Cli } from './cli/Cli.js';
-import { Logger } from './cli/Logger.js';
-import request from './request.js';
-import { accessToken } from "./utils/accessToken.js";
-import { browserUtil } from "./utils/browserUtil.js";
-import { sinonUtil } from './utils/sinonUtil.js';
+import * as sinon from 'sinon';
+import { Auth, AuthType, CertificateType, CloudType, InteractiveAuthorizationCodeResponse, InteractiveAuthorizationErrorResponse, Service } from './Auth';
+import { FileTokenStorage } from './auth/FileTokenStorage';
+import { TokenStorage } from './auth/TokenStorage';
+import authServer from './AuthServer';
+import { Cli } from './cli/Cli';
+import { Logger } from './cli/Logger';
+import { CommandError } from './Command';
+import request from './request';
+import { accessToken } from "./utils/accessToken";
+import { sinonUtil } from './utils/sinonUtil';
+import { browserUtil } from "./utils/browserUtil";
 
 class MockTokenStorage implements TokenStorage {
   public get(): Promise<string> {
@@ -52,9 +53,9 @@ describe('Auth', () => {
   const resource: string = 'https://contoso.sharepoint.com';
   let loggerSpy: sinon.SinonSpy;
   const logger: Logger = {
-    log: (msg: any) => log.push(msg) as any,
-    logRaw: (msg: any) => log.push(msg) as any,
-    logToStderr: (msg: any) => log.push(msg) as any
+    log: (msg: any) => log.push(msg),
+    logRaw: (msg: any) => log.push(msg),
+    logToStderr: (msg: any) => log.push(msg)
   };
   const loggerLogToStderrSpy = sinon.spy(logger, 'logToStderr');
   let readFileSyncStub: sinon.SinonStub;
@@ -99,9 +100,9 @@ describe('Auth', () => {
     auth.service.tenant = '9bc3ab49-b65d-410a-85ad-de819febfddd';
     (auth as any)._authServer = authServer;
     readFileSyncStub = sinon.stub(fs, 'readFileSync').callsFake(() => 'certificate');
-    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake(((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void) => {
+    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void) => {
       resolve(httpServerResponse);
-    }) as any);
+    });
     loggerSpy = sinon.spy(logger, 'log');
     (auth as any)._clipboardy = clipboard;
     openStub = sinon.stub(browserUtil, 'open').callsFake(async () => { return; });
@@ -384,7 +385,7 @@ describe('Auth', () => {
   });
 
   it('retrieves new access token using existing refresh token when refresh forced', (done) => {
-    const config = cli.config;
+    const config = cli.config as Configstore;
     sinon.stub(config, 'get').callsFake((() => { }) as any);
     const now = new Date();
     now.setSeconds(now.getSeconds() + 1);
@@ -413,7 +414,7 @@ describe('Auth', () => {
   });
 
   it('retrieves access token using device code authentication flow when no refresh token available and no authType specified', (done) => {
-    const config = cli.config;
+    const config = cli.config as Configstore;
     sinon.stub(config, 'get').callsFake((() => 'value'));
     sinon.stub(auth as any, 'getClientApplication').callsFake(_ => publicApplication);
     sinon.stub(tokenCache, 'getAllAccounts').callsFake(() => []);
@@ -436,7 +437,7 @@ describe('Auth', () => {
     });
   });
 
-  it('opens the browser with the login (using autoOpenLinksInBrowser)', async () => {
+  it('opens the browser with the login (using autoOpenLinksInBrowser)', () => {
     getSettingWithDefaultValueStub.restore();
     getSettingWithDefaultValueStub = sinon.stub(cli, 'getSettingWithDefaultValue').callsFake(((settingName, defaultValue) => {
       if (settingName === "autoOpenLinksInBrowser") { return true; }
@@ -448,22 +449,22 @@ describe('Auth', () => {
     openStub.restore();
     openStub = sinon.stub(browserUtil, 'open').callsFake(async () => { return; });
 
-    await (auth as any).processDeviceCodeCallback(response, logger, false);
+    (auth as any).processDeviceCodeCallback(response, logger, false);
     assert(openStub.called);
   });
 
-  it('copies the device code to the clipboard', async () => {
-    await (auth as any).processDeviceCodeCallback(response, logger, false);
+  it('copies the device code to the clipboard', () => {
+    (auth as any).processDeviceCodeCallback(response, logger, false);
     assert(clipboardStub.called);
   });
 
-  it('writes response from the device code request (debug)', async () => {
-    await (auth as any).processDeviceCodeCallback(response, logger, true);
+  it('writes response from the device code request (debug)', () => {
+    (auth as any).processDeviceCodeCallback(response, logger, true);
     assert(loggerLogToStderrSpy.calledWith(response));
   });
 
   it('retrieves token using device code authentication flow when authType deviceCode specified', (done) => {
-    const config = cli.config;
+    const config = cli.config as Configstore;
     sinon.stub(config, 'get').callsFake((() => 'value'));
     sinon.stub(auth as any, 'getClientApplication').callsFake(_ => publicApplication);
     sinon.stub(tokenCache, 'getAllAccounts').callsFake(() => []);
@@ -625,9 +626,9 @@ describe('Auth', () => {
     };
 
     initializeServerStub.restore();
-    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake(((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void, reject: (error: InteractiveAuthorizationErrorResponse) => void) => {
+    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void, reject: (error: InteractiveAuthorizationErrorResponse) => void) => {
       reject(error);
-    }) as any);
+    });
     auth.service.authType = AuthType.Browser;
 
     auth.ensureAccessToken(resource, logger, false).then(() => {
@@ -659,9 +660,9 @@ describe('Auth', () => {
     };
 
     initializeServerStub.restore();
-    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake(((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void, reject: (error: InteractiveAuthorizationErrorResponse) => void) => {
+    initializeServerStub = sinon.stub((auth as any)._authServer, 'initializeServer').callsFake((service: Service, resource: string, resolve: (error: InteractiveAuthorizationCodeResponse) => void, reject: (error: InteractiveAuthorizationErrorResponse) => void) => {
       reject(error);
-    }) as any);
+    });
     auth.service.authType = AuthType.Browser;
 
     auth.ensureAccessToken(resource, logger, true).then(() => {
@@ -734,9 +735,9 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -768,9 +769,9 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -803,9 +804,9 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -838,9 +839,9 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -874,10 +875,10 @@ describe('Auth', () => {
     let actualCert: string = '';
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      actualCert = cert as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      actualCert = cert;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -911,10 +912,10 @@ describe('Auth', () => {
     let actualCert: string = '';
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      actualCert = cert as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      actualCert = cert;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -946,8 +947,8 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -978,8 +979,8 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -1012,10 +1013,10 @@ describe('Auth', () => {
     let actualCert: string = '';
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      actualCert = cert as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      actualCert = cert;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -1049,10 +1050,10 @@ describe('Auth', () => {
     let actualCert: string = '';
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      actualCert = cert as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      actualCert = cert;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -1086,10 +1087,10 @@ describe('Auth', () => {
     let actualCert: string = '';
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      actualThumbprint = thumbprint as string;
-      actualCert = cert as string;
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      actualThumbprint = thumbprint;
+      actualCert = cert;
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -1120,8 +1121,8 @@ describe('Auth', () => {
 
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -1150,8 +1151,8 @@ describe('Auth', () => {
 
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.reject('An error has occurred'));
       return confidentialApplication;
     });
@@ -1177,8 +1178,8 @@ describe('Auth', () => {
 
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, thumbprint, cert);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, thumbprint, cert);
       sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.reject({ errorCode: 'error', errorMessage: 'An error has occurred' }));
       return confidentialApplication;
     });
@@ -2083,42 +2084,42 @@ describe('Auth', () => {
     assert.strictEqual(accessToken.isAppOnlyAccessToken('123.456'), undefined);
   });
 
-  it('returns public client for device code auth', async () => {
+  it('returns public client for device code auth', () => {
     auth.service.authType = AuthType.DeviceCode;
-    const actualClientApp = await (auth as any).getClientApplication(logger, false);
+    const actualClientApp = (auth as any).getClientApplication(logger, false);
     assert(actualClientApp instanceof msal.PublicClientApplication);
   });
 
-  it('returns public client for password auth', async () => {
+  it('returns public client for password auth', () => {
     auth.service.authType = AuthType.Password;
-    const actualClientApp = await (auth as any).getClientApplication(logger, false);
+    const actualClientApp = (auth as any).getClientApplication(logger, false);
     assert(actualClientApp instanceof msal.PublicClientApplication);
   });
 
-  it('changes tenant for a multitenant app for password auth to organizations', async () => {
+  it('changes tenant for a multitenant app for password auth to organizations', () => {
     auth.service.authType = AuthType.Password;
     auth.service.tenant = 'common';
-    await (auth as any).getClientApplication(logger, false);
+    (auth as any).getClientApplication(logger, false);
     assert.strictEqual(auth.service.tenant, 'organizations');
   });
 
-  it('returns public client for browser auth', async () => {
+  it('returns public client for browser auth', () => {
     auth.service.authType = AuthType.Browser;
-    const actualClientApp = await (auth as any).getClientApplication(logger, false);
+    const actualClientApp = (auth as any).getClientApplication(logger, false);
     assert(actualClientApp instanceof msal.PublicClientApplication);
   });
 
-  it('returns confidential client for certificate auth', async () => {
+  it('returns confidential client for certificate auth', () => {
     auth.service.authType = AuthType.Certificate;
     auth.service.thumbprint = 'ccf4f2a3c3d209c512b3724bb883a5474c0921dc';
-    const actualClientApp = await (auth as any).getClientApplication(logger, false);
+    const actualClientApp = (auth as any).getClientApplication(logger, false);
     assert(actualClientApp instanceof msal.ConfidentialClientApplication);
   });
 
-  it('returns confidential client for secret auth', async () => {
+  it('returns confidential client for secret auth', () => {
     auth.service.authType = AuthType.Secret;
     auth.service.secret = 'sOmeToPsecRetValue';
-    const actualClientApp = await (auth as any).getClientApplication(logger, false);
+    const actualClientApp = (auth as any).getClientApplication(logger, false);
     assert(actualClientApp instanceof msal.ConfidentialClientApplication);
   });
 
@@ -2129,8 +2130,8 @@ describe('Auth', () => {
     let acquireTokenByClientCredentialStub: any;
     let originalGetConfidentialClient = (auth as any).getConfidentialClient;
     originalGetConfidentialClient = originalGetConfidentialClient.bind(auth);
-    sinon.stub(auth as any, 'getConfidentialClient').callsFake(async (logger, debug, thumbprint, cert, clientSecret) => {
-      const confidentialApplication = await originalGetConfidentialClient(logger, debug, undefined, undefined, clientSecret);
+    sinon.stub(auth as any, 'getConfidentialClient').callsFake((logger, debug, thumbprint, cert, clientSecret) => {
+      const confidentialApplication = originalGetConfidentialClient(logger, debug, undefined, undefined, clientSecret);
       acquireTokenByClientCredentialStub = sinon.stub(confidentialApplication, 'acquireTokenByClientCredential').callsFake(_ => Promise.resolve({
         expiresOn: new Date(),
         accessToken: 'acc'
@@ -2153,27 +2154,27 @@ describe('Auth', () => {
     });
   });
 
-  it('configures cloud for auth to AzureChina for China cloud', async () => {
+  it('configures cloud for auth to AzureChina for China cloud', () => {
     auth.service.cloudType = CloudType.China;
-    const actual: msal.Configuration = await (auth as any).getAuthClientConfiguration(logger, false);
+    const actual: msal.Configuration = (auth as any).getAuthClientConfiguration(logger, false);
     assert.strictEqual(actual.auth.azureCloudOptions?.azureCloudInstance, msal.AzureCloudInstance.AzureChina);
   });
 
-  it('configures cloud for auth to AzureUsGovernment for USGov cloud', async () => {
+  it('configures cloud for auth to AzureUsGovernment for USGov cloud', () => {
     auth.service.cloudType = CloudType.USGov;
-    const actual: msal.Configuration = await (auth as any).getAuthClientConfiguration(logger, false);
+    const actual: msal.Configuration = (auth as any).getAuthClientConfiguration(logger, false);
     assert.strictEqual(actual.auth.azureCloudOptions?.azureCloudInstance, msal.AzureCloudInstance.AzureUsGovernment);
   });
 
-  it('configures cloud for auth to AzureUsGovernment for USGovHigh cloud', async () => {
+  it('configures cloud for auth to AzureUsGovernment for USGovHigh cloud', () => {
     auth.service.cloudType = CloudType.USGovHigh;
-    const actual: msal.Configuration = await (auth as any).getAuthClientConfiguration(logger, false);
+    const actual: msal.Configuration = (auth as any).getAuthClientConfiguration(logger, false);
     assert.strictEqual(actual.auth.azureCloudOptions?.azureCloudInstance, msal.AzureCloudInstance.AzureUsGovernment);
   });
 
-  it('configures cloud for auth to AzureUsGovernment for USGovDoD cloud', async () => {
+  it('configures cloud for auth to AzureUsGovernment for USGovDoD cloud', () => {
     auth.service.cloudType = CloudType.USGovDoD;
-    const actual: msal.Configuration = await (auth as any).getAuthClientConfiguration(logger, false);
+    const actual: msal.Configuration = (auth as any).getAuthClientConfiguration(logger, false);
     assert.strictEqual(actual.auth.azureCloudOptions?.azureCloudInstance, msal.AzureCloudInstance.AzureUsGovernment);
   });
 });

@@ -1,11 +1,11 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -100,7 +100,7 @@ class SpoListContentTypeAddCommand extends SpoCommand {
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
       const list: string = (args.options.listId ? args.options.listId : args.options.listTitle ? args.options.listTitle : args.options.listUrl) as string;
-      await logger.logToStderr(`Adding content type ${args.options.id} to list ${list} in site at ${args.options.webUrl}...`);
+      logger.logToStderr(`Adding content type ${args.options.id} to list ${list} in site at ${args.options.webUrl}...`);
     }
 
     let requestUrl: string = `${args.options.webUrl}/_api/web/`;
@@ -130,7 +130,7 @@ class SpoListContentTypeAddCommand extends SpoCommand {
 
     try {
       const res = await request.post<any>(requestOptions);
-      await logger.log(res);
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -138,4 +138,4 @@ class SpoListContentTypeAddCommand extends SpoCommand {
   }
 }
 
-export default new SpoListContentTypeAddCommand();
+module.exports = new SpoListContentTypeAddCommand();

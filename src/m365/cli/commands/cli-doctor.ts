@@ -1,11 +1,11 @@
-import os from 'os';
-import auth, { AuthType } from '../../../Auth.js';
-import { Cli } from '../../../cli/Cli.js';
-import { Logger } from '../../../cli/Logger.js';
-import Command from '../../../Command.js';
-import { app } from '../../../utils/app.js';
-import { validation } from '../../../utils/validation.js';
-import commands from '../commands.js';
+import * as os from 'os';
+import auth, { AuthType } from '../../../Auth';
+import { Cli } from '../../../cli/Cli';
+import { Logger } from '../../../cli/Logger';
+import Command from '../../../Command';
+import { validation } from '../../../utils/validation';
+import commands from '../commands';
+const packageJSON = require('../../../../package.json');
 
 interface CliDiagnosticInfo {
   os: {
@@ -50,7 +50,7 @@ class CliDoctorCommand extends Command {
         version: os.version(),
         release: os.release()
       },
-      cliVersion: app.packageJson().version,
+      cliVersion: packageJSON.version,
       nodeVersion: process.version,
       cliAadAppId: auth.service.appId,
       cliAadAppTenant: validation.isValidGuid(auth.service.tenant) ? 'single' : auth.service.tenant,
@@ -61,7 +61,7 @@ class CliDoctorCommand extends Command {
       scopes: scopes
     };
 
-    await logger.log(diagnosticInfo);
+    logger.log(diagnosticInfo);
   }
 
   private getRolesFromAccessToken(accessToken: string): string[] {
@@ -108,4 +108,4 @@ class CliDoctorCommand extends Command {
   }
 }
 
-export default new CliDoctorCommand();
+module.exports = new CliDoctorCommand();

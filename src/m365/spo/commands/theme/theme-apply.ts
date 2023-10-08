@@ -1,12 +1,12 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -88,7 +88,7 @@ class SpoThemeApplyCommand extends SpoCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Applying theme ${args.options.name} to the ${args.options.webUrl} site...`);
+        logger.logToStderr(`Applying theme ${args.options.name} to the ${args.options.webUrl} site...`);
       }
 
       let requestOptions: any = {};
@@ -123,7 +123,7 @@ class SpoThemeApplyCommand extends SpoCommand {
           throw json.error;
         }
         else {
-          await logger.log(json.value);
+          logger.log(json.value);
         }
       }
       else {
@@ -135,11 +135,11 @@ class SpoThemeApplyCommand extends SpoCommand {
         }
         else {
           const result: boolean = json[json.length - 1];
-          await logger.log(result);
+          logger.log(result);
         }
       }
-
-    }
+      
+    } 
     catch (err: any) {
       this.handleRejectedPromise(err);
     }
@@ -185,4 +185,4 @@ class SpoThemeApplyCommand extends SpoCommand {
   }
 }
 
-export default new SpoThemeApplyCommand();
+module.exports = new SpoThemeApplyCommand();

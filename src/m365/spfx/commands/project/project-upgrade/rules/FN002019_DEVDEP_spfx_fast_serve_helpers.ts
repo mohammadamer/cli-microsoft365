@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN002019_DEVDEP_spfx_fast_serve_helpers extends DependencyRule {
   constructor(packageVersion: string) {

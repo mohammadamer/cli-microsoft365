@@ -1,6 +1,6 @@
-import { DynamicRule, PnPJsRule } from "./rules/index.js";
+import { DynamicRule, PnPJsRule } from "./rules";
 
-export default [
+module.exports = [
   new PnPJsRule(),
   new DynamicRule()
 ];

@@ -1,12 +1,12 @@
 import { Application, KeyCredential, PublicClientApplication, SpaApplication, WebApplication } from '@microsoft/microsoft-graph-types';
-import fs from 'fs';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { Logger } from '../../../../cli/Logger.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import { Cli } from '../../../../cli/Cli.js';
+import * as fs from 'fs';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { Cli } from '../../../../cli/Cli';
 
 interface CommandArgs {
   options: Options;
@@ -133,7 +133,7 @@ class AadAppSetCommand extends GraphCommand {
     const { appId, name } = args.options;
 
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving information about Azure AD app ${appId ? appId : name}...`);
+      logger.logToStderr(`Retrieving information about Azure AD app ${appId ? appId : name}...`);
     }
 
     const filter: string = appId ?
@@ -170,7 +170,7 @@ class AadAppSetCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Configuring Azure AD application ID URI...`);
+      logger.logToStderr(`Configuring Azure AD application ID URI...`);
     }
 
     const identifierUris: string[] = args.options.uris
@@ -200,7 +200,7 @@ class AadAppSetCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Configuring Azure AD application redirect URIs...`);
+      logger.logToStderr(`Configuring Azure AD application redirect URIs...`);
     }
 
     const getAppRequestOptions: CliRequestOptions = {
@@ -284,14 +284,14 @@ class AadAppSetCommand extends GraphCommand {
     }
 
     if (this.verbose) {
-      await logger.logToStderr(`Setting certificate for Azure AD app...`);
+      logger.logToStderr(`Setting certificate for Azure AD app...`);
     }
 
-    const certificateBase64Encoded = await this.getCertificateBase64Encoded(args, logger);
+    const certificateBase64Encoded = this.getCertificateBase64Encoded(args, logger);
 
     const currentKeyCredentials = await this.getCurrentKeyCredentialsList(args, objectId, certificateBase64Encoded, logger);
     if (this.verbose) {
-      await logger.logToStderr(`Adding new keyCredential to list`);
+      logger.logToStderr(`Adding new keyCredential to list`);
     }
 
     // The KeyCredential graph type defines the 'key' property as 'NullableOption<number>'
@@ -310,13 +310,13 @@ class AadAppSetCommand extends GraphCommand {
     return this.updateKeyCredentials(objectId, keyCredentials, logger);
   }
 
-  private async getCertificateBase64Encoded(args: CommandArgs, logger: Logger): Promise<string> {
+  private getCertificateBase64Encoded(args: CommandArgs, logger: Logger): string {
     if (args.options.certificateBase64Encoded) {
       return args.options.certificateBase64Encoded;
     }
 
     if (this.debug) {
-      await logger.logToStderr(`Reading existing ${args.options.certificateFile}...`);
+      logger.logToStderr(`Reading existing ${args.options.certificateFile}...`);
     }
 
     try {
@@ -330,7 +330,7 @@ class AadAppSetCommand extends GraphCommand {
   // We first retrieve existing certificates because we need to specify the full list of certificates when updating the app.
   private async getCurrentKeyCredentialsList(args: CommandArgs, objectId: string, certificateBase64Encoded: string, logger: Logger): Promise<KeyCredential[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving current keyCredentials list for app`);
+      logger.logToStderr(`Retrieving current keyCredentials list for app`);
     }
 
     const getAppRequestOptions: CliRequestOptions = {
@@ -347,7 +347,7 @@ class AadAppSetCommand extends GraphCommand {
 
   private async updateKeyCredentials(objectId: string, keyCredentials: KeyCredential[], logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Updating keyCredentials in AAD app`);
+      logger.logToStderr(`Updating keyCredentials in AAD app`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -365,4 +365,4 @@ class AadAppSetCommand extends GraphCommand {
   }
 }
 
-export default new AadAppSetCommand();
+module.exports = new AadAppSetCommand();

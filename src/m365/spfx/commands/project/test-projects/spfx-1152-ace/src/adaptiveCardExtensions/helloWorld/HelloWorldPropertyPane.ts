@@ -1,5 +1,5 @@
 import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
-import strings from 'HelloWorldAdaptiveCardExtensionStrings';
+import * as strings from 'HelloWorldAdaptiveCardExtensionStrings';
 
 export class HelloWorldPropertyPane {
   public getPropertyPaneConfiguration(): IPropertyPaneConfiguration {

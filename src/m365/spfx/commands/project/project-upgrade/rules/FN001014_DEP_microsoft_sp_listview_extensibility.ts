@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN001014_DEP_microsoft_sp_listview_extensibility extends DependencyRule {
   constructor(packageVersion: string) {

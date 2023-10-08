@@ -1,12 +1,12 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { powerPlatform } from '../../../../utils/powerPlatform.js';
-import { validation } from '../../../../utils/validation.js';
-import PowerPlatformCommand from '../../../base/PowerPlatformCommand.js';
-import commands from '../../commands.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { powerPlatform } from '../../../../utils/powerPlatform';
+import { validation } from '../../../../utils/validation';
+import PowerPlatformCommand from '../../../base/PowerPlatformCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -88,14 +88,14 @@ class PpAiBuilderModelGetCommand extends PowerPlatformCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving an AI builder model '${args.options.id || args.options.name}'...`);
+      logger.logToStderr(`Retrieving an AI builder model '${args.options.id || args.options.name}'...`);
     }
 
     try {
       const dynamicsApiUrl = await powerPlatform.getDynamicsInstanceApiUrl(args.options.environmentName, args.options.asAdmin);
 
       const res = await this.getAiBuilderModel(dynamicsApiUrl, args.options);
-      await logger.log(res);
+      logger.log(res);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -132,4 +132,4 @@ class PpAiBuilderModelGetCommand extends PowerPlatformCommand {
   }
 }
 
-export default new PpAiBuilderModelGetCommand();
+module.exports = new PpAiBuilderModelGetCommand();

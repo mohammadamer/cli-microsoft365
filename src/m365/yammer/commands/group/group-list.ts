@@ -1,8 +1,8 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import YammerCommand from '../../../base/YammerCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import YammerCommand from '../../../base/YammerCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -113,7 +113,7 @@ class YammerGroupListCommand extends YammerCommand {
 
     try {
       await this.getAllItems(logger, args, 1);
-      await logger.log(this.items);
+      logger.log(this.items);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -121,4 +121,4 @@ class YammerGroupListCommand extends YammerCommand {
   }
 }
 
-export default new YammerGroupListCommand();
+module.exports = new YammerGroupListCommand();

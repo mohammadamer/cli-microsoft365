@@ -1,5 +1,5 @@
-import PeriodBasedReport from '../../../base/PeriodBasedReport.js';
-import commands from '../../commands.js';
+import PeriodBasedReport from '../../../base/PeriodBasedReport';
+import commands from '../../commands';
 
 class M365GroupReportActivityGroupCountsCommand extends PeriodBasedReport {
   public get name(): string {
@@ -15,4 +15,4 @@ class M365GroupReportActivityGroupCountsCommand extends PeriodBasedReport {
   }
 }
 
-export default new M365GroupReportActivityGroupCountsCommand();
+module.exports = new M365GroupReportActivityGroupCountsCommand();

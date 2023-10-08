@@ -1,4 +1,4 @@
-export * from './ExternalizeEntry.js';
-export * from './FileEdit.js';
-export * from './VisitationResult.js';
+export * from './ExternalizeEntry';
+export * from './FileEdit';
+export * from './VisitationResult';
 

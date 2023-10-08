@@ -1,13 +1,12 @@
-import child_process from 'child_process';
-import fs from 'fs';
+import * as fs from 'fs';
 import { homedir } from 'os';
-import util from 'util';
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { formatting } from '../../../../utils/formatting.js';
-import AnonymousCommand from '../../../base/AnonymousCommand.js';
-import commands from '../../commands.js';
+import * as util from 'util';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { formatting } from '../../../../utils/formatting';
+import AnonymousCommand from '../../../base/AnonymousCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -76,9 +75,9 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
         await this.clearTeamsCache(logger);
       }
       else {
-        await logger.logToStderr('This command will execute the following steps.');
-        await logger.logToStderr('- Stop the Microsoft Teams client.');
-        await logger.logToStderr('- Clear the Microsoft Teams cached files.');
+        logger.logToStderr('This command will execute the following steps.');
+        logger.logToStderr('- Stop the Microsoft Teams client.');
+        logger.logToStderr('- Clear the Microsoft Teams cached files.');
 
         const result = await Cli.prompt<{ continue: boolean }>({
           type: 'confirm',
@@ -98,25 +97,25 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
   }
 
   private async clearTeamsCache(logger: Logger): Promise<void> {
-    const filePath = await this.getTeamsCacheFolderPath(logger);
-    const folderExists = await this.checkIfCacheFolderExists(filePath, logger);
+    const filePath = this.getTeamsCacheFolderPath(logger);
+    const folderExists = this.checkIfCacheFolderExists(filePath, logger);
 
     if (folderExists) {
       await this.killRunningProcess(logger);
       await this.removeCacheFiles(filePath, logger);
-      await logger.logToStderr('Teams cache cleared!');
+      logger.logToStderr('Teams cache cleared!');
     }
     else {
-      await logger.logToStderr('Cache folder does not exist. Nothing to remove.');
+      logger.logToStderr('Cache folder does not exist. Nothing to remove.');
     }
 
   }
 
-  private async getTeamsCacheFolderPath(logger: Logger): Promise<string> {
+  private getTeamsCacheFolderPath(logger: Logger): string {
     const platform = process.platform;
 
     if (this.verbose) {
-      await logger.logToStderr(`Getting path of Teams cache folder for platform ${platform}...`);
+      logger.logToStderr(`Getting path of Teams cache folder for platform ${platform}...`);
     }
 
     let filePath = '';
@@ -132,9 +131,9 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
     return filePath;
   }
 
-  private async checkIfCacheFolderExists(filePath: string, logger: Logger): Promise<boolean> {
+  private checkIfCacheFolderExists(filePath: string, logger: Logger): boolean {
     if (this.verbose) {
-      await logger.logToStderr(`Checking if Teams cache folder exists at ${filePath}...`);
+      logger.logToStderr(`Checking if Teams cache folder exists at ${filePath}...`);
     }
 
     return fs.existsSync(filePath);
@@ -142,7 +141,7 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
 
   private async killRunningProcess(logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Stopping Teams client...');
+      logger.logToStderr('Stopping Teams client...');
     }
 
     const platform = process.platform;
@@ -158,13 +157,13 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
     }
 
     if (this.debug) {
-      await logger.logToStderr(cmd);
+      logger.logToStderr(cmd);
     }
 
     const cmdOutput = await this.exec(cmd);
 
     if (platform === 'darwin') {
-      process.kill(parseInt(cmdOutput.stdout));
+      process.kill(cmdOutput.stdout);
     }
     else if (platform === 'win32') {
       const processJson: Win32Process[] = formatting.parseCsvToJson(cmdOutput.stdout);
@@ -173,13 +172,13 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
       });
     }
     if (this.verbose) {
-      await logger.logToStderr('Teams client closed');
+      logger.logToStderr('Teams client closed');
     }
   }
 
   private async removeCacheFiles(filePath: string, logger: Logger): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr('Removing Teams cache files...');
+      logger.logToStderr('Removing Teams cache files...');
     }
 
     const platform = process.platform;
@@ -195,13 +194,13 @@ class TeamsCacheRemoveCommand extends AnonymousCommand {
     }
 
     if (this.debug) {
-      await logger.logToStderr(cmd);
+      logger.logToStderr(cmd);
     }
 
     await this.exec(cmd);
   }
 
-  private exec = util.promisify(child_process.exec);
+  private exec = util.promisify(require('child_process').exec);
 }
 
-export default new TeamsCacheRemoveCommand();
+module.exports = new TeamsCacheRemoveCommand();

@@ -1,4 +1,4 @@
-import { DependencyRule } from "./DependencyRule.js";
+import { DependencyRule } from "./DependencyRule";
 
 export class FN001011_DEP_microsoft_sp_dialog extends DependencyRule {
   constructor(packageVersion: string) {

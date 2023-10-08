@@ -1,15 +1,15 @@
 import { isNumber } from 'util';
-import { Cli } from '../../../cli/Cli.js';
-import { Logger } from '../../../cli/Logger.js';
-import GlobalOptions from '../../../GlobalOptions.js';
-import request from '../../../request.js';
-import { formatting } from '../../../utils/formatting.js';
-import { spo } from '../../../utils/spo.js';
-import { validation } from '../../../utils/validation.js';
-import SpoCommand from '../../base/SpoCommand.js';
-import commands from '../commands.js';
-import { ResultTableRow } from './search/datatypes/ResultTableRow.js';
-import { SearchResult } from './search/datatypes/SearchResult.js';
+import { Cli } from '../../../cli/Cli';
+import { Logger } from '../../../cli/Logger';
+import GlobalOptions from '../../../GlobalOptions';
+import request from '../../../request';
+import { formatting } from '../../../utils/formatting';
+import { spo } from '../../../utils/spo';
+import { validation } from '../../../utils/validation';
+import SpoCommand from '../../base/SpoCommand';
+import commands from '../commands';
+import { ResultTableRow } from './search/datatypes/ResultTableRow';
+import { SearchResult } from './search/datatypes/SearchResult';
 
 interface CommandArgs {
   options: Options;
@@ -209,7 +209,7 @@ class SpoSearchCommand extends SpoCommand {
       }
 
       if (this.verbose) {
-        await logger.logToStderr(`Executing search query '${args.options.queryText}' on site at ${webUrl}...`);
+        logger.logToStderr(`Executing search query '${args.options.queryText}' on site at ${webUrl}...`);
       }
 
       const startRow = args.options.startRow ? args.options.startRow : 0;
@@ -223,7 +223,7 @@ class SpoSearchCommand extends SpoCommand {
   }
 
   private async executeSearchQuery(logger: Logger, args: CommandArgs, webUrl: string, resultSet: SearchResult[], startRow: number): Promise<SearchResult[]> {
-    const requestUrl: string = await this.getRequestUrl(webUrl, logger, args, startRow);
+    const requestUrl: string = this.getRequestUrl(webUrl, logger, args, startRow);
     const requestOptions: any = {
       url: requestUrl,
       headers: {
@@ -243,7 +243,7 @@ class SpoSearchCommand extends SpoCommand {
     return resultSet;
   }
 
-  private async getRequestUrl(webUrl: string, logger: Logger, args: CommandArgs, startRow: number): Promise<string> {
+  private getRequestUrl(webUrl: string, logger: Logger, args: CommandArgs, startRow: number): string {
     // get the list of selected properties
     const selectPropertiesArray: string[] = this.getSelectPropertiesArray(args);
 
@@ -292,7 +292,7 @@ class SpoSearchCommand extends SpoCommand {
     );
 
     if (this.debug) {
-      await logger.logToStderr(`RequestURL: ${requestUrl}`);
+      logger.logToStderr(`RequestURL: ${requestUrl}`);
     }
 
     return requestUrl;
@@ -318,18 +318,18 @@ class SpoSearchCommand extends SpoCommand {
       : ["Title", "OriginalPath"];
   }
 
-  private async printResults(logger: Logger, args: CommandArgs, results: SearchResult[]): Promise<void> {
+  private printResults(logger: Logger, args: CommandArgs, results: SearchResult[]): void {
     if (args.options.rawOutput) {
-      await logger.log(results);
+      logger.log(results);
     }
     else {
-      await logger.log(this.getParsedOutput(args, results));
+      logger.log(this.getParsedOutput(args, results));
     }
 
     if (!args.options.output || Cli.shouldTrimOutput(args.options.output)) {
-      await logger.log("# Rows: " + results[results.length - 1].PrimaryQueryResult.RelevantResults.TotalRows);
-      await logger.log("# Rows (Including duplicates): " + results[results.length - 1].PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates);
-      await logger.log("Elapsed Time: " + this.getElapsedTime(results));
+      logger.log("# Rows: " + results[results.length - 1].PrimaryQueryResult.RelevantResults.TotalRows);
+      logger.log("# Rows (Including duplicates): " + results[results.length - 1].PrimaryQueryResult.RelevantResults.TotalRowsIncludingDuplicates);
+      logger.log("Elapsed Time: " + this.getElapsedTime(results));
     }
   }
 
@@ -372,4 +372,4 @@ class SpoSearchCommand extends SpoCommand {
   }
 }
 
-export default new SpoSearchCommand();
+module.exports = new SpoSearchCommand();

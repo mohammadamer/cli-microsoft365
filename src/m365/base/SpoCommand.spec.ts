@@ -1,14 +1,14 @@
-import assert from 'assert';
-import sinon from 'sinon';
-import { telemetry } from '../../telemetry.js';
-import auth from '../../Auth.js';
-import { Logger } from '../../cli/Logger.js';
-import { CommandError } from '../../Command.js';
-import request from '../../request.js';
-import { pid } from '../../utils/pid.js';
-import { session } from '../../utils/session.js';
-import { sinonUtil } from '../../utils/sinonUtil.js';
-import SpoCommand from './SpoCommand.js';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import auth from '../../Auth';
+import { Logger } from '../../cli/Logger';
+import { CommandError } from '../../Command';
+import request from '../../request';
+import { telemetry } from '../../telemetry';
+import { pid } from '../../utils/pid';
+import { session } from '../../utils/session';
+import { sinonUtil } from '../../utils/sinonUtil';
+import SpoCommand from './SpoCommand';
 
 class MockCommand extends SpoCommand {
   public get name(): string {
@@ -58,13 +58,13 @@ describe('SpoCommand', () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };
@@ -91,9 +91,9 @@ describe('SpoCommand', () => {
     const command = new MockCommand();
 
     const logger: Logger = {
-      log: async () => { },
-      logRaw: async () => { },
-      logToStderr: async () => { }
+      log: () => { },
+      logRaw: () => { },
+      logToStderr: () => { }
     };
 
     await assert.rejects(command.action(logger, { options: {} } as any), new CommandError('An error has occurred'));
@@ -103,9 +103,9 @@ describe('SpoCommand', () => {
     sinon.stub(auth, 'restoreAuth').callsFake(async () => { throw 'An error has occurred'; });
     const command = new MockCommand();
     const logger: Logger = {
-      log: async () => { },
-      logRaw: async () => { },
-      logToStderr: async () => { }
+      log: () => { },
+      logRaw: () => { },
+      logToStderr: () => { }
     };
     const commandCommandActionSpy = sinon.spy(command, 'commandAction');
     await assert.rejects(command.action(logger, { options: {} }));

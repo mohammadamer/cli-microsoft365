@@ -1,7 +1,7 @@
-import parse from 'json-to-ast';
-import path from 'path';
-import { JsonRule } from '../../JsonRule.js';
-import { Occurrence } from '../../report-model/index.js';
+import * as parse from 'json-to-ast';
+import * as path from 'path';
+import { JsonRule } from '../../JsonRule';
+import { Occurrence } from '../../report-model';
 
 export abstract class ManifestRule extends JsonRule {
   get resolutionType(): string {

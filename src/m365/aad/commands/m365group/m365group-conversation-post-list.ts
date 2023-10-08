@@ -1,12 +1,12 @@
 import { Post } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import { aadGroup } from '../../../../utils/aadGroup';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { formatting } from '../../../../utils/formatting';
 
 interface CommandArgs {
   options: Options;
@@ -89,7 +89,7 @@ class AadM365GroupConversationPostListCommand extends GraphCommand {
       }
 
       const posts = await odata.getAllItems<Post>(`${this.resource}/v1.0/groups/${retrievedgroupId}/threads/${args.options.threadId}/posts`);
-      await logger.log(posts);
+      logger.log(posts);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -106,4 +106,4 @@ class AadM365GroupConversationPostListCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupConversationPostListCommand();
+module.exports = new AadM365GroupConversationPostListCommand();

@@ -1,10 +1,10 @@
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import commands from '../../commands.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { CustomAction } from '../customaction/customaction.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import commands from '../../commands';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import request, { CliRequestOptions } from '../../../../request';
+import { CustomAction } from '../customaction/customaction';
 
 interface CommandArgs {
   options: Options;
@@ -103,7 +103,7 @@ class SpoCommandSetAddCommand extends SpoCommand {
 
   public async commandAction(logger: Logger, args: CommandArgs): Promise<void> {
     if (this.verbose) {
-      await logger.logToStderr(`Adding ListView Command Set ${args.options.clientSideComponentId} to site '${args.options.webUrl}'...`);
+      logger.logToStderr(`Adding ListView Command Set ${args.options.clientSideComponentId} to site '${args.options.webUrl}'...`);
     }
 
     if (!args.options.scope) {
@@ -136,7 +136,7 @@ class SpoCommandSetAddCommand extends SpoCommand {
       };
       const response = await request.post<CustomAction>(requestOptions);
 
-      await logger.log(response);
+      logger.log(response);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -166,4 +166,4 @@ class SpoCommandSetAddCommand extends SpoCommand {
   }
 }
 
-export default new SpoCommandSetAddCommand();
+module.exports = new SpoCommandSetAddCommand();

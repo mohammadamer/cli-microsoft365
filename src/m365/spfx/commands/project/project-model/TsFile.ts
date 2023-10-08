@@ -1,7 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import ts from 'typescript';
-import { tsUtil } from '../../../../../utils/tsUtil.js';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as ts from 'typescript';
 
 export class TsFile {
   private _sourceFile: ts.SourceFile | undefined;
@@ -12,7 +11,7 @@ export class TsFile {
       }
 
       try {
-        this._sourceFile = tsUtil.createSourceFile(path.basename(this.path), this.source, ts.ScriptTarget.Latest, true);
+        this._sourceFile = ts.createSourceFile(path.basename(this.path), this.source, ts.ScriptTarget.Latest, true);
       }
       catch { }
     }
@@ -50,11 +49,11 @@ export class TsFile {
 
   private static getAsEnumerable(file: ts.SourceFile, node: ts.Node): ts.Node[] {
     const nodes: ts.Node[] = [node];
-
+  
     node.getChildren(file).forEach(n => {
       nodes.push(...TsFile.getAsEnumerable(file, n));
     });
-
+  
     return nodes;
   }
 }

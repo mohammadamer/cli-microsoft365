@@ -1,12 +1,12 @@
 import { Team } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { odata } from '../../../../utils/odata.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
-import { validation } from '../../../../utils/validation.js';
-import { formatting } from '../../../../utils/formatting.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { odata } from '../../../../utils/odata';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
+import { validation } from '../../../../utils/validation';
+import { formatting } from '../../../../utils/formatting';
 
 interface CommandArgs {
   options: Options;
@@ -134,13 +134,13 @@ class TeamsTeamListCommand extends GraphCommand {
       const groupIds = groupResponse.map(g => g.id);
 
       if (this.verbose) {
-        await logger.logToStderr(`Retrieved ${groupIds.length} Microsoft Teams, getting additional information...`);
+        logger.logToStderr(`Retrieved ${groupIds.length} Microsoft Teams, getting additional information...`);
       }
 
       let teams = await this.getAllTeams(groupIds);
       // Sort teams by display name
       teams = teams.sort((x: Team, y: Team) => x.displayName!.localeCompare(y.displayName!));
-      await logger.log(teams);
+      logger.log(teams);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -193,4 +193,4 @@ class TeamsTeamListCommand extends GraphCommand {
   }
 }
 
-export default new TeamsTeamListCommand();
+module.exports = new TeamsTeamListCommand();

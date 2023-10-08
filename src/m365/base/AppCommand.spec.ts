@@ -1,12 +1,12 @@
-import assert from 'assert';
-import fs from 'fs';
-import sinon from 'sinon';
-import { Cli } from '../../cli/Cli.js';
-import { CommandInfo } from '../../cli/CommandInfo.js';
-import { Logger } from '../../cli/Logger.js';
-import Command, { CommandError } from '../../Command.js';
-import { sinonUtil } from '../../utils/sinonUtil.js';
-import AppCommand from './AppCommand.js';
+import * as assert from 'assert';
+import * as fs from 'fs';
+import { Cli } from '../../cli/Cli';
+import { CommandInfo } from '../../cli/CommandInfo';
+import { Logger } from '../../cli/Logger';
+import { sinonUtil } from '../../utils/sinonUtil';
+import AppCommand from './AppCommand';
+import sinon = require('sinon');
+import Command, { CommandError } from '../../Command';
 
 class MockCommand extends AppCommand {
   public get name(): string {
@@ -38,13 +38,13 @@ describe('AppCommand', () => {
     cmd = new MockCommand();
     log = [];
     logger = {
-      log: async (msg: string) => {
+      log: (msg: string) => {
         log.push(msg);
       },
-      logRaw: async (msg: string) => {
+      logRaw: (msg: string) => {
         log.push(msg);
       },
-      logToStderr: async (msg: string) => {
+      logToStderr: (msg: string) => {
         log.push(msg);
       }
     };

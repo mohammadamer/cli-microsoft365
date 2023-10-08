@@ -1,14 +1,14 @@
-import { Auth } from '../../../../Auth.js';
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { ClientSvcResponse, ClientSvcResponseContents, spo } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Auth } from '../../../../Auth';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { ClientSvcResponse, ClientSvcResponseContents, spo } from '../../../../utils/spo';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -120,20 +120,20 @@ class SpoListItemIsRecordCommand extends SpoCommand {
     let listId: string = '';
 
     if (this.debug) {
-      await logger.logToStderr(`Retrieving access token for ${resource}...`);
+      logger.logToStderr(`Retrieving access token for ${resource}...`);
     }
 
     try {
       if (typeof args.options.listId !== 'undefined') {
         if (this.verbose) {
-          await logger.logToStderr(`List Id passed in as an argument.`);
+          logger.logToStderr(`List Id passed in as an argument.`);
         }
 
         listId = args.options.listId;
       }
       else {
         if (this.verbose) {
-          await logger.logToStderr(`Getting list id for list ${args.options.listTitle ? args.options.listTitle : args.options.listUrl}`);
+          logger.logToStderr(`Getting list id for list ${args.options.listTitle ? args.options.listTitle : args.options.listUrl}`);
         }
         const requestOptions: CliRequestOptions = {
           url: `${requestUrl}?$select=Id`,
@@ -148,7 +148,7 @@ class SpoListItemIsRecordCommand extends SpoCommand {
       }
 
       if (this.debug) {
-        await logger.logToStderr(`Getting request digest for request`);
+        logger.logToStderr(`Getting request digest for request`);
       }
 
       const reqDigest = await spo.getRequestDigest(args.options.webUrl);
@@ -157,7 +157,7 @@ class SpoListItemIsRecordCommand extends SpoCommand {
       const webIdentityResp = await spo.getCurrentWebIdentity(args.options.webUrl, formDigestValue);
 
       if (this.verbose) {
-        await logger.logToStderr(`Checking if list item is a record in list ${args.options.listId ? args.options.listId : args.options.listTitle ? args.options.listTitle : args.options.listUrl} in site ${args.options.webUrl}...`);
+        logger.logToStderr(`Checking if list item is a record in list ${args.options.listId ? args.options.listId : args.options.listTitle ? args.options.listTitle : args.options.listUrl} in site ${args.options.webUrl}...`);
       }
 
       const requestBody = this.getIsRecordRequestBody(webIdentityResp.objectIdentity, listId, args.options.id);
@@ -180,7 +180,7 @@ class SpoListItemIsRecordCommand extends SpoCommand {
       }
       else {
         const result: boolean = json[json.length - 1];
-        await logger.log(result);
+        logger.log(result);
       }
     }
     catch (err: any) {
@@ -202,4 +202,4 @@ class SpoListItemIsRecordCommand extends SpoCommand {
   }
 }
 
-export default new SpoListItemIsRecordCommand();
+module.exports = new SpoListItemIsRecordCommand();

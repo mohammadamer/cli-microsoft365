@@ -1,12 +1,12 @@
 import { PlannerBucket } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
-import { odata } from '../../../../utils/odata.js';
-import { planner } from '../../../../utils/planner.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import { aadGroup } from '../../../../utils/aadGroup';
+import { planner } from '../../../../utils/planner';
+import GraphCommand from '../../../base/GraphCommand';
+import commands from '../../commands';
 
 interface CommandArgs {
   options: Options;
@@ -105,7 +105,7 @@ class PlannerBucketListCommand extends GraphCommand {
     try {
       const planId = await this.getPlanId(args);
       const buckets = await odata.getAllItems<PlannerBucket>(`${this.resource}/v1.0/planner/plans/${planId}/buckets`);
-      await logger.log(buckets);
+      logger.log(buckets);
     }
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
@@ -137,4 +137,4 @@ class PlannerBucketListCommand extends GraphCommand {
   }
 }
 
-export default new PlannerBucketListCommand();
+module.exports = new PlannerBucketListCommand();

@@ -1,9 +1,9 @@
-import { Logger } from '../../../../cli/Logger.js';
-import config from '../../../../config.js';
-import request from '../../../../request.js';
-import { ClientSvcResponse, ClientSvcResponseContents, ContextInfo, spo } from '../../../../utils/spo.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
+import { Logger } from '../../../../cli/Logger';
+import config from '../../../../config';
+import request from '../../../../request';
+import { spo, ContextInfo, ClientSvcResponse, ClientSvcResponseContents } from '../../../../utils/spo';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
 
 class SpoTenantSettingsListCommand extends SpoCommand {
   public get name(): string {
@@ -60,12 +60,12 @@ class SpoTenantSettingsListCommand extends SpoCommand {
       result['SpecialCharactersStateInFileFolderNames'] = specialCharactersState[result['SpecialCharactersStateInFileFolderNames']];
       result['LimitedAccessFileType'] = sPOLimitedAccessFileType[result['LimitedAccessFileType']];
 
-      await logger.log(result);
-    }
+      logger.log(result);
+    } 
     catch (err: any) {
       this.handleRejectedODataJsonPromise(err);
     }
   }
 }
 
-export default new SpoTenantSettingsListCommand();
+module.exports = new SpoTenantSettingsListCommand();

@@ -1,7 +1,7 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import { Project } from '../../project-model';
-import { Finding } from '../../report-model/Finding.js';
-import { FN001035_DEP_fluentui_react } from './FN001035_DEP_fluentui_react.js';
+import { Finding } from '../../report-model/Finding';
+import { FN001035_DEP_fluentui_react } from './FN001035_DEP_fluentui_react';
 
 describe('FN001035_DEP_fluentui_react', () => {
   let findings: Finding[];

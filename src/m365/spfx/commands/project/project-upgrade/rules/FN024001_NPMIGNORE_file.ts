@@ -1,6 +1,6 @@
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/index.js';
-import { Rule } from '../../Rule.js';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model';
+import { Rule } from '../../Rule';
 
 export class FN024001_NPMIGNORE_file extends Rule {
   constructor() {

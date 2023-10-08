@@ -1,6 +1,6 @@
-import { Finding, Occurrence } from '../../report-model/index.js';
-import { Project } from '../../project-model/index.js';
-import { ManifestRule } from "./ManifestRule.js";
+import { Finding, Occurrence } from '../../report-model';
+import { Project } from '../../project-model';
+import { ManifestRule } from "./ManifestRule";
 
 export class FN011009_MAN_webpart_safeWithCustomScriptDisabled extends ManifestRule {
   constructor(private add: boolean) {

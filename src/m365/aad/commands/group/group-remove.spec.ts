@@ -1,5 +1,5 @@
-import assert from 'assert';
-import sinon from 'sinon';
+import * as assert from 'assert';
+import * as sinon from 'sinon';
 import auth from '../../../../Auth.js';
 import commands from '../../commands.js';
 import request from '../../../../request.js';

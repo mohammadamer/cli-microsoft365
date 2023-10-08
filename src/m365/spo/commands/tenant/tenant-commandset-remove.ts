@@ -1,15 +1,15 @@
-import { Cli } from '../../../../cli/Cli.js';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { formatting } from '../../../../utils/formatting.js';
-import { odata } from '../../../../utils/odata.js';
-import { spo } from '../../../../utils/spo.js';
-import { urlUtil } from '../../../../utils/urlUtil.js';
-import { validation } from '../../../../utils/validation.js';
-import SpoCommand from '../../../base/SpoCommand.js';
-import commands from '../../commands.js';
-import { ListItemInstance } from '../listitem/ListItemInstance.js';
+import { Cli } from '../../../../cli/Cli';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { formatting } from '../../../../utils/formatting';
+import { odata } from '../../../../utils/odata';
+import { spo } from '../../../../utils/spo';
+import { urlUtil } from '../../../../utils/urlUtil';
+import { validation } from '../../../../utils/validation';
+import SpoCommand from '../../../base/SpoCommand';
+import commands from '../../commands';
+import { ListItemInstance } from '../listitem/ListItemInstance';
 
 interface CommandArgs {
   options: Options;
@@ -110,7 +110,7 @@ class SpoTenantCommandSetRemoveCommand extends SpoCommand {
       }
     }
     catch (err: any) {
-      await logger.log(err);
+      logger.log(err);
       this.handleRejectedODataJsonPromise(err);
     }
   }
@@ -127,7 +127,7 @@ class SpoTenantCommandSetRemoveCommand extends SpoCommand {
     const id = await this.getTenantCommandSetId(logger, args, requestUrl);
 
     if (this.verbose) {
-      await logger.logToStderr(`Removing tenant command set ${args.options.id || args.options.title || args.options.clientSideComponentId}`);
+      logger.logToStderr(`Removing tenant command set ${args.options.id || args.options.title || args.options.clientSideComponentId}`);
     }
 
     const requestOptions: CliRequestOptions = {
@@ -146,7 +146,7 @@ class SpoTenantCommandSetRemoveCommand extends SpoCommand {
 
   public async getTenantCommandSetId(logger: Logger, args: CommandArgs, requestUrl: string): Promise<number> {
     if (this.verbose) {
-      await logger.logToStderr(`Getting the tenant command set ${args.options.id || args.options.title || args.options.clientSideComponentId}`);
+      logger.logToStderr(`Getting the tenant command set ${args.options.id || args.options.title || args.options.clientSideComponentId}`);
     }
 
     let filter: string = '';
@@ -176,4 +176,4 @@ class SpoTenantCommandSetRemoveCommand extends SpoCommand {
   }
 }
 
-export default new SpoTenantCommandSetRemoveCommand();
+module.exports = new SpoTenantCommandSetRemoveCommand();

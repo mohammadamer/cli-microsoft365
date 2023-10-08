@@ -1,7 +1,7 @@
-import assert from 'assert';
-import { Project } from '../../project-model/index.js';
-import { Finding } from '../../report-model/Finding.js';
-import { FN001021_DEP_microsoft_sp_property_pane } from './FN001021_DEP_microsoft_sp_property_pane.js';
+import * as assert from 'assert';
+import { Project } from '../../project-model';
+import { Finding } from '../../report-model/Finding';
+import { FN001021_DEP_microsoft_sp_property_pane } from './FN001021_DEP_microsoft_sp_property_pane';
 
 describe('FN001021_DEP_microsoft_sp_property_pane', () => {
   let findings: Finding[];

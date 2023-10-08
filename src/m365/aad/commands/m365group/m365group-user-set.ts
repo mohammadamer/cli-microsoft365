@@ -1,13 +1,13 @@
 import { User } from '@microsoft/microsoft-graph-types';
-import { Logger } from '../../../../cli/Logger.js';
-import GlobalOptions from '../../../../GlobalOptions.js';
-import request, { CliRequestOptions } from '../../../../request.js';
-import { odata } from '../../../../utils/odata.js';
-import { validation } from '../../../../utils/validation.js';
-import GraphCommand from '../../../base/GraphCommand.js';
-import teamsCommands from '../../../teams/commands.js';
-import commands from '../../commands.js';
-import { aadGroup } from '../../../../utils/aadGroup.js';
+import { Logger } from '../../../../cli/Logger';
+import GlobalOptions from '../../../../GlobalOptions';
+import request, { CliRequestOptions } from '../../../../request';
+import { odata } from '../../../../utils/odata';
+import { validation } from '../../../../utils/validation';
+import GraphCommand from '../../../base/GraphCommand';
+import teamsCommands from '../../../teams/commands';
+import commands from '../../commands';
+import { aadGroup } from '../../../../utils/aadGroup';
 
 interface CommandArgs {
   options: Options;
@@ -115,9 +115,9 @@ class AadM365GroupUserSetCommand extends GraphCommand {
       );
 
       if (this.debug) {
-        await logger.logToStderr((typeof args.options.groupId !== 'undefined') ? 'Group owners and members:' : 'Team owners and members:');
-        await logger.logToStderr(users);
-        await logger.logToStderr('');
+        logger.logToStderr((typeof args.options.groupId !== 'undefined') ? 'Group owners and members:' : 'Team owners and members:');
+        logger.logToStderr(users);
+        logger.logToStderr('');
       }
 
       if (users.filter(i => args.options.userName.toUpperCase() === i.userPrincipalName!.toUpperCase()).length <= 0) {
@@ -184,7 +184,7 @@ class AadM365GroupUserSetCommand extends GraphCommand {
 
   private async getOwners(groupId: string, logger: Logger): Promise<User[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving owners of the group with id ${groupId}`);
+      logger.logToStderr(`Retrieving owners of the group with id ${groupId}`);
     }
 
     const endpoint: string = `${this.resource}/v1.0/groups/${groupId}/owners?$select=id,displayName,userPrincipalName,userType`;
@@ -202,7 +202,7 @@ class AadM365GroupUserSetCommand extends GraphCommand {
 
   private async getMembersAndGuests(groupId: string, logger: Logger): Promise<User[]> {
     if (this.verbose) {
-      await logger.logToStderr(`Retrieving members of the group with id ${groupId}`);
+      logger.logToStderr(`Retrieving members of the group with id ${groupId}`);
     }
 
     const endpoint: string = `${this.resource}/v1.0/groups/${groupId}/members?$select=id,displayName,userPrincipalName,userType`;
@@ -210,4 +210,4 @@ class AadM365GroupUserSetCommand extends GraphCommand {
   }
 }
 
-export default new AadM365GroupUserSetCommand();
+module.exports = new AadM365GroupUserSetCommand();
