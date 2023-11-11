@@ -2,13 +2,13 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import auth from '../Auth';
 import { Logger } from '../cli/Logger';
+import config from '../config';
+import { RoleDefinition } from '../m365/spo/commands/roledefinition/RoleDefinition';
 import request from '../request';
 import { sinonUtil } from '../utils/sinonUtil';
 import { FormDigestInfo, spo } from '../utils/spo';
-import { formatting } from './formatting';
-import { RoleDefinition } from '../m365/spo/commands/roledefinition/RoleDefinition';
-import config from '../config';
 import { aadGroup } from './aadGroup';
+import { formatting } from './formatting';
 
 const stubPostResponses: any = (
   folderAddResp: any = null
@@ -55,13 +55,13 @@ describe('utils/spo', () => {
   beforeEach(() => {
     log = [];
     logger = {
-      log: (msg: string) => {
+      log: async (msg: string) => {
         log.push(msg);
       },
-      logRaw: (msg: string) => {
+      logRaw: async (msg: string) => {
         log.push(msg);
       },
-      logToStderr: (msg: string) => {
+      logToStderr: async (msg: string) => {
         log.push(msg);
       }
     };
