@@ -7,7 +7,6 @@ import { Logger } from '../../../../cli/Logger';
 import { fsUtil } from '../../../../utils/fsUtil';
 import { validation } from '../../../../utils/validation';
 import commands from '../../commands';
-import { workflow } from './DeployWorkflow';
 import { BaseProjectCommand } from './base-project-command';
 import { gitHubWorkflow, gitHubWorkflowStep } from './project-github-workflow-model';
 
@@ -119,6 +118,9 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
     }
 
     try {
+      delete require.cache[require.resolve('./DeployWorkflow')];
+      const deployWorkflow = require('./DeployWorkflow');
+      const workflow: gitHubWorkflow = deployWorkflow.workflow;
       this.updateWorkflow(solutionName, workflow, args.options);
       this.saveWorkflow(workflow);
     }
@@ -139,7 +141,7 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
   }
 
   private updateWorkflow(solutionName: string, workflow: gitHubWorkflow, options: GlobalOptions): void {
-    workflow.name = workflow.name.replace('{{ name }}', options.name ?? solutionName);
+    workflow.name = options.name ? options.name : workflow.name.replace('{{ name }}', solutionName);
 
     if (options.branchName) {
       workflow.on.push.branches[0] = options.branchName;

@@ -422,6 +422,7 @@ export class Cli {
     }
 
     try {
+      delete require.cache[require.resolve(commandFilePath)];
       const command: any = require(commandFilePath);
       if (command instanceof Command) {
         this.loadCommand(command);
