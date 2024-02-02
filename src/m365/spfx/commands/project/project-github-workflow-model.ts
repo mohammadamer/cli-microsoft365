@@ -25,6 +25,7 @@ export interface gitHubWorkflowStep {
     ADMIN_USERNAME?: string,
     ADMIN_PASSWORD?: string,
     APP_ID?: string,
+    TENANT?: string,
     APP_FILE_PATH?: string,
     SKIP_FEATURE_DEPLOYMENT?: boolean,
     OVERWRITE?: boolean,
