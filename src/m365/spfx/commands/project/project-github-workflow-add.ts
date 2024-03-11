@@ -8,7 +8,23 @@ import { fsUtil } from '../../../../utils/fsUtil';
 import { validation } from '../../../../utils/validation';
 import commands from '../../commands';
 import { BaseProjectCommand } from './base-project-command';
-import { gitHubWorkflow, gitHubWorkflowStep } from './project-github-workflow-model';
+import { GitHubWorkflow, GitHubWorkflowStep } from './project-github-workflow-model';
+import { parse } from 'semver';
+
+interface CommandArgs {
+  options: Options;
+}
+
+interface Options extends GlobalOptions {
+  name?: string;
+  branchName?: string;
+  manuallyTrigger?: boolean;
+  loginMethod?: string;
+  scope?: string;
+  skipFeatureDeployment?: boolean;
+  siteUrl?: string;
+  overwrite?: boolean;
+}
 
 class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
   private static loginMethod: string[] = ['application', 'user'];
@@ -129,7 +145,7 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
     }
   }
 
-  private saveWorkflow(workflow: gitHubWorkflow): void {
+  private saveWorkflow(workflow: GitHubWorkflow): void {
     const githubPath: string = path.join(this.projectRootPath as string, '.github');
     fsUtil.ensureDirectory(githubPath);
 
@@ -140,7 +156,7 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
     fs.writeFileSync(path.resolve(workflowFile), yaml.stringify(workflow), 'utf-8');
   }
 
-  private updateWorkflow(solutionName: string, workflow: gitHubWorkflow, options: GlobalOptions): void {
+  private updateWorkflow(solutionName: string, workflow: GitHubWorkflow, options: GlobalOptions): void {
     workflow.name = options.name ? options.name : workflow.name.replace('{{ name }}', solutionName);
 
     if (options.branchName) {
@@ -158,11 +174,9 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
       throw `Unable to determine the version of the current SharePoint Framework project`;
     }
 
-    const match = version.match(/^(\d+)\.(\d+)\.(\d+)$/);
-    const minorVersionString = match ? match[2] : null;
-    const minorVersion = minorVersionString ? Number(minorVersionString) : null;
+    const minorVersion = parse(version)?.minor;
 
-    if (minorVersion === null || isNaN(minorVersion)) {
+    if (minorVersion === undefined) {
       throw `Unable to determine the minor version of the current SharePoint Framework project`;
     }
 
@@ -198,22 +212,22 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
     }
   }
 
-  private getLoginAction(workflow: gitHubWorkflow): gitHubWorkflowStep {
+  private getLoginAction(workflow: GitHubWorkflow): GitHubWorkflowStep {
     const steps = this.getWorkFlowSteps(workflow);
     return steps.find(step => step.uses && step.uses.indexOf('action-cli-login') >= 0)!;
   }
 
-  private getDeployAction(workflow: gitHubWorkflow): gitHubWorkflowStep {
+  private getDeployAction(workflow: GitHubWorkflow): GitHubWorkflowStep {
     const steps = this.getWorkFlowSteps(workflow);
     return steps.find(step => step.uses && step.uses.indexOf('action-cli-deploy') >= 0)!;
   }
 
-  private getNodeAction(workflow: gitHubWorkflow): gitHubWorkflowStep {
+  private getNodeAction(workflow: GitHubWorkflow): GitHubWorkflowStep {
     const steps = this.getWorkFlowSteps(workflow);
     return steps.find(step => step.uses && step.uses.indexOf('actions/setup-node@') >= 0)!;
   }
 
-  private getWorkFlowSteps(workflow: gitHubWorkflow): gitHubWorkflowStep[] {
+  private getWorkFlowSteps(workflow: GitHubWorkflow): GitHubWorkflowStep[] {
     return workflow.jobs['build-and-deploy'].steps;
   }
 }
