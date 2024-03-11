@@ -1,17 +1,17 @@
-import assert from 'assert';
-import fs from 'fs';
-import path from 'path';
-import sinon from 'sinon';
-import { CommandError } from '../../../../Command.js';
-import { cli } from '../../../../cli/cli.js';
-import { CommandInfo } from '../../../../cli/CommandInfo.js';
-import { Logger } from '../../../../cli/Logger.js';
-import { telemetry } from '../../../../telemetry.js';
-import { pid } from '../../../../utils/pid.js';
-import { session } from '../../../../utils/session.js';
-import { sinonUtil } from '../../../../utils/sinonUtil.js';
-import commands from '../../commands.js';
-import command from './project-azuredevops-pipeline-add.js';
+import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as sinon from 'sinon';
+import Command, { CommandError } from '../../../../Command';
+import { CommandInfo } from '../../../../cli/CommandInfo';
+import { Logger } from '../../../../cli/Logger';
+import { telemetry } from '../../../../telemetry';
+import { pid } from '../../../../utils/pid';
+import { session } from '../../../../utils/session';
+import { sinonUtil } from '../../../../utils/sinonUtil';
+import commands from '../../commands';
+import { Cli } from '../../../../cli/Cli';
+const command: Command = require('./project-azuredevops-pipeline-add');
 
 describe(commands.PROJECT_AZUREDEVOPS_PIPELINE_ADD, () => {
   let log: any[];
@@ -23,7 +23,7 @@ describe(commands.PROJECT_AZUREDEVOPS_PIPELINE_ADD, () => {
     sinon.stub(telemetry, 'trackEvent').returns();
     sinon.stub(pid, 'getProcessName').callsFake(() => '');
     sinon.stub(session, 'getId').callsFake(() => '');
-    commandInfo = cli.getCommandInfo(command);
+    commandInfo = Cli.getCommandInfo(command);
   });
 
   beforeEach(() => {

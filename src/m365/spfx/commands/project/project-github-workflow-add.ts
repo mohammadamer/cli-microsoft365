@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
-import { CommandArgs, CommandError } from '../../../../Command';
+import { CommandError } from '../../../../Command';
 import GlobalOptions from '../../../../GlobalOptions';
 import { Logger } from '../../../../cli/Logger';
 import { fsUtil } from '../../../../utils/fsUtil';
@@ -136,7 +136,7 @@ class SpfxProjectGithubWorkflowAddCommand extends BaseProjectCommand {
     try {
       delete require.cache[require.resolve('./DeployWorkflow')];
       const deployWorkflow = require('./DeployWorkflow');
-      const workflow: gitHubWorkflow = deployWorkflow.workflow;
+      const workflow: GitHubWorkflow = deployWorkflow.workflow;
       this.updateWorkflow(solutionName, workflow, args.options);
       this.saveWorkflow(workflow);
     }
